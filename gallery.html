@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Prayer Dome | Gallery - Pastors, Worship & Ministries</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <!-- Cloudinary Widget SDK -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --accent-green: #22c55e;
+            --accent-gold: #d4af37;
+            --accent-blue: #3b82f6;
+            --accent-red: #ef4444;
+            --accent-purple: #8b5cf6;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 35px -10px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s;
+            min-height: 100vh;
+        }
+
+        body.dark-mode {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border-color: #334155;
+        }
+
+        /* Header */
+        .gallery-header {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-gold));
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .logo-text h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .theme-toggle, .back-btn {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 28px;
+            padding: 24px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent-green);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Upload Banner */
+        .upload-banner {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-primary));
+            border-radius: 32px;
+            padding: 32px;
+            margin-bottom: 40px;
+            border: 2px dashed var(--border-color);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-banner:hover {
+            border-color: var(--accent-green);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .upload-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .upload-text {
+            flex: 1;
+        }
+
+        .upload-text h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-green);
+            margin-bottom: 8px;
+        }
+
+        .upload-text p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .upload-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent-green), #16a34a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(34,197,94,0); }
+        }
+
+        .upload-icon-wrapper i {
+            font-size: 32px;
+            color: white;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, var(--accent-green), #16a34a);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 10px 0 20px;
+            margin-bottom: 20px;
+            scrollbar-width: thin;
+        }
+
+        .category-btn {
+            padding: 10px 24px;
+            border-radius: 40px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .category-btn.active {
+            background: linear-gradient(135deg, var(--accent-green), #16a34a);
+            color: white;
+            border-color: var(--accent-green);
+            transform: scale(1.05);
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-gold);
+        }
+
+        .image-container {
+            position: relative;
+            aspect-ratio: 1;
+            overflow: hidden;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover .image-container img {
+            transform: scale(1.1);
+        }
+
+        .image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .image-overlay {
+            transform: translateY(0);
+        }
+
+        .image-overlay h4 {
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .image-overlay p {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.8rem;
+        }
+
+        .image-info {
+            padding: 16px;
+        }
+
+        .image-title {
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--accent-green);
+        }
+
+        .image-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Upload Form Modal */
+        .upload-form-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1500;
+            backdrop-filter: blur(8px);
+        }
+
+        .upload-form-content {
+            background: var(--bg-card);
+            border-radius: 32px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .upload-form-content h2 {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-green), #16a34a);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(34,197,94,0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+        }
+        .toast {
+            background: var(--bg-card);
+            padding: 12px 24px;
+            border-radius: 40px;
+            margin-bottom: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-left: 4px solid var(--accent-green);
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-green);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 40px auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Login Modal */
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(8px);
+        }
+
+        .login-content {
+            background: var(--bg-card);
+            border-radius: 32px;
+            padding: 32px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .login-content h2 {
+            margin-bottom: 20px;
+        }
+
+        .login-content input {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            background: var(--bg-primary);
+        }
+
+        /* Footer */
+        .gallery-footer {
+            background: var(--bg-secondary);
+            margin-top: 60px;
+            border-top: 2px solid var(--border-color);
+            padding: 40px 30px 20px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            color: var(--accent-green);
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .footer-section p {
+            margin: 12px 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .main-container { padding: 20px; }
+            .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .upload-content { flex-direction: column; text-align: center; }
+            .upload-icon-wrapper { margin: 0 auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="gallery-header">
+        <div class="header-content">
+            <div class="logo-area">
+                <div class="logo-icon"><i class="fas fa-images"></i></div>
+                <div class="logo-text">
+                    <h1>Prayer Dome Gallery</h1>
+                    <p>Pastors | Worship | Ministries | Church</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+                <button class="theme-toggle" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark Mode</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalPhotos">0</div>
+                <div class="stat-label">Total Photos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pastorsCount">0</div>
+                <div class="stat-label">Pastors & Leaders</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="worshipCount">0</div>
+                <div class="stat-label">Worship Team</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="locationsCount">0</div>
+                <div class="stat-label">Church Locations</div>
+            </div>
+        </div>
+
+        <!-- Upload Banner -->
+        <div class="upload-banner" onclick="showUploadForm()">
+            <div class="upload-content">
+                <div class="upload-text">
+                    <h3><i class="fas fa-camera"></i> Share Your Moment</h3>
+                    <p>Upload photos from church events, worship, testimonies, or community gatherings. Your submission will be reviewed by admin.</p>
+                </div>
+                <div class="upload-icon-wrapper">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <button class="upload-btn"><i class="fas fa-plus-circle"></i> Upload Photo</button>
+            </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <button class="category-btn active" data-category="all" onclick="filterGallery('all')">📸 All Photos</button>
+            <button class="category-btn" data-category="pastors" onclick="filterGallery('pastors')">👨‍🏫 Pastors & Leaders</button>
+            <button class="category-btn" data-category="worship" onclick="filterGallery('worship')">🎵 Praise & Worship</button>
+            <button class="category-btn" data-category="ministries" onclick="filterGallery('ministries')">🤝 Ministries</button>
+            <button class="category-btn" data-category="church" onclick="filterGallery('church')">⛪ Church & Locations</button>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div id="galleryGrid" class="gallery-grid">
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="gallery-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Prayer Dome</h3>
+                <p>A House of Prayer for All Nations</p>
+                <p><i class="fas fa-map-marker-alt"></i> Eswatini & Zambia</p>
+                <p><i class="fas fa-phone"></i> +268 7658 1804</p>
+                <p><i class="fas fa-envelope"></i> info@prayerdome.net</p>
+            </div>
+            <div class="footer-section">
+                <h3>Gallery Categories</h3>
+                <p><i class="fas fa-user-tie"></i> Pastors & Leadership</p>
+                <p><i class="fas fa-music"></i> Praise & Worship Team</p>
+                <p><i class="fas fa-hand-holding-heart"></i> Ministries</p>
+                <p><i class="fas fa-church"></i> Church Locations</p>
+            </div>
+            <div class="footer-section">
+                <h3>Scripture</h3>
+                <p>"Let the peace of Christ rule in your hearts..."</p>
+                <p><i>Colossians 3:15</i></p>
+                <p style="margin-top: 10px;">"Give thanks to the Lord, for he is good; his love endures forever."</p>
+                <p><i>Psalm 118:1</i></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>Powered by <strong>Prayer Dome</strong> | Seedwel Investment Limited</p>
+            <p>© 2018 Prayer Dome Ministry. All Rights Reserved.</p>
+            <p style="margin-top: 8px; font-size: 12px;">"A House of Prayer for All Nations" - Matthew 21:13</p>
+        </div>
+    </footer>
+
+    <!-- Upload Form Modal -->
+    <div id="uploadFormModal" class="upload-form-modal" style="display: none;">
+        <div class="upload-form-content">
+            <h2><i class="fas fa-cloud-upload-alt"></i> Upload Photo</h2>
+            <div class="form-group">
+                <label>Title *</label>
+                <input type="text" id="photoTitle" placeholder="e.g., Pastor Seedwell Masuku">
+            </div>
+            <div class="form-group">
+                <label>Category *</label>
+                <select id="photoCategory">
+                    <option value="pastors">Pastors & Leaders</option>
+                    <option value="worship">Praise & Worship</option>
+                    <option value="ministries">Ministries</option>
+                    <option value="church">Church & Locations</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="photoDescription" rows="3" placeholder="Share the story behind this photo..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Upload Image *</label>
+                <div id="cloudinary-widget-container"></div>
+                <div id="uploadPreview" style="margin-top: 10px;"></div>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button class="btn btn-primary" style="flex: 1;" id="submitUploadBtn" onclick="submitUpload()" disabled>Submit for Review</button>
+                <button class="btn btn-outline" style="flex: 1;" onclick="closeUploadForm()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            <img id="modalImage" src="" alt="">
+            <div id="modalCaption" style="color: white; text-align: center; margin-top: 16px;"></div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="login-modal" style="display: none;">
+        <div class="login-content">
+            <h2><i class="fas fa-sign-in-alt"></i> Sign In</h2>
+            <input type="email" id="loginEmail" placeholder="Email Address">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="loginUser()">Sign In</button>
+            <button class="btn btn-outline" style="width: 100%;" onclick="closeLoginModal()">Cancel</button>
+            <div style="margin-top: 15px;">
+                <button class="btn btn-outline" style="width: 100%;" onclick="signInWithGoogle()"><i class="fab fa-google"></i> Continue with Google</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getFirestore, collection, addDoc, getDocs, query, orderBy, where, onSnapshot, serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { 
+            getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut,
+            GoogleAuthProvider, signInWithPopup
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCxvql0r_aeerphxTA0UUedRppdBxGf7wo",
+            authDomain: "prayer-dome.firebaseapp.com",
+            projectId: "prayer-dome",
+            storageBucket: "prayer-dome.firebasestorage.app",
+            messagingSenderId: "198295153196",
+            appId: "1:198295153196:web:1222b31948d7974ba3bf89"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let currentUser = null;
+        let currentFilter = "all";
+        let allImages = [];
+        let unsubscribeGallery = null;
+        let uploadedImageUrl = null;
+        let cloudinaryWidget = null;
+
+        // Cloudinary Configuration
+        const cloudinaryConfig = {
+            cloudName: 'prayerdome',
+            uploadPreset: 'gallery_uploads',
+            folder: 'prayer_dome_gallery',
+            maxFileSize: 10 * 1024 * 1024,
+            resourceType: 'image',
+            clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp']
+        };
+
+        // ==================== DEFAULT GALLERY IMAGES FROM INDEX.HTML ====================
+        const defaultGalleryImages = [
+            // Founder & Senior Pastor
+            { title: "Pastor Seedwell Khayalethu Masuku", category: "pastors", url: "https://i.ibb.co/RTbNh1hB/founder-2.jpg", description: "Founder & Senior Pastor of Prayer Dome Ministry. 'A House of Prayer for All Nations'", userName: "Prayer Dome" },
+            // Eswatini Pastors
+            { title: "Pastor Philmon Gumbi", category: "pastors", url: "https://i.ibb.co/6c7wRtJW/philmon.jpg", description: "Prayer Dome Pastor - Eswatini. Committed to leading prayer services and preaching the Word.", userName: "Prayer Dome" },
+            { title: "Pastor Sabelo Simelane", category: "pastors", url: "https://i.ibb.co/tp58qGfQ/sabelo-1.jpg", description: "Prayer Dome Pastor - Eswatini. Focuses on intercession, counseling, and encouraging members.", userName: "Prayer Dome" },
+            { title: "Pastor Dumsani Nxumalo", category: "pastors", url: "https://i.ibb.co/gFgBhyqG/dumisa.jpg", description: "Prayer Dome Pastor - Eswatini. Leads worship and prayer sessions.", userName: "Prayer Dome" },
+            { title: "Pastor Andile Makhanya", category: "pastors", url: "https://i.ibb.co/xqHjHqr6/ma.jpg", description: "Prayer Dome Pastor - Eswatini. Serves with dedication and spiritual leadership.", userName: "Prayer Dome" },
+            { title: "Pastor Jerome Mkhabela", category: "pastors", url: "https://i.ibb.co/ksTrfSfp/alan.jpg", description: "Prayer Dome Pastor - Eswatini. Committed to preaching the Word of God.", userName: "Prayer Dome" },
+            // Zambia Pastors
+            { title: "Pastor Zacheus Simbaya", category: "pastors", url: "https://i.ibb.co/B2r1xPLb/pst.jpg", description: "Prayer Dome Pastor - Zambia. Devoted to spiritual growth and leadership development.", userName: "Prayer Dome" },
+            { title: "Pastor Alex Mushawa", category: "pastors", url: "https://i.ibb.co/sJMzbpQC/al-1.jpg", description: "Prayer Dome Pastor - Zambia. Faithfully serves in ministry focusing on teaching.", userName: "Prayer Dome" },
+            // Worship Team
+            { title: "Nomvula Masuku", category: "worship", url: "https://i.ibb.co/ksK9tLk1/pnw.jpg", description: "Praise & Worship Leader. Leads worship and oversees Compassionate Ministry.", userName: "Prayer Dome" },
+            { title: "Tengetile Mkhabela", category: "worship", url: "https://i.ibb.co/21YBRMzK/nom.jpg", description: "Secretary - Worship Ministry. Ensures proper communication and organization.", userName: "Prayer Dome" },
+            { title: "Nondumiso Simelane", category: "worship", url: "https://i.ibb.co/qFL3KxMr/tenge.jpg", description: "Compassionate Ministry - Eswatini. Leads caring and support initiatives for people.", userName: "Prayer Dome" },
+            { title: "Gabsile Makhanya", category: "worship", url: "https://i.ibb.co/27zgJ7fL/cnc.jpg", description: "Praise & Worship Leader. Leads worship and oversees Compassionate Ministry.", userName: "Prayer Dome" },
+            { title: "Petrina Kumwenda", category: "worship", url: "https://i.ibb.co/S4G3vhMt/pet.jpg", description: "Praise and Worship - Zambia. Devoted praise and worshiper using her gift of music.", userName: "Prayer Dome" },
+            // Ministries
+            { title: "Children's Ministry", category: "ministries", url: "https://i.ibb.co/rG15FCg5/cd.jpg", description: "Compassionate Ministry - Dedicated to nurturing spiritual growth of children.", userName: "Prayer Dome" },
+            // Church Locations
+            { title: "Ngculwini Prayer Dome", category: "church", url: "https://i.ibb.co/qKCwrZ1/pd.jpg", description: "Prayer Center - Eswatini. Vibrant prayer community dedicated to intercession.", userName: "Prayer Dome" },
+            { title: "Hluthi Prayer Dome", category: "church", url: "https://i.ibb.co/Kc7HhZd1/lv.jpg", description: "Prayer Center - Eswatini. Growing community of believers committed to prayer.", userName: "Prayer Dome" }
+        ];
+
+        async function initializeDefaultImages() {
+    try {
+        // Check if default images already exist
+        const q = query(collection(db, "gallery"), where("isDefault", "==", true));
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+            console.log("📸 Loading default gallery images...");
+            
+            // Only add if user is authenticated (admin check)
+            if (!currentUser) {
+                console.log("Waiting for user to load default images...");
+                return;
+            }
+            
+            // Check if user is admin (you can add a role field)
+            const memberDoc = await getDoc(doc(db, "memberships", currentUser.uid));
+            const isAdmin = memberDoc.exists() && memberDoc.data().role === 'admin';
+            
+            if (!isAdmin) {
+                console.log("Only admin can add default images");
+                return;
+            }
+            
+            for (const img of defaultGalleryImages) {
+                await addDoc(collection(db, "gallery"), {
+                    ...img,
+                    status: "approved",  // Approved immediately for defaults
+                    isDefault: true,
+                    approvedBy: currentUser.uid,
+                    approvedAt: Timestamp.now(),
+                    createdAt: Timestamp.now(),
+                    likes: 0,
+                    likedBy: []
+                });
+            }
+            console.log("✅ Default gallery images loaded successfully!");
+            loadGallery(); // Refresh
+        }
+    } catch (error) {
+        console.error("Error loading default images:", error);
+    }
+}
+
+        function initCloudinaryWidget() {
+            if (cloudinaryWidget) return;
+            
+            cloudinaryWidget = cloudinary.createUploadWidget({
+                cloudName: cloudinaryConfig.cloudName,
+                uploadPreset: cloudinaryConfig.uploadPreset,
+                folder: cloudinaryConfig.folder,
+                cropping: true,
+                multiple: false,
+                maxFiles: 1,
+                maxFileSize: cloudinaryConfig.maxFileSize,
+                resourceType: 'image',
+                clientAllowedFormats: cloudinaryConfig.clientAllowedFormats,
+                styles: {
+                    palette: {
+                        window: "#FFFFFF",
+                        windowBorder: "#22c55e",
+                        tabIcon: "#22c55e",
+                        menuIcons: "#22c55e",
+                        textDark: "#0f172a",
+                        textLight: "#FFFFFF",
+                        link: "#22c55e",
+                        action: "#22c55e",
+                        inactiveTabIcon: "#8b5cf6",
+                        error: "#ef4444",
+                        inProgress: "#d4af37",
+                        complete: "#22c55e",
+                        sourceBg: "#f8fafc"
+                    }
+                }
+            }, (error, result) => {
+                if (error) {
+                    console.error('Cloudinary upload error:', error);
+                    showToast('Upload failed: ' + error.message, 'error');
+                    return;
+                }
+                
+                if (result && result.event === 'success') {
+                    uploadedImageUrl = result.info.secure_url;
+                    const previewDiv = document.getElementById('uploadPreview');
+                    previewDiv.innerHTML = `
+                        <div style="background: rgba(34,197,94,0.1); padding: 10px; border-radius: 12px; text-align: center;">
+                            <i class="fas fa-check-circle" style="color: var(--accent-green); font-size: 24px;"></i>
+                            <p style="margin-top: 5px; font-size: 12px;">Image uploaded successfully!</p>
+                            <img src="${uploadedImageUrl}" style="max-width: 100%; max-height: 100px; border-radius: 8px; margin-top: 5px;">
+                        </div>
+                    `;
+                    document.getElementById('submitUploadBtn').disabled = false;
+                    showToast('Image uploaded! Ready to submit.', 'success');
+                }
+            });
+        }
+
+        function showUploadForm() {
+            if (!currentUser) {
+                showToast('Please login to upload photos', 'error');
+                showLoginModal();
+                return;
+            }
+            uploadedImageUrl = null;
+            document.getElementById('uploadPreview').innerHTML = '';
+            document.getElementById('photoTitle').value = '';
+            document.getElementById('photoDescription').value = '';
+            document.getElementById('submitUploadBtn').disabled = true;
+            document.getElementById('uploadFormModal').style.display = 'flex';
+            
+            setTimeout(() => {
+                initCloudinaryWidget();
+                if (cloudinaryWidget) cloudinaryWidget.open();
+            }, 100);
+        }
+
+        function closeUploadForm() {
+            document.getElementById('uploadFormModal').style.display = 'none';
+            if (cloudinaryWidget) cloudinaryWidget.close();
+        }
+
+        async function submitUpload() {
+            const title = document.getElementById('photoTitle').value.trim();
+            const categorySelect = document.getElementById('photoCategory').value;
+            const description = document.getElementById('photoDescription').value.trim();
+
+            if (!title) {
+                showToast('Please enter a title', 'error');
+                return;
+            }
+            if (!uploadedImageUrl) {
+                showToast('Please upload an image first', 'error');
+                return;
+            }
+
+            showToast('Submitting for review...', 'info');
+            
+            try {
+                await addDoc(collection(db, "gallery"), {
+                    title: title,
+                    description: description || '',
+                    category: categorySelect,
+                    url: uploadedImageUrl,
+                    userId: currentUser.uid,
+                    userEmail: currentUser.email,
+                    userName: currentUser.displayName || currentUser.email?.split('@')[0] || 'Anonymous',
+                    status: 'pending',
+                    likes: 0,
+                    likedBy: [],
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                });
+                
+                showToast('Photo submitted for admin approval!', 'success');
+                closeUploadForm();
+                
+            } catch (error) {
+                console.error('Upload error:', error);
+                showToast('Upload failed: ' + error.message, 'error');
+            }
+        }
+
+        function loadGallery() {
+            if (unsubscribeGallery) unsubscribeGallery();
+            
+            const q = query(collection(db, "gallery"), orderBy("createdAt", "desc"));
+            unsubscribeGallery = onSnapshot(q, (snapshot) => {
+                if (snapshot.empty) {
+                    initializeDefaultImages();
+                }
+                allImages = [];
+                snapshot.forEach(doc => {
+                    allImages.push({ id: doc.id, ...doc.data() });
+                });
+                updateStats();
+                renderGallery();
+            });
+        }
+
+        function updateStats() {
+            const approvedImages = allImages.filter(img => img.status === 'approved');
+            const pastors = approvedImages.filter(img => img.category === 'pastors').length;
+            const worship = approvedImages.filter(img => img.category === 'worship').length;
+            const church = approvedImages.filter(img => img.category === 'church' || img.category === 'ministries').length;
+            
+            document.getElementById('totalPhotos').textContent = approvedImages.length;
+            document.getElementById('pastorsCount').textContent = pastors;
+            document.getElementById('worshipCount').textContent = worship;
+            document.getElementById('locationsCount').textContent = church;
+        }
+
+        function getCategoryName(category) {
+            const names = {
+                pastors: 'Pastors & Leaders',
+                worship: 'Praise & Worship',
+                ministries: 'Ministries',
+                church: 'Church & Locations'
+            };
+            return names[category] || category;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function renderGallery() {
+    const container = document.getElementById('galleryGrid');
+    let filtered = allImages;
+    
+    if (currentFilter === 'pending' && isAdmin) {
+        filtered = allImages.filter(img => img.status === 'pending');
+    } else if (currentFilter !== 'all') {
+        filtered = allImages.filter(img => img.category === currentFilter && img.status === 'approved');
+    } else {
+        filtered = allImages.filter(img => img.status === 'approved');
+    }
+
+    if (filtered.length === 0) {
+        container.innerHTML = `<div class="empty-state">No photos found</div>`;
+        return;
+    }
+
+    const isAdminMode = currentFilter === 'pending' && isAdmin;
+    
+    container.innerHTML = filtered.map(img => {
+        const adminActions = isAdminMode ? `
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+                <button class="btn btn-primary btn-small" onclick="approvePhoto('${img.id}')">✅ Approve</button>
+                <button class="btn btn-danger btn-small" onclick="rejectPhoto('${img.id}')">❌ Reject</button>
+            </div>
+        ` : '';
+        
+        return `
+            <div class="gallery-item">
+                <div class="image-container">
+                    <img src="${img.url}" alt="${img.title}" loading="lazy">
+                </div>
+                <div class="image-info">
+                    <div class="image-title">${escapeHtml(img.title)}</div>
+                    <div class="image-meta">
+                        <span><i class="fas fa-user"></i> ${escapeHtml(img.userName || 'Anonymous')}</span>
+                        <span><i class="fas fa-clock"></i> ${moment(img.createdAt?.toDate()).fromNow()}</span>
+                    </div>
+                    ${adminActions}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+        function filterGallery(category) {
+            currentFilter = category;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.category === category) btn.classList.add('active');
+            });
+            renderGallery();
+        }
+
+        function openImage(url, title, description, category) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const caption = document.getElementById('modalCaption');
+            modal.style.display = 'flex';
+            modalImg.src = url;
+            caption.innerHTML = `<strong>${title}</strong><br>${description}<br><span style="font-size: 12px; color: var(--accent-gold);">Category: ${getCategoryName(category)}</span>`;
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const btn = document.querySelector('.theme-toggle');
+            btn.innerHTML = document.body.classList.contains('dark-mode') ? '<i class="fas fa-sun"></i> Light Mode' : '<i class="fas fa-moon"></i> Dark Mode';
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+
+        // Auth functions
+        function showLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+        function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+
+        async function loginUser() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            if (!email || !password) { showToast('Enter email and password', 'error'); return; }
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                closeLoginModal();
+                showToast('Login successful!', 'success');
+            } catch (error) { showToast(error.message, 'error'); }
+        }
+
+        async function signInWithGoogle() {
+            const provider = new GoogleAuthProvider();
+            try {
+                await signInWithPopup(auth, provider);
+                closeLoginModal();
+                showToast('Login successful!', 'success');
+            } catch (error) { showToast(error.message, 'error'); }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+        });
+
+        // Expose global functions
+        window.showUploadForm = showUploadForm;
+        window.closeUploadForm = closeUploadForm;
+        window.submitUpload = submitUpload;
+        window.filterGallery = filterGallery;
+        window.openImage = openImage;
+        window.closeModal = closeModal;
+        window.toggleDarkMode = toggleDarkMode;
+        window.showLoginModal = showLoginModal;
+        window.closeLoginModal = closeLoginModal;
+        window.loginUser = loginUser;
+        window.signInWithGoogle = signInWithGoogle;
+
+        // Initialize
+        loadGallery();
+        
+        async function approvePhoto(photoId) {
+    if (!currentUser) {
+        showToast('Please login', 'error');
+        return;
+    }
+    
+    // Check admin status
+    const memberDoc = await getDoc(doc(db, "memberships", currentUser.uid));
+    const isAdmin = memberDoc.exists() && memberDoc.data().role === 'admin';
+    
+    if (!isAdmin) {
+        showToast('Only admins can approve photos', 'error');
+        return;
+    }
+    
+    try {
+        await updateDoc(doc(db, "gallery", photoId), {
+            status: 'approved',
+            approvedBy: currentUser.uid,
+            approvedAt: Timestamp.now()
+        });
+        showToast('Photo approved!', 'success');
+        loadGallery();
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+}
+
+async function rejectPhoto(photoId) {
+    if (!currentUser) return;
+    
+    const memberDoc = await getDoc(doc(db, "memberships", currentUser.uid));
+    const isAdmin = memberDoc.exists() && memberDoc.data().role === 'admin';
+    
+    if (!isAdmin) {
+        showToast('Only admins can reject photos', 'error');
+        return;
+    }
+    
+    const reason = prompt('Reason for rejection (optional):');
+    try {
+        await updateDoc(doc(db, "gallery", photoId), {
+            status: 'rejected',
+            rejectionReason: reason || '',
+            rejectedBy: currentUser.uid,
+            rejectedAt: Timestamp.now()
+        });
+        showToast('Photo rejected', 'info');
+        loadGallery();
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+}
+    </script>
+</body>
+</html>

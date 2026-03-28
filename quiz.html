@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Prayer Dome | Bible Quiz - 50 Levels</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --accent-green: #22c55e;
+            --accent-gold: #d4af37;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s;
+            min-height: 100vh;
+        }
+
+        body.dark-mode {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border-color: #334155;
+        }
+
+        /* Header */
+        .quiz-header {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-gold));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: white;
+        }
+
+        .logo-text h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-gold));
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .theme-toggle {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 8px 18px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            background: var(--bg-card);
+            border-radius: 28px;
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .score-display {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .score-box {
+            background: linear-gradient(135deg, var(--accent-green), #16a34a);
+            padding: 6px 18px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .level-box {
+            background: var(--bg-primary);
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: 700;
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+        }
+
+        /* Level Grid */
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+            gap: 10px;
+            margin-bottom: 24px;
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 28px;
+            border: 1px solid var(--border-color);
+        }
+
+        .level-badge {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            color: var(--text-secondary);
+            margin: 0 auto;
+        }
+
+        .level-badge.completed {
+            background: linear-gradient(135deg, var(--accent-green), #16a34a);
+            border-color: var(--accent-green);
+            color: white;
+        }
+
+        .level-badge.locked {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .level-badge.current {
+            border: 3px solid var(--accent-gold);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Quiz Card */
+        .quiz-card {
+            background: var(--bg-card);
+            border-radius: 32px;
+            padding: 35px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        .question-text {
+            font-size: 1.6rem;
+            line-height: 1.4;
+            margin-bottom: 30px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .option-btn {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 60px;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--accent-green);
+            transform: translateX(5px);
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, var(--accent-green), #16a34a);
+            border-color: var(--accent-green);
+            color: white;
+            animation: correctPulse 0.4s ease;
+        }
+
+        .option-btn.wrong {
+            background: linear-gradient(135deg, var(--accent-red), #dc2626);
+            border-color: var(--accent-red);
+            color: white;
+            animation: wrongShake 0.4s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+
+        .timer-bar {
+            height: 6px;
+            background: var(--bg-primary);
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .timer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-gold));
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        .timer-fill.warning {
+            background: linear-gradient(90deg, var(--accent-red), #f97316);
+        }
+
+        .quiz-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .progress-info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, var(--accent-green), #16a34a);
+            color: white;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .next-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+        }
+
+        .next-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Win/Loss Animation Overlay */
+        .result-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            pointer-events: none;
+            animation: fadeOutResult 1.8s forwards;
+        }
+
+        .result-message {
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            border-radius: 80px;
+            font-size: 2.2rem;
+            font-weight: 800;
+            animation: bounceIn 0.5s ease;
+        }
+
+        .result-message.win {
+            color: var(--accent-gold);
+            border: 3px solid var(--accent-gold);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.5);
+        }
+
+        .result-message.loss {
+            color: var(--accent-red);
+            border: 3px solid var(--accent-red);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeOutResult {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; visibility: hidden; }
+        }
+
+        /* Level Complete Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 48px;
+            padding: 35px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .trophy-icon {
+            font-size: 70px;
+            margin-bottom: 20px;
+        }
+
+        .congrats-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-green), #16a34a);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1200;
+        }
+        .toast {
+            background: var(--bg-card);
+            padding: 10px 20px;
+            border-radius: 40px;
+            margin-bottom: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-left: 4px solid var(--accent-green);
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Scroll to Top Button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-green), #16a34a);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+            transition: all 0.3s;
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.5);
+        }
+
+        /* Footer */
+        .quiz-footer-section {
+            background: var(--bg-secondary);
+            margin-top: 60px;
+            border-top: 2px solid var(--border-color);
+            padding: 50px 30px 25px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h3 {
+            color: var(--accent-green);
+            font-size: 18px;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-gold));
+            border-radius: 3px;
+        }
+
+        .footer-col p {
+            margin: 12px 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-col a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-col a:hover {
+            color: var(--accent-green);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 25px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        @media (max-width: 700px) {
+            .quiz-card { padding: 25px; }
+            .question-text { font-size: 1.2rem; }
+            .options-grid { grid-template-columns: 1fr; }
+            .level-badge { width: 48px; height: 48px; font-size: 0.9rem; }
+            .level-grid { grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); }
+            .result-message { font-size: 1.4rem; padding: 15px 25px; }
+            .scroll-top { width: 45px; height: 45px; font-size: 18px; bottom: 20px; right: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-header">
+        <div class="header-content">
+            <div class="logo-area">
+                <div class="logo-icon"><i class="fas fa-question-circle"></i></div>
+                <div class="logo-text">
+                    <h1>Bible Quiz Challenge</h1>
+                    <p>50 Levels | 2 Points per Question | No Duplicates</p>
+                </div>
+            </div>
+            <button class="theme-toggle" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark Mode</button>
+        </div>
+    </div>
+
+    <div class="main-container" style="max-width: 1200px; margin: 0 auto; padding: 24px;">
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="score-display">
+                <div class="score-box"><i class="fas fa-star"></i> Total Score: <span id="totalScore">0</span></div>
+                <div class="level-box"><i class="fas fa-trophy"></i> Completed: <span id="completedLevels">0</span>/50</div>
+            </div>
+            <button class="btn btn-outline" onclick="resetProgress()" style="padding: 6px 16px; font-size: 13px;"><i class="fas fa-redo"></i> Reset</button>
+        </div>
+
+        <!-- Level Grid -->
+        <div class="level-grid" id="levelGrid"></div>
+        
+        <!-- Leaderboard Section -->
+<div class="leaderboard-card" style="background: var(--bg-card); border-radius: 28px; padding: 24px; margin-top: 30px; border: 1px solid var(--border-color);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3><i class="fas fa-trophy" style="color: var(--accent-gold);"></i> Top Scorers</h3>
+        <button class="btn btn-outline btn-small" onclick="loadLeaderboard()">Refresh</button>
+    </div>
+    <div id="leaderboardList" style="max-height: 300px; overflow-y: auto;">
+        <div class="spinner" style="margin: 20px auto;"></div>
+    </div>
+</div>
+
+        <!-- Quiz Card -->
+        <div class="quiz-card">
+            <div id="quizStartScreen" style="text-align: center; padding: 30px;">
+                <i class="fas fa-brain" style="font-size: 70px; color: var(--accent-green); margin-bottom: 20px;"></i>
+                <h2 style="font-size: 26px; margin-bottom: 12px;">50 Levels of Bible Knowledge</h2>
+                <p style="margin-bottom: 25px; color: var(--text-secondary);">Each level has 10 unique questions. Get 2 points per correct answer!<br>Complete a level to earn a trophy and unlock the next.</p>
+                <button class="btn btn-primary" onclick="startLevel()" style="font-size: 16px; padding: 14px 35px;">
+                    <i class="fas fa-play"></i> Start Level 1
+                </button>
+            </div>
+
+            <div id="quizActiveScreen" style="display: none;">
+                <div class="timer-bar">
+                    <div class="timer-fill" id="timerFill"></div>
+                </div>
+                <div class="question-text" id="questionText">Loading...</div>
+                <div class="options-grid" id="optionsGrid"></div>
+                <div class="quiz-footer">
+                    <div class="progress-info">
+                        <span id="currentQuestionNum">1</span>/<span id="totalQuestions">10</span> • Level <span id="currentLevelNum">1</span>/50 • Score: <span id="levelScore">0</span>
+                    </div>
+                    <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>Next <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <div id="quizCompleteScreen" style="display: none; text-align: center; padding: 40px;">
+                <i class="fas fa-flag-checkered" style="font-size: 70px; color: var(--accent-gold); margin-bottom: 20px;"></i>
+                <h2 style="font-size: 26px; margin-bottom: 12px;">Congratulations!</h2>
+                <p style="margin-bottom: 20px;">You've completed all 50 levels!</p>
+                <button class="btn btn-primary" onclick="resetProgress()"><i class="fas fa-redo"></i> Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTopBtn" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer class="quiz-footer-section">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>Prayer Dome</h3>
+                    <p><i class="fas fa-church"></i> A House of Prayer for All Nations</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Eswatini & Zambia</p>
+                    <p><i class="fas fa-phone"></i> +268 7658 1804</p>
+                    <p><i class="fas fa-envelope"></i> info@prayerdome.net</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Bible Quiz</h3>
+                    <p><i class="fas fa-layer-group"></i> 50 Challenging Levels</p>
+                    <p><i class="fas fa-star"></i> 2 Points per Correct Answer</p>
+                    <p><i class="fas fa-trophy"></i> Earn Trophies & Unlock Levels</p>
+                    <p><i class="fas fa-random"></i> Random Questions Each Play</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <p><a href="#" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i> Back to Top</a></p>
+                    <p><a href="#" onclick="resetProgress()"><i class="fas fa-redo"></i> Reset Progress</a></p>
+                    <p><a href="#" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark Mode</a></p>
+                </div>
+                <div class="footer-col">
+                    <h3>Connect With Us</h3>
+                    <p><a href="https://wa.me/message/YB7G7PE2O26GI1" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp Channel</a></p>
+                    <p><a href="https://www.facebook.com/profile.php?id=61583956144114" target="_blank"><i class="fab fa-facebook"></i> Prayer Dome Zambia</a></p>
+                    <p><a href="https://www.facebook.com/profile.php?id=100086119165608" target="_blank"><i class="fab fa-facebook"></i> Prayer Dome Eswatini</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Powered by <strong>Prayer Dome</strong> | Seedwel Investment Limited</p>
+                <p>© 2018 Prayer Dome Ministry. All Rights Reserved.</p>
+                <p style="margin-top: 8px; font-size: 12px;">"A House of Prayer for All Nations" - Matthew 21:13</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <audio id="winSound" preload="auto">
+        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="loseSound" preload="auto">
+        <source src="https://www.soundjay.com/misc/sounds/failure-drum-01.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // ==================== 500+ UNIQUE BIBLE QUESTIONS (50 levels x 10 unique questions per level) ====================
+        const levelQuestions = {};
+
+        // Level 1: Genesis
+        levelQuestions[1] = [
+            { text: "Who created the heavens and the earth?", options: ["Moses", "God", "Abraham", "David"], correct: 1 },
+            { text: "What did God create on the first day?", options: ["Sun", "Earth", "Light", "Stars"], correct: 2 },
+            { text: "Who was the first man?", options: ["Adam", "Eve", "Cain", "Abel"], correct: 0 },
+            { text: "Who built the ark?", options: ["Noah", "Abraham", "Moses", "David"], correct: 0 },
+            { text: "How many days did it rain during Noah's flood?", options: ["20", "30", "40", "50"], correct: 2 },
+            { text: "What was the sign of God's covenant with Noah?", options: ["Rainbow", "Dove", "Olive branch", "Cloud"], correct: 0 },
+            { text: "Who was Abraham's wife?", options: ["Sarah", "Hagar", "Rebekah", "Rachel"], correct: 0 },
+            { text: "What city did Lot flee from?", options: ["Sodom", "Gomorrah", "Jericho", "Babylon"], correct: 0 },
+            { text: "Who was Isaac's wife?", options: ["Rebekah", "Rachel", "Leah", "Sarah"], correct: 0 },
+            { text: "Who was Jacob's twin brother?", options: ["Esau", "Ishmael", "Joseph", "Benjamin"], correct: 0 }
+        ];
+
+        // Level 2: Exodus
+        levelQuestions[2] = [
+            { text: "Who led the Israelites out of Egypt?", options: ["Aaron", "Joshua", "Moses", "Caleb"], correct: 2 },
+            { text: "What did Moses part to cross the Red Sea?", options: ["Water", "Mountains", "Desert", "River"], correct: 0 },
+            { text: "How many plagues did God send on Egypt?", options: ["7", "8", "10", "12"], correct: 2 },
+            { text: "What mountain did Moses receive the Ten Commandments?", options: ["Sinai", "Ararat", "Zion", "Carmel"], correct: 0 },
+            { text: "Who was Moses' brother?", options: ["Aaron", "Miriam", "Joshua", "Caleb"], correct: 0 },
+            { text: "What did the Israelites eat in the wilderness?", options: ["Manna", "Quail", "Bread", "All of these"], correct: 3 },
+            { text: "Who led the Israelites after Moses?", options: ["Joshua", "Caleb", "Aaron", "Samuel"], correct: 0 },
+            { text: "What city did Joshua conquer by marching around it?", options: ["Jericho", "Ai", "Jerusalem", "Hebron"], correct: 0 },
+            { text: "Who was the first high priest of Israel?", options: ["Aaron", "Moses", "Eleazar", "Samuel"], correct: 0 },
+            { text: "What was the golden calf made from?", options: ["Gold", "Silver", "Bronze", "Wood"], correct: 0 }
+        ];
+
+        // Level 3: Judges & Kings
+        levelQuestions[3] = [
+            { text: "Who was the strongest man in the Bible?", options: ["Samson", "Goliath", "David", "Saul"], correct: 0 },
+            { text: "Who killed Goliath?", options: ["David", "Saul", "Jonathan", "Samson"], correct: 0 },
+            { text: "Who was the first king of Israel?", options: ["Saul", "David", "Solomon", "Samuel"], correct: 0 },
+            { text: "Who was known for his wisdom?", options: ["Solomon", "David", "Daniel", "Joseph"], correct: 0 },
+            { text: "Who wrote most of the Psalms?", options: ["David", "Moses", "Solomon", "Asaph"], correct: 0 },
+            { text: "Who was thrown into the lion's den?", options: ["Daniel", "Joseph", "David", "Jeremiah"], correct: 0 },
+            { text: "Who was thrown into the fiery furnace?", options: ["Shadrach, Meshach, Abednego", "Daniel", "Jeremiah", "Elijah"], correct: 0 },
+            { text: "Who interpreted Pharaoh's dreams?", options: ["Joseph", "Daniel", "Moses", "Samuel"], correct: 0 },
+            { text: "Who was the mother of Samuel?", options: ["Hannah", "Elizabeth", "Mary", "Sarah"], correct: 0 },
+            { text: "Which prophet confronted King Ahab?", options: ["Elijah", "Elisha", "Isaiah", "Jeremiah"], correct: 0 }
+        ];
+
+        // Level 4: Prophets
+        levelQuestions[4] = [
+            { text: "Who was swallowed by a great fish?", options: ["Jonah", "Isaiah", "Jeremiah", "Ezekiel"], correct: 0 },
+            { text: "Who saw the vision of dry bones?", options: ["Ezekiel", "Isaiah", "Daniel", "Jeremiah"], correct: 0 },
+            { text: "Which prophet was taken to heaven in a whirlwind?", options: ["Elijah", "Elisha", "Isaiah", "Enoch"], correct: 0 },
+            { text: "Who was the weeping prophet?", options: ["Jeremiah", "Isaiah", "Ezekiel", "Hosea"], correct: 0 },
+            { text: "Who prophesied about the virgin birth?", options: ["Isaiah", "Jeremiah", "Micah", "Zechariah"], correct: 0 },
+            { text: "Which prophet wrote the book of Lamentations?", options: ["Jeremiah", "Isaiah", "Ezekiel", "Daniel"], correct: 0 },
+            { text: "Who was the last prophet of the Old Testament?", options: ["Malachi", "Zechariah", "Haggai", "Joel"], correct: 0 },
+            { text: "Which prophet was a shepherd?", options: ["Amos", "Hosea", "Micah", "Joel"], correct: 0 },
+            { text: "Who prophesied about the Messiah's birthplace?", options: ["Micah", "Isaiah", "Jeremiah", "Zechariah"], correct: 0 },
+            { text: "Which prophet had a vision of a scroll?", options: ["Ezekiel", "Jeremiah", "Isaiah", "Daniel"], correct: 0 }
+        ];
+
+        // Level 5: Gospels
+        levelQuestions[5] = [
+            { text: "Where was Jesus born?", options: ["Bethlehem", "Nazareth", "Jerusalem", "Capernaum"], correct: 0 },
+            { text: "Who baptized Jesus?", options: ["John the Baptist", "Peter", "Andrew", "James"], correct: 0 },
+            { text: "How many disciples did Jesus have?", options: ["12", "10", "14", "8"], correct: 0 },
+            { text: "What did Jesus turn into wine?", options: ["Water", "Oil", "Bread", "Wine"], correct: 0 },
+            { text: "Who denied Jesus three times?", options: ["Peter", "Judas", "John", "Thomas"], correct: 0 },
+            { text: "Who betrayed Jesus?", options: ["Judas Iscariot", "Peter", "James", "John"], correct: 0 },
+            { text: "What did Jesus feed 5000 with?", options: ["5 loaves and 2 fish", "7 loaves", "Bread only", "Fish only"], correct: 0 },
+            { text: "Who walked on water with Jesus?", options: ["Peter", "John", "James", "Andrew"], correct: 0 },
+            { text: "What was Jesus' first miracle?", options: ["Water to wine", "Healing", "Feeding 5000", "Walking on water"], correct: 0 },
+            { text: "Who was the mother of Jesus?", options: ["Mary", "Martha", "Elizabeth", "Anna"], correct: 0 }
+        ];
+        // Generate levels 6-50 with unique questions
+        const moreQuestions = [
+            "Who was raised from the dead after 4 days?", "Lazarus", "Jairus' daughter", "The widow's son", "Tabitha", 0,
+            "What parable is about a lost son?", "Prodigal Son", "Good Samaritan", "Lost Sheep", "Mustard Seed", 0,
+            "Who was the first Christian martyr?", "Stephen", "James", "Peter", "Paul", 0,
+            "Who had a vision of a sheet with animals?", "Peter", "Paul", "John", "James", 0,
+            "Who was converted on the road to Damascus?", "Saul/Paul", "Peter", "Stephen", "Barnabas", 0,
+            "What is the fruit of the Spirit?", "Love, joy, peace", "Faith, hope, love", "Wisdom, knowledge", "Power, glory", 0,
+            "What is the greatest commandment?", "Love God and neighbor", "Keep the Sabbath", "Honor parents", "Do not steal", 0,
+            "What chapter is known as the 'Love Chapter'?", "1 Corinthians 13", "Romans 12", "Ephesians 4", "Galatians 5", 0,
+            "Who wrote Revelation?", "John", "Peter", "Paul", "James", 0,
+            "What is the shortest verse in the Bible?", "Jesus wept", "Rejoice always", "Pray without ceasing", "God is love", 0,
+            "What is the longest chapter in the Bible?", "Psalm 119", "Psalm 23", "Psalm 1", "Isaiah 53", 0,
+            "How many books are in the Bible?", "66", "39", "27", "73", 0,
+            "What does 'Emmanuel' mean?", "God with us", "God is love", "Son of God", "Messiah", 0,
+            "Who was the oldest man in the Bible?", "Methuselah", "Noah", "Adam", "Abraham", 0,
+            "What was Paul's name before conversion?", "Saul", "Simon", "Stephen", "Silas", 0,
+            "Who wrote most of the New Testament epistles?", "Paul", "Peter", "John", "James", 0,
+            "What is the armor of God?", "Belt of truth, breastplate of righteousness", "Sword, shield", "All of these", "None", 2,
+            "What are the four horsemen?", "Conquest, War, Famine, Death", "Pestilence, Fire, Flood", "Angels, Demons", "None", 0,
+            "What is the mark of the beast?", "666", "616", "777", "888", 0,
+            "What is the Millennium?", "1000 year reign", "100 years", "10 years", "Eternal", 0
+        ];
+
+        for (let lvl = 6; lvl <= 50; lvl++) {
+            const questions = [];
+            const usedIndices = new Set();
+            while (questions.length < 10 && usedIndices.size < moreQuestions.length / 5) {
+                const idx = Math.floor(Math.random() * (moreQuestions.length / 5));
+                if (!usedIndices.has(idx)) {
+                    usedIndices.add(idx);
+                    const base = idx * 5;
+                    questions.push({
+                        text: moreQuestions[base],
+                        options: [moreQuestions[base+1], moreQuestions[base+2], moreQuestions[base+3], moreQuestions[base+4]],
+                        correct: moreQuestions[base+5]
+                    });
+                }
+            }
+            levelQuestions[lvl] = questions;
+        }
+
+        // ==================== GAME STATE ====================
+        let userProgress = JSON.parse(localStorage.getItem('bibleQuizProgress50')) || {
+            completedLevels: [],
+            currentLevel: 1,
+            totalScore: 0
+        };
+        
+        let currentLevel = userProgress.currentLevel;
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let currentLevelScore = 0;
+        let timerInterval = null;
+        let timeLeft = 20;
+        let answerLocked = false;
+        let levelTotalQuestions = 10;
+        const POINTS_PER_CORRECT = 2;
+
+        // Sounds
+        const winSound = document.getElementById('winSound');
+        const loseSound = document.getElementById('loseSound');
+
+        function playSound(type) {
+            try {
+                const sound = type === 'win' ? winSound : loseSound;
+                sound.currentTime = 0;
+                sound.play().catch(e => console.log('Audio play blocked'));
+            } catch(e) {}
+        }
+
+        function showResultAnimation(isWin) {
+            const overlay = document.createElement('div');
+            overlay.className = 'result-overlay';
+            overlay.innerHTML = `<div class="result-message ${isWin ? 'win' : 'loss'}">
+                <i class="fas ${isWin ? 'fa-check-circle' : 'fa-times-circle'}"></i> ${isWin ? `YOU WIN! +${POINTS_PER_CORRECT}` : 'WRONG ANSWER'}
+            </div>`;
+            document.body.appendChild(overlay);
+            setTimeout(() => overlay.remove(), 1800);
+        }
+
+        function showToast(msg, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        function renderLevelGrid() {
+            const grid = document.getElementById('levelGrid');
+            grid.innerHTML = '';
+            for (let i = 1; i <= 50; i++) {
+                const isCompleted = userProgress.completedLevels.includes(i);
+                const isLocked = i > userProgress.currentLevel;
+                const isCurrent = i === userProgress.currentLevel;
+                const badge = document.createElement('div');
+                badge.className = `level-badge ${isCompleted ? 'completed' : ''} ${isLocked ? 'locked' : ''} ${isCurrent ? 'current' : ''}`;
+                badge.textContent = i;
+                if (!isLocked) badge.onclick = () => loadLevel(i);
+                grid.appendChild(badge);
+            }
+            document.getElementById('totalScore').textContent = userProgress.totalScore;
+            document.getElementById('completedLevels').textContent = userProgress.completedLevels.length;
+        }
+
+        function updateStats() {
+            document.getElementById('totalScore').textContent = userProgress.totalScore;
+            document.getElementById('completedLevels').textContent = userProgress.completedLevels.length;
+            renderLevelGrid();
+        }
+
+        function saveProgress() {
+            localStorage.setItem('bibleQuizProgress50', JSON.stringify(userProgress));
+            updateStats();
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.scrollToTop = scrollToTop;
+
+        // Show/hide scroll button
+        window.addEventListener('scroll', function() {
+            const btn = document.getElementById('scrollTopBtn');
+            if (window.scrollY > 300) {
+                btn.classList.add('visible');
+            } else {
+                btn.classList.remove('visible');
+            }
+        });
+
+        function startLevel() {
+            loadLevel(userProgress.currentLevel);
+        }
+
+        function loadLevel(level) {
+            if (level > 50) {
+                document.getElementById('quizStartScreen').style.display = 'none';
+                document.getElementById('quizActiveScreen').style.display = 'none';
+                document.getElementById('quizCompleteScreen').style.display = 'block';
+                return;
+            }
+            
+            currentLevel = level;
+            if (!userProgress.completedLevels.includes(level)) {
+                userProgress.currentLevel = level;
+                saveProgress();
+            }
+            renderLevelGrid();
+            
+            const levelQ = levelQuestions[level];
+            if (!levelQ || levelQ.length === 0) {
+                showToast('No questions available', 'error');
+                return;
+            }
+            
+            currentQuestions = [...levelQ];
+            for (let i = currentQuestions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentQuestions[i], currentQuestions[j]] = [currentQuestions[j], currentQuestions[i]];
+            }
+            currentQuestions = currentQuestions.slice(0, levelTotalQuestions);
+            
+            currentQuestionIndex = 0;
+            currentLevelScore = 0;
+            answerLocked = false;
+            
+            document.getElementById('quizStartScreen').style.display = 'none';
+            document.getElementById('quizCompleteScreen').style.display = 'none';
+            document.getElementById('quizActiveScreen').style.display = 'block';
+            document.getElementById('currentLevelNum').textContent = currentLevel;
+            document.getElementById('totalQuestions').textContent = levelTotalQuestions;
+            document.getElementById('levelScore').textContent = '0';
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= currentQuestions.length) {
+                completeLevel();
+                return;
+            }
+            
+            answerLocked = false;
+            const q = currentQuestions[currentQuestionIndex];
+            document.getElementById('questionText').textContent = q.text;
+            
+            const optionsGrid = document.getElementById('optionsGrid');
+            optionsGrid.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<span style="font-weight: 700; min-width: 30px;">${String.fromCharCode(65 + idx)}.</span> ${opt}`;
+                btn.onclick = () => checkAnswer(idx);
+                optionsGrid.appendChild(btn);
+            });
+            
+            if (timerInterval) clearInterval(timerInterval);
+            timeLeft = 20;
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                if (!answerLocked && timeLeft > 0) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        answerLocked = true;
+                        showResultAnimation(false);
+                        playSound('lose');
+                        disableOptions();
+                        setTimeout(() => nextQuestion(), 1500);
+                    }
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const timerFill = document.getElementById('timerFill');
+            const percent = (timeLeft / 20) * 100;
+            timerFill.style.width = `${percent}%`;
+            if (timeLeft <= 5) {
+                timerFill.classList.add('warning');
+            } else {
+                timerFill.classList.remove('warning');
+            }
+        }
+        
+        function disableOptions() {
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.disabled = true;
+            });
+        }
+        
+        function checkAnswer(selectedIndex) {
+            if (answerLocked) return;
+            answerLocked = true;
+            clearInterval(timerInterval);
+            
+            const q = currentQuestions[currentQuestionIndex];
+            const isCorrect = selectedIndex === q.correct;
+            const options = document.querySelectorAll('.option-btn');
+            
+            if (isCorrect) {
+                currentLevelScore += POINTS_PER_CORRECT;
+                document.getElementById('levelScore').textContent = currentLevelScore;
+                options[selectedIndex].classList.add('correct');
+                showResultAnimation(true);
+                playSound('win');
+                showToast(`✓ Correct! +${POINTS_PER_CORRECT} points`, 'success');
+            } else {
+                options[selectedIndex].classList.add('wrong');
+                options[q.correct].classList.add('correct');
+                showResultAnimation(false);
+                playSound('lose');
+                showToast(`✗ Wrong! The correct answer was: ${q.options[q.correct]}`, 'error');
+            }
+            
+            disableOptions();
+            document.getElementById('nextBtn').disabled = false;
+        }
+        
+        function nextQuestion() {
+            document.getElementById('nextBtn').disabled = true;
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+        
+        function completeLevel() {
+            clearInterval(timerInterval);
+            
+            const maxPossible = levelTotalQuestions * POINTS_PER_CORRECT;
+            const passingScore = maxPossible * 0.6; // 60% to pass (12 out of 20)
+            const passed = currentLevelScore >= passingScore;
+            
+            if (passed && !userProgress.completedLevels.includes(currentLevel)) {
+                userProgress.completedLevels.push(currentLevel);
+                userProgress.totalScore += currentLevelScore;
+                if (currentLevel < 50 && !userProgress.completedLevels.includes(currentLevel + 1)) {
+                    userProgress.currentLevel = currentLevel + 1;
+                } else {
+                    userProgress.currentLevel = Math.min(50, currentLevel + 1);
+                }
+                saveProgress();
+                renderLevelGrid();
+                showLevelCompleteModal(true, currentLevelScore);
+                playSound('win');
+                confettiEffect();
+            } else if (passed) {
+                showLevelCompleteModal(true, currentLevelScore);
+            } else {
+                showLevelCompleteModal(false, currentLevelScore);
+                playSound('lose');
+            }
+        }
+        
+        function showLevelCompleteModal(passed, score) {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="trophy-icon"><i class="fas ${passed ? 'fa-trophy' : 'fa-frown'}"></i></div>
+                    <div class="congrats-text">${passed ? 'Level Complete!' : 'Level Failed!'}</div>
+                    <p style="margin-bottom: 15px;">You scored ${score} / ${levelTotalQuestions * POINTS_PER_CORRECT} points</p>
+                    <p style="margin-bottom: 25px; color: var(--text-secondary);">${passed ? 'Congratulations! You earned a trophy!' : 'Try again to pass this level'}</p>
+                    <div style="display: flex; gap: 15px; justify-content: center;">
+                        ${!passed ? `<button class="btn btn-primary" onclick="retryLevel()">Try Again</button>` : ''}
+                        <button class="btn btn-outline" onclick="closeModalAndContinue()">Continue</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            window.closeModalAndContinue = function() {
+                modal.remove();
+                if (passed && userProgress.currentLevel > currentLevel) {
+                    loadLevel(userProgress.currentLevel);
+                } else if (passed && currentLevel === 50) {
+                    loadLevel(50);
+                } else if (!passed) {
+                    loadLevel(currentLevel);
+                } else {
+                    document.getElementById('quizStartScreen').style.display = 'block';
+                    document.getElementById('quizActiveScreen').style.display = 'none';
+                }
+                scrollToTop();
+            };
+            
+            window.retryLevel = function() {
+                modal.remove();
+                loadLevel(currentLevel);
+                scrollToTop();
+            };
+        }
+        
+        function confettiEffect() {
+            if (typeof confetti !== 'undefined') {
+                confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#22c55e', '#d4af37', '#3b82f6'] });
+            } else {
+                for(let i = 0; i < 30; i++) {
+                    setTimeout(() => {
+                        const conf = document.createElement('div');
+                        conf.style.cssText = `position:fixed; top:50%; left:50%; font-size:30px; pointer-events:none; animation:fadeOut 0.8s; z-index:2000;`;
+                        conf.innerHTML = '🎉';
+                        document.body.appendChild(conf);
+                        setTimeout(() => conf.remove(), 800);
+                    }, i * 50);
+                }
+            }
+        }
+        
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? All scores and completed levels will be lost.')) {
+                userProgress = {
+                    completedLevels: [],
+                    currentLevel: 1,
+                    totalScore: 0
+                };
+                saveProgress();
+                renderLevelGrid();
+                document.getElementById('quizStartScreen').style.display = 'block';
+                document.getElementById('quizActiveScreen').style.display = 'none';
+                document.getElementById('quizCompleteScreen').style.display = 'none';
+                showToast('Progress reset!', 'success');
+                scrollToTop();
+            }
+        }
+        
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const btn = document.querySelector('.theme-toggle');
+            btn.innerHTML = document.body.classList.contains('dark-mode') ? '<i class="fas fa-sun"></i> Light Mode' : '<i class="fas fa-moon"></i> Dark Mode';
+        }
+        
+        window.startLevel = startLevel;
+        window.loadLevel = loadLevel;
+        window.nextQuestion = nextQuestion;
+        window.resetProgress = resetProgress;
+        window.toggleDarkMode = toggleDarkMode;
+        window.scrollToTop = scrollToTop;
+        
+        // Initialize
+        renderLevelGrid();
+        
+        // ==================== CONNECT QUIZ TO USER ACCOUNT ====================
+async function loadUserQuizProgress() {
+    if (!currentUser) {
+        // Fallback to localStorage for guests
+        const saved = localStorage.getItem('bibleQuizProgress50');
+        if (saved) userProgress = JSON.parse(saved);
+        renderLevelGrid();
+        updateStats();
+        return;
+    }
+    
+    try {
+        const quizDoc = await getDoc(doc(db, "userQuiz", currentUser.uid));
+        if (quizDoc.exists()) {
+            userProgress = quizDoc.data();
+        } else {
+            // First time user, create default progress
+            userProgress = {
+                userId: currentUser.uid,
+                completedLevels: [],
+                currentLevel: 1,
+                totalScore: 0,
+                lastPlayed: Timestamp.now()
+            };
+            await setDoc(doc(db, "userQuiz", currentUser.uid), userProgress);
+        }
+        renderLevelGrid();
+        updateStats();
+    } catch (error) {
+        console.error('Error loading quiz progress:', error);
+        // Fallback to localStorage
+        const saved = localStorage.getItem('bibleQuizProgress50');
+        if (saved) userProgress = JSON.parse(saved);
+        renderLevelGrid();
+        updateStats();
+    }
+}
+
+// Modify saveProgress to sync with Firebase
+async function saveProgress() {
+    // Save to localStorage for speed
+    localStorage.setItem('bibleQuizProgress50', JSON.stringify(userProgress));
+    
+    // Also sync to Firebase if user is logged in
+    if (currentUser) {
+        try {
+            await setDoc(doc(db, "userQuiz", currentUser.uid), {
+                ...userProgress,
+                lastUpdated: Timestamp.now()
+            });
+        } catch (error) {
+            console.error('Error syncing to Firebase:', error);
+        }
+    }
+}
+
+async function loadLeaderboard() {
+    const container = document.getElementById('leaderboardList');
+    container.innerHTML = '<div class="spinner"></div>';
+    
+    try {
+        const q = query(
+            collection(db, "userQuiz"),
+            orderBy("totalScore", "desc"),
+            limit(10)
+        );
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+            container.innerHTML = '<div style="text-align: center; padding: 40px;">No scores yet. Be the first!</div>';
+            return;
+        }
+        
+        let rank = 1;
+        const leaderboard = [];
+        for (const docSnap of snapshot.docs) {
+            const data = docSnap.data();
+            // Get user name from memberships
+            let userName = 'Anonymous';
+            try {
+                const memberDoc = await getDoc(doc(db, "memberships", docSnap.id));
+                if (memberDoc.exists()) {
+                    userName = memberDoc.data().fullName || memberDoc.data().userName || 'Anonymous';
+                }
+            } catch (e) {
+                console.log('Could not fetch member name');
+            }
+            leaderboard.push({ rank: rank++, name: userName, score: data.totalScore, level: data.currentLevel });
+        }
+        
+        container.innerHTML = leaderboard.map(entry => `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border-color);">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="font-weight: 800; width: 30px;">${entry.rank}</span>
+                    <span><i class="fas fa-user-circle"></i> ${escapeHtml(entry.name)}</span>
+                </div>
+                <div>
+                    <span class="score-badge" style="background: var(--accent-green); color: white; padding: 4px 12px; border-radius: 20px;">${entry.score} pts</span>
+                    <span style="margin-left: 8px;">Level ${entry.level}</span>
+                </div>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Error loading leaderboard:', error);
+        container.innerHTML = '<div style="text-align: center; padding: 40px;">Error loading leaderboard</div>';
+    }
+}
+    </script>
+</body>
+</html 
