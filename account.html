@@ -539,37 +539,85 @@
             </form>
         </div>
 
-        <!-- Profile Section -->
-        <div id="profileSection" class="auth-card" style="display: none;">
-            <div class="profile-photo-container">
-                <img id="profilePhoto" class="profile-photo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%2322c55e' stroke-width='1'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'%3E%3C/path%3E%3Ccircle cx='12' cy='7' r='4'%3E%3C/circle%3E%3C/svg%3E">
-                <div class="photo-upload-btn" onclick="openCloudinaryUpload()"><i class="fas fa-camera"></i> Change Photo</div>
+        <!-- Profile Section with Edit Profile (shown after login) -->
+<div id="profileSection" class="auth-card" style="display: none; max-width: 700px;">
+    <div class="profile-photo-container">
+        <img id="profilePhoto" class="profile-photo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 24 24' fill='none' stroke='%2322c55e' stroke-width='1'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'%3E%3C/path%3E%3Ccircle cx='12' cy='7' r='4'%3E%3C/circle%3E%3C/svg%3E">
+        <div class="photo-upload-btn" onclick="openCloudinaryUpload()"><i class="fas fa-camera"></i> Change Photo</div>
+    </div>
+    
+    <!-- View Mode -->
+    <div id="profileViewMode">
+        <h2 id="profileName">User Name</h2>
+        <p id="profileEmail" style="color: var(--text-secondary);"></p>
+        
+        <div class="profile-stats">
+            <div class="stat-box">
+                <div class="stat-number" id="profilePrayers">0</div>
+                <div class="stat-label">Prayers</div>
             </div>
-            <h2 id="profileName">User Name</h2>
-            <p id="profileEmail" style="color: var(--text-secondary);"></p>
-            <p id="profileMemberId" style="color: var(--accent-gold); font-size: 0.85rem; margin-top: 5px;"></p>
-            
-            <div class="profile-stats">
-                <div class="stat-box">
-                    <div class="stat-number" id="profilePrayers">0</div>
-                    <div class="stat-label">Prayers</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number" id="profileJoined">0</div>
-                    <div class="stat-label">Days Active</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number" id="profileWallet">E0.00</div>
-                    <div class="stat-label">Wallet Balance</div>
-                </div>
+            <div class="stat-box">
+                <div class="stat-number" id="profileJoined">0</div>
+                <div class="stat-label">Days Active</div>
             </div>
-
-            <div style="display: flex; gap: 12px; margin-top: 20px;">
-                <button class="btn btn-primary" style="flex: 1;" onclick="window.location.href='membership.html'"><i class="fas fa-edit"></i> Complete Profile</button>
-                <button class="btn btn-outline" style="flex: 1;" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            <div class="stat-box">
+                <div class="stat-number" id="profileWallet">E0.00</div>
+                <div class="stat-label">Wallet Balance</div>
             </div>
         </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <button class="btn btn-primary" style="flex: 1;" onclick="toggleEditMode()"><i class="fas fa-edit"></i> Edit Profile</button>
+            <button class="btn btn-outline" style="flex: 1;" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
     </div>
+    
+    <!-- Edit Mode -->
+    <div id="profileEditMode" style="display: none;">
+        <h2><i class="fas fa-user-edit"></i> Edit Profile</h2>
+        
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" id="editFullName" placeholder="Full Name">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="editPhone" placeholder="Phone number">
+            </div>
+            <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" id="editDob">
+            </div>
+            <div class="form-group">
+                <label>Gender</label>
+                <select id="editGender">
+                    <option value="">Select</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group full-width">
+                <label>Address</label>
+                <input type="text" id="editAddress" placeholder="Your address">
+            </div>
+            <div class="form-group">
+                <label>Date Baptized</label>
+                <input type="text" id="editBaptismDate" placeholder="e.g., 2023">
+            </div>
+            <div class="form-group">
+                <label>Born Again Date</label>
+                <input type="text" id="editBornAgainDate" placeholder="e.g., 2022">
+            </div>
+        </div>
+        
+        <div style="display: flex; gap: 12px; margin-top: 20px;">
+            <button class="btn btn-primary" style="flex: 1;" onclick="saveProfileEdit()"><i class="fas fa-save"></i> Save Changes</button>
+            <button class="btn btn-outline" style="flex: 1;" onclick="toggleEditMode()"><i class="fas fa-times"></i> Cancel</button>
+        </div>
+    </div>
+</div>
 
     <div class="toast-container" id="toastContainer"></div>
 
@@ -731,6 +779,101 @@
                 }
             };
         }
+
+// ==================== EDIT PROFILE FUNCTIONS ====================
+let profileData = {};
+
+function toggleEditMode() {
+    const viewMode = document.getElementById('profileViewMode');
+    const editMode = document.getElementById('profileEditMode');
+    
+    if (viewMode.style.display !== 'none') {
+        // Switching to edit mode - load current data
+        loadProfileDataToEdit();
+        viewMode.style.display = 'none';
+        editMode.style.display = 'block';
+    } else {
+        // Switching back to view mode
+        viewMode.style.display = 'block';
+        editMode.style.display = 'none';
+    }
+}
+
+async function loadProfileDataToEdit() {
+    if (!currentUser) return;
+    
+    const memberRef = doc(db, "memberships", currentUser.uid);
+    const memberSnap = await getDoc(memberRef);
+    const data = memberSnap.data() || {};
+    
+    document.getElementById('editFullName').value = data.fullName || '';
+    document.getElementById('editPhone').value = data.phone || '';
+    document.getElementById('editDob').value = data.dateOfBirth || '';
+    document.getElementById('editGender').value = data.gender || '';
+    document.getElementById('editAddress').value = data.address || '';
+    document.getElementById('editBaptismDate').value = data.baptismDate || '';
+    document.getElementById('editBornAgainDate').value = data.bornAgainDate || '';
+}
+
+async function saveProfileEdit() {
+    if (!currentUser) {
+        showToast('Please login first', 'error');
+        return;
+    }
+    
+    const updateData = {
+        fullName: document.getElementById('editFullName').value,
+        phone: document.getElementById('editPhone').value,
+        dateOfBirth: document.getElementById('editDob').value,
+        gender: document.getElementById('editGender').value,
+        address: document.getElementById('editAddress').value,
+        baptismDate: document.getElementById('editBaptismDate').value,
+        bornAgainDate: document.getElementById('editBornAgainDate').value,
+        updatedAt: serverTimestamp()
+    };
+    
+    // Validate required fields
+    if (!updateData.fullName) {
+        showToast('Full name is required', 'error');
+        return;
+    }
+    
+    const saveBtn = document.querySelector('#profileEditMode .btn-primary');
+    const originalText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    saveBtn.disabled = true;
+    
+    try {
+        await updateDoc(doc(db, "memberships", currentUser.uid), updateData);
+        
+        // Update display name in Firebase Auth
+        await updateProfile(currentUser, {
+            displayName: updateData.fullName
+        });
+        
+        // Update localStorage
+        const storedUser = localStorage.getItem('prayerDomeUser');
+        if (storedUser) {
+            const userData = JSON.parse(storedUser);
+            userData.name = updateData.fullName;
+            localStorage.setItem('prayerDomeUser', JSON.stringify(userData));
+        }
+        
+        showToast('Profile updated successfully!', 'success');
+        confetti({ particleCount: 80, spread: 60 });
+        
+        // Refresh the profile display
+        await loadUserProfile();
+        toggleEditMode(); // Switch back to view mode
+        
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        showToast('Error: ' + error.message, 'error');
+    } finally {
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+    }
+}
         
         // ==================== REGISTRATION ====================
         async function registerUser() {
@@ -811,42 +954,41 @@
                     if (cb.checked) interests.push(cb.value);
                 });
 
-                // Generate Membership ID
-                const membersSnapshot = await getDocs(collection(db, "memberships"));
-                const currentYear = new Date().getFullYear();
-                let maxNumber = 0;
-                membersSnapshot.forEach(doc => {
-                    const data = doc.data();
-                    const memberId = data.membershipId;
-                    if (memberId && memberId.startsWith(`PD${currentYear}`)) {
-                        const num = parseInt(memberId.slice(-4));
-                        if (num > maxNumber) maxNumber = num;
-                    }
-                });
-                const membershipId = `PD${currentYear}${String(maxNumber + 1).padStart(4, '0')}`;
-
-                // Save to Firestore Memberships
-                await setDoc(doc(db, "memberships", user.uid), {
-                    userId: user.uid,
-                    membershipId: membershipId,
-                    fullName: fullName,
-                    email: email,
-                    phone: fullPhone,
-                    country: country,
-                    dateOfBirth: dob,
-                    gender: gender,
-                    address: address,
-                    photoURL: photoUrl || '',
-                    securityQuestion: securityQuestion,
-                    securityAnswer: securityAnswer,
-                    referralSource: document.getElementById('regReferral').value,
-                    interests: interests,
-                    role: 'member',
-                    emailVerified: false,
-                    createdAt: serverTimestamp(),
-                    lastLogin: serverTimestamp()
-                });
-
+                // Generate Membership ID - DELETE OR COMMENT OUT THIS SECTION
+// const membersSnapshot = await getDocs(collection(db, "memberships"));
+// const currentYear = new Date().getFullYear();
+// let maxNumber = 0;
+// membersSnapshot.forEach(doc => {
+//     const data = doc.data();
+//     const memberId = data.membershipId;
+//     if (memberId && memberId.startsWith(`PD${currentYear}`)) {
+//         const num = parseInt(memberId.slice(-4));
+//         if (num > maxNumber) maxNumber = num;
+//     }
+// });
+// const membershipId = `PD${currentYear}${String(maxNumber + 1).padStart(4, '0')}`;
+                
+                // Save to Firestore Memberships (without membershipId)
+await setDoc(doc(db, "memberships", user.uid), {
+    userId: user.uid,
+    fullName: fullName,
+    email: email,
+    phone: fullPhone,
+    country: country,
+    dateOfBirth: dob,
+    gender: gender,
+    address: address,
+    photoURL: photoUrl || '',
+    securityQuestion: securityQuestion,
+    securityAnswer: securityAnswer,
+    referralSource: document.getElementById('regReferral').value,
+    interests: interests,
+    role: 'member',
+    emailVerified: false,
+    createdAt: serverTimestamp(),
+    lastLogin: serverTimestamp()
+    // membershipId REMOVED
+});
                 // Create Wallet
                 await setDoc(doc(db, "wallets", user.uid), {
                     userId: user.uid,
@@ -867,16 +1009,14 @@
                     lastPlayed: serverTimestamp()
                 });
 
-                showToast(`✅ Welcome ${fullName}! Your Member ID: ${membershipId}`, 'success');
-                confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } });
+                showToast(`✅ Welcome ${fullName}! Your account has been created.`, 'success');
                 
                 localStorage.setItem('prayerDomeUser', JSON.stringify({
-                    uid: user.uid,
-                    email: email,
-                    name: fullName,
-                    membershipId: membershipId,
-                    loginTime: Date.now()
-                }));
+    uid: user.uid,
+    email: email,
+    name: fullName,
+    loginTime: Date.now()
+}));
                 
                 setTimeout(() => {
                     window.location.href = 'user.html';
@@ -970,12 +1110,11 @@
                 const memberData = memberDoc.data();
                 
                 localStorage.setItem('prayerDomeUser', JSON.stringify({
-                    uid: user.uid,
-                    email: user.email,
-                    name: memberData?.fullName || user.displayName || email.split('@')[0],
-                    membershipId: memberData?.membershipId || 'Pending',
-                    loginTime: Date.now()
-                }));
+    uid: user.uid,
+    email: user.email,
+    name: memberData?.fullName || user.displayName || email.split('@')[0],
+    loginTime: Date.now()
+}));
                 
                 showToast('Login successful! Redirecting...', 'success');
                 setTimeout(() => {
@@ -1003,101 +1142,104 @@
             }
         }
         
-        // ==================== GOOGLE SIGN IN ====================
-        async function signInWithGoogle() {
-            const provider = new GoogleAuthProvider();
-            try {
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-                
-                const memberRef = doc(db, "memberships", user.uid);
-                const memberSnap = await getDoc(memberRef);
-                
-                if (!memberSnap.exists()) {
-                    const membersSnapshot = await getDocs(collection(db, "memberships"));
-                    const currentYear = new Date().getFullYear();
-                    let maxNumber = 0;
-                    membersSnapshot.forEach(doc => {
-                        const data = doc.data();
-                        const memberId = data.membershipId;
-                        if (memberId && memberId.startsWith(`PD${currentYear}`)) {
-                            const num = parseInt(memberId.slice(-4));
-                            if (num > maxNumber) maxNumber = num;
-                        }
-                    });
-                    const membershipId = `PD${currentYear}${String(maxNumber + 1).padStart(4, '0')}`;
-                    
-                    await setDoc(memberRef, {
-                        userId: user.uid,
-                        membershipId: membershipId,
-                        fullName: user.displayName || 'Google User',
-                        email: user.email,
-                        photoURL: user.photoURL || '',
-                        role: 'member',
-                        createdAt: serverTimestamp(),
-                        lastLogin: serverTimestamp()
-                    });
-                    
-                    await setDoc(doc(db, "wallets", user.uid), {
-                        userId: user.uid,
-                        balance: 0,
-                        currency: "SZL",
-                        createdAt: serverTimestamp()
-                    });
-                } else {
-                    await updateDoc(memberRef, { lastLogin: serverTimestamp() });
-                }
-                
-                const memberData = (await getDoc(memberRef)).data();
-                localStorage.setItem('prayerDomeUser', JSON.stringify({
-                    uid: user.uid,
-                    email: user.email,
-                    name: memberData?.fullName || user.displayName,
-                    membershipId: memberData?.membershipId,
-                    loginTime: Date.now()
-                }));
-                
-                showToast('Login successful!', 'success');
-                window.location.href = 'user.html';
-                
-            } catch (error) {
-                console.error('Google login error:', error);
-                showToast(error.message, 'error');
-            }
+// ==================== GOOGLE SIGN IN ====================
+async function signInWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        
+        const memberRef = doc(db, "memberships", user.uid);
+        const memberSnap = await getDoc(memberRef);
+        
+        if (!memberSnap.exists()) {
+            // Create new member without membership ID
+            await setDoc(memberRef, {
+                userId: user.uid,
+                fullName: user.displayName || 'Google User',
+                email: user.email,
+                photoURL: user.photoURL || '',
+                role: 'member',
+                createdAt: serverTimestamp(),
+                lastLogin: serverTimestamp()
+            });
+            
+            await setDoc(doc(db, "wallets", user.uid), {
+                userId: user.uid,
+                balance: 0,
+                currency: "SZL",
+                createdAt: serverTimestamp()
+            });
+        } else {
+            await updateDoc(memberRef, { lastLogin: serverTimestamp() });
         }
+        
+        const memberData = (await getDoc(memberRef)).data();
+        localStorage.setItem('prayerDomeUser', JSON.stringify({
+            uid: user.uid,
+            email: user.email,
+            name: memberData?.fullName || user.displayName,
+            loginTime: Date.now()
+        }));
+        
+        showToast('Login successful!', 'success');
+        window.location.href = 'user.html';
+        
+    } catch (error) {
+        console.error('Google login error:', error);
+        showToast(error.message, 'error');
+    }
+}
 
         async function loadUserProfile() {
-            if (!currentUser) return;
-            
-            const memberRef = doc(db, "memberships", currentUser.uid);
-            const memberSnap = await getDoc(memberRef);
-            const memberData = memberSnap.data() || {};
-            
-            const profilePhoto = document.getElementById('profilePhoto');
-            if (profilePhoto) {
-                profilePhoto.src = currentUser.photoURL || memberData.photoURL || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'120\' height=\'120\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%2322c55e\' stroke-width=\'1\'%3E%3Cpath d=\'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\'%3E%3C/path%3E%3Ccircle cx=\'12\' cy=\'7\' r=\'4\'%3E%3C/circle%3E%3C/svg%3E';
-            }
-            
-            document.getElementById('profileName').textContent = currentUser.displayName || memberData.fullName || currentUser.email;
-            document.getElementById('profileEmail').textContent = currentUser.email;
-            document.getElementById('profileMemberId').textContent = `Member ID: ${memberData.membershipId || 'Pending'}`;
-            
-            const joinedDate = memberData.createdAt?.toDate() || new Date();
-            const daysActive = Math.floor((new Date() - joinedDate) / (1000 * 60 * 60 * 24));
-            document.getElementById('profileJoined').textContent = daysActive || 1;
-            
-            const prayersQuery = query(collection(db, "prayers"), where("userId", "==", currentUser.uid));
-            const prayersSnap = await getDocs(prayersQuery);
-            document.getElementById('profilePrayers').textContent = prayersSnap.size;
-            
-            const walletDoc = await getDoc(doc(db, "wallets", currentUser.uid));
-            const walletBalance = walletDoc.exists() ? walletDoc.data().balance : 0;
-            document.getElementById('profileWallet').textContent = `E${walletBalance.toFixed(2)}`;
-            
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('registerForm').style.display = 'none';
-            document.getElementById('profileSection').style.display = 'block';
+    if (!currentUser) return;
+    
+    const memberRef = doc(db, "memberships", currentUser.uid);
+    const memberSnap = await getDoc(memberRef);
+    const memberData = memberSnap.data() || {};
+    profileData = memberData;
+    
+    const profilePhoto = document.getElementById('profilePhoto');
+    if (profilePhoto) {
+        // Only show photo if user uploaded one
+        if (memberData.photoURL && memberData.photoURL !== '') {
+            profilePhoto.src = memberData.photoURL;
+        } else {
+            // Show default placeholder (no image, just icon)
+            profilePhoto.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="%2322c55e" stroke-width="1"%3E%3Cpath d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"%3E%3C/path%3E%3Ccircle cx="12" cy="7" r="4"%3E%3C/circle%3E%3C/svg%3E';
         }
+    }
+    
+    // Show name only if exists
+    const displayName = memberData.fullName || currentUser.displayName;
+    if (displayName) {
+        document.getElementById('profileName').textContent = displayName;
+    } else {
+        document.getElementById('profileName').textContent = 'User';
+    }
+    
+    document.getElementById('profileEmail').textContent = currentUser.email;
+    
+    const joinedDate = memberData.createdAt?.toDate() || new Date();
+    const daysActive = Math.floor((new Date() - joinedDate) / (1000 * 60 * 60 * 24));
+    document.getElementById('profileJoined').textContent = daysActive || 1;
+    
+    const prayersQuery = query(collection(db, "prayers"), where("userId", "==", currentUser.uid));
+    const prayersSnap = await getDocs(prayersQuery);
+    document.getElementById('profilePrayers').textContent = prayersSnap.size;
+    
+    const walletDoc = await getDoc(doc(db, "wallets", currentUser.uid));
+    const walletBalance = walletDoc.exists() ? walletDoc.data().balance : 0;
+    document.getElementById('profileWallet').textContent = `E${walletBalance.toFixed(2)}`;
+    
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('profileSection').style.display = 'block';
+    
+    // Reset to view mode
+    document.getElementById('profileViewMode').style.display = 'block';
+    document.getElementById('profileEditMode').style.display = 'none';
+}
 
         function logoutUser() {
             signOut(auth);
@@ -1143,14 +1285,16 @@
         populateCountryDropdowns();
         
         // Expose functions globally
-        window.registerUser = registerUser;
-        window.loginUser = loginUser;
-        window.signInWithGoogle = signInWithGoogle;
-        window.logoutUser = logoutUser;
-        window.showAuthForm = showAuthForm;
-        window.showForgotPasswordModal = showForgotPasswordModal;
-        window.toggleDarkMode = toggleDarkMode;
-        window.openCloudinaryUpload = openCloudinaryUpload;
+window.registerUser = registerUser;
+window.loginUser = loginUser;
+window.signInWithGoogle = signInWithGoogle;
+window.logoutUser = logoutUser;
+window.showAuthForm = showAuthForm;
+window.showForgotPasswordModal = showForgotPasswordModal;
+window.toggleDarkMode = toggleDarkMode;
+window.openCloudinaryUpload = openCloudinaryUpload;
+window.toggleEditMode = toggleEditMode;
+window.saveProfileEdit = saveProfileEdit;
     </script>
 </body>
 </html>

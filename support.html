@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Prayer Dome | Community Support Program</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+  <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --accent-green: #22c55e;
+      --accent-gold: #d4af37;
+      --accent-blue: #3b82f6;
+      --accent-red: #ef4444;
+      --accent-purple: #8b5cf6;
+      --accent-orange: #f97316;
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #334155;
+      --border-color: #e2e8f0;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.2);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: all 0.3s;
+    }
+
+    body.dark-mode {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #1e293b;
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --border-color: #334155;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      background: var(--bg-secondary);
+      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      overflow-x: auto;
+      border-bottom: 2px solid var(--border-color);
+      box-shadow: var(--shadow);
+    }
+
+    .nav-tab {
+      padding: 12px 24px;
+      border: none;
+      background: transparent;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 40px;
+      transition: all 0.3s;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .nav-tab.active {
+      background: linear-gradient(135deg, var(--accent-green), #16a34a);
+      color: white;
+      box-shadow: 0 4px 12px rgba(34,197,94,0.3);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: 28px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      transition: all 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero-slider {
+      position: relative;
+      border-radius: 32px;
+      overflow: hidden;
+      margin-bottom: 32px;
+      height: 400px;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    .slide-content {
+      background: rgba(0,0,0,0.5);
+      padding: 40px;
+      border-radius: 32px;
+      max-width: 80%;
+    }
+
+    .slide-content h1 {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    .plans-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 20px;
+    }
+
+    .plan-card {
+      background: var(--bg-card);
+      border-radius: 24px;
+      padding: 0;
+      border: 1px solid var(--border-color);
+      transition: all 0.4s;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .plan-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--accent-green);
+    }
+
+    .plan-image {
+      height: 180px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .plan-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+
+    .plan-card:hover .plan-image img {
+      transform: scale(1.1);
+    }
+
+    .plan-content {
+      padding: 20px;
+    }
+
+    .plan-amount {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent-green);
+      margin: 10px 0;
+    }
+
+    .wallet-card {
+      background: linear-gradient(135deg, var(--accent-green), #166534);
+      color: white;
+    }
+
+    .wallet-balance {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .wallet-balance .amount {
+      font-size: 3rem;
+      font-weight: 800;
+      margin: 10px 0;
+    }
+
+    .interest-info {
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 12px;
+      margin-top: 15px;
+    }
+
+    .btn {
+      padding: 10px 15px;
+      border-radius: 20px;
+      border: none;
+      font-weight: 300;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-green), #16a34a);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(34,197,94,0.4);
+    }
+
+    .btn-secondary {
+      background: var(--bg-primary);
+      border: 2px solid var(--accent-green);
+      color: var(--accent-green);
+    }
+
+    .btn-secondary:hover {
+      background: var(--accent-green);
+      color: white;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      border-radius: 32px;
+      padding: 32px;
+      max-width: 550px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-content input, .modal-content select, .modal-content textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid var(--border-color);
+      border-radius: 16px;
+      background: var(--bg-primary);
+    }
+
+    .upload-area {
+      border: 2px dashed var(--border-color);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 15px;
+    }
+
+    .upload-area:hover {
+      border-color: var(--accent-green);
+      background: rgba(34,197,94,0.05);
+    }
+
+    .uploaded-file {
+      background: rgba(34,197,94,0.1);
+      padding: 10px;
+      border-radius: 12px;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1100;
+    }
+
+    .toast {
+      background: var(--bg-card);
+      padding: 12px 24px;
+      border-radius: 40px;
+      margin-bottom: 10px;
+      box-shadow: var(--shadow-lg);
+      border-left: 5px solid var(--accent-green);
+      animation: slideIn 0.3s ease;
+    }
+
+    .toast.error {
+      border-left-color: var(--accent-red);
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(4px);
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid var(--border-color);
+      border-top-color: var(--accent-green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--accent-green);
+    }
+
+    .document-section {
+      background: var(--bg-primary);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .document-section h4 {
+      color: var(--accent-gold);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .moving-words-container {
+      background: rgba(0, 0, 0, 0.25);
+      padding: 12px 20px;
+      border-radius: 60px;
+      backdrop-filter: blur(8px);
+      flex: 1;
+      min-width: 280px;
+      overflow: hidden;
+    }
+
+    .moving-words {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      animation: scrollWords 20s linear infinite;
+      white-space: nowrap;
+    }
+
+    .moving-word-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 20px;
+      font-weight: 800;
+      color: white;
+      padding: 0 20px;
+    }
+
+    .moving-word-item i {
+      font-size: 28px;
+      color: var(--accent-gold);
+    }
+
+    @keyframes scrollWords {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .moving-words-container:hover .moving-words {
+      animation-play-state: paused;
+    }
+
+    .back-button {
+      background: white;
+      color: var(--accent-green);
+      border: none;
+      padding: 12px 28px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      transform: translateX(-3px);
+      background: var(--accent-gold);
+      color: white;
+    }
+
+    .support-footer {
+      background: var(--bg-secondary);
+      margin-top: 60px;
+      border-top: 2px solid var(--border-color);
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 50px 30px 30px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer-section h3 {
+      color: var(--accent-green);
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+
+    .footer-section p {
+      margin: 12px 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .transaction-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .transaction-positive {
+      color: var(--accent-green);
+    }
+
+    .transaction-negative {
+      color: var(--accent-red);
+    }
+
+    @media (max-width: 768px) {
+      .hero-slider { height: 300px; }
+      .slide-content h1 { font-size: 1.8rem; }
+      .plans-grid { grid-template-columns: 1fr; }
+      .nav-tabs { padding: 8px 12px; }
+      .nav-tab { padding: 8px 16px; font-size: 14px; }
+      .moving-word-item { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div style="background: linear-gradient(135deg, var(--accent-green), #166534); padding: 15px 20px;">
+  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+    <button onclick="window.location.href='index.html'" class="back-button">
+      <i class="fas fa-arrow-left"></i> Back to Prayer Dome
+    </button>
+    <div class="moving-words-container">
+      <div class="moving-words">
+        <div class="moving-word-item"><i class="fas fa-bible"></i><span>💪 I CAN DO ALL THINGS THROUGH CHRIST</span></div>
+        <div class="moving-word-item"><i class="fas fa-hand-holding-heart"></i><span>📖 GIVE AND IT SHALL BE GIVEN TO YOU</span></div>
+        <div class="moving-word-item"><i class="fas fa-users"></i><span>🙌 WHERE TWO OR THREE GATHER IN MY NAME</span></div>
+        <div class="moving-word-item"><i class="fas fa-church"></i><span>💰 THE LORD WILL OPEN THE HEAVENS</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<div id="loadingOverlay" class="loading-overlay" style="display: none;">
+  <div class="loading-spinner"></div>
+</div>
+
+<!-- Navigation Tabs -->
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="showSection('community')"><i class="fas fa-home"></i> Community</button>
+  <button class="nav-tab" onclick="showSection('business')"><i class="fas fa-briefcase"></i> Business</button>
+  <button class="nav-tab" onclick="showSection('education')"><i class="fas fa-graduation-cap"></i> Education</button>
+  <button class="nav-tab" onclick="showSection('savings')"><i class="fas fa-piggy-bank"></i> Savings</button>
+  <button class="nav-tab" onclick="showSection('funeral')"><i class="fas fa-hand-holding-heart"></i> Funeral</button>
+  <button class="nav-tab" onclick="showSection('documents')"><i class="fas fa-file-alt"></i> Documents</button>
+  <button class="nav-tab" onclick="showSection('wallet')"><i class="fas fa-wallet"></i> Wallet</button>
+</div>
+
+<div class="container" id="appContainer">
+  <!-- COMMUNITY SECTION -->
+  <div id="communitySection" class="section">
+    <div class="hero-slider">
+      <div class="slide active" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://i.ibb.co/JWYjXgnN/together-we-can.jpg')">
+        <div class="slide-content">
+          <i class="fas fa-hand-holding-heart" style="font-size: 4rem; margin-bottom: 20px;"></i>
+          <h1>Together We Rise</h1>
+          <p>Together we build. No one should struggle alone.</p>
+          <button class="btn btn-primary" style="margin-top: 25px;" onclick="showSection('business')">Join Now</button>
+        </div>
+      </div>
+      <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://i.ibb.co/gFVb6Rvv/hands-together.jpg')">
+        <div class="slide-content">
+          <i class="fas fa-users" style="font-size: 4rem; margin-bottom: 20px;"></i>
+          <h1>Don't Be Frustrated with Debt</h1>
+          <p>Together we create financial stability.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title"><i class="fas fa-quote-left"></i> Our Promise</div>
+      <p style="font-size: 1.2rem; line-height: 1.8;">This system is built on trust, discipline, and community. Every member contributes, and every member benefits.</p>
+    </div>
+  </div>
+
+  <!-- BUSINESS SECTION -->
+  <div id="businessSection" class="section" style="display: none;">
+    <div class="card">
+      <div class="section-title"><i class="fas fa-briefcase"></i> Business Support Plans</div>
+      <p>Build your future through consistent saving and receive financial support after qualification.</p>
+      <div class="plans-grid" id="businessPlansGrid"></div>
+      <div style="margin-top: 30px; text-align: center;">
+        <button class="btn btn-secondary" onclick="openClaimSupportModal('business')"><i class="fas fa-hand-holding-heart"></i> Claim Business Support</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDUCATION SECTION -->
+  <div id="educationSection" class="section" style="display: none;">
+    <div class="card">
+      <div class="section-title"><i class="fas fa-graduation-cap"></i> Education Support Plans</div>
+      <p>Save for your children's education or your own further studies.</p>
+      <div class="plans-grid" id="educationPlansGrid"></div>
+      <div style="margin-top: 30px; text-align: center;">
+        <button class="btn btn-secondary" onclick="openClaimSupportModal('education')">
+          <i class="fas fa-graduation-cap"></i> Request Education Support
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAVINGS SECTION -->
+  <div id="savingsSection" class="section" style="display: none;">
+    <div class="card">
+      <div class="section-title"><i class="fas fa-piggy-bank"></i> Savings Account</div>
+      <p>Save consistently and grow your money with monthly interest of <strong>0.50%</strong>.</p>
+      <div class="plans-grid" id="savingsPlansGrid"></div>
+    </div>
+  </div>
+
+  <!-- FUNERAL SECTION -->
+  <div id="funeralSection" class="section" style="display: none;">
+    <div class="card">
+      <div class="section-title"><i class="fas fa-hand-holding-heart"></i> Funeral Cover Plans</div>
+      <div class="plans-grid" id="funeralPlansGrid"></div>
+      <div style="margin-top: 30px; text-align: center;">
+        <button class="btn btn-secondary" onclick="openClaimSupportModal('funeral')">Claim Funeral Support</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCUMENTS SECTION -->
+  <div id="documentsSection" class="section" style="display: none;">
+    <div class="card">
+      <div class="section-title"><i class="fas fa-file-alt"></i> Document Submission</div>
+      <p>Upload required documents for verification. All documents are securely stored and reviewed by admin.</p>
+      
+      <form id="documentForm" onsubmit="event.preventDefault(); submitAllDocuments()">
+        
+        <!-- Personal Information -->
+        <div class="document-section">
+          <h4><i class="fas fa-user"></i> Personal Information</h4>
+          <input type="text" id="docFullName" placeholder="Full Name *" required>
+          <input type="text" id="docPhone" placeholder="Phone Number *" required>
+          <input type="text" id="docNRC" placeholder="NRC / Passport Number *" required>
+          <input type="text" id="docAddress" placeholder="Physical Address">
+        </div>
+
+        <!-- Next of Kin -->
+        <div class="document-section">
+          <h4><i class="fas fa-users"></i> Next of Kin Information</h4>
+          <input type="text" id="nextKinName" placeholder="Next of Kin Full Name *" required>
+          <input type="text" id="nextKinPhone" placeholder="Next of Kin Phone *" required>
+          <input type="text" id="nextKinRelation" placeholder="Relationship *" required>
+          <input type="text" id="nextKinAddress" placeholder="Next of Kin Address">
+        </div>
+
+        <!-- IDENTITY DOCUMENTS -->
+        <div class="document-section">
+          <h4><i class="fas fa-id-card"></i> Identity Verification</h4>
+          <div class="upload-area" onclick="uploadDocument('id_front')">
+            <i class="fas fa-id-card"></i> NRC / Passport (Front)
+            <div id="id_front_preview"></div>
+          </div>
+          <div class="upload-area" onclick="uploadDocument('id_back')">
+            <i class="fas fa-id-card"></i> NRC / Passport (Back)
+            <div id="id_back_preview"></div>
+          </div>
+        </div>
+
+        <!-- PROOF OF RESIDENCE -->
+        <div class="document-section">
+          <h4><i class="fas fa-home"></i> Proof of Residence</h4>
+          <div class="upload-area" onclick="uploadDocument('proof_address')">
+            <i class="fas fa-file-alt"></i> Utility Bill / Bank Statement
+            <div id="proof_address_preview"></div>
+          </div>
+        </div>
+
+        <!-- PROOF OF INCOME -->
+        <div class="document-section">
+          <h4><i class="fas fa-chart-line"></i> Proof of Income / Employment</h4>
+          <div class="upload-area" onclick="uploadDocument('income_proof')">
+            <i class="fas fa-file-invoice-dollar"></i> Payslip / Business Registration
+            <div id="income_proof_preview"></div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 25px;">
+          <i class="fas fa-paper-plane"></i> Submit All Documents
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- WALLET SECTION -->
+  <div id="walletSection" class="section" style="display: none;">
+    <div id="authButtons" style="display: flex; gap: 5px; justify-content: flex-end; margin-bottom: 10px;">
+      <button onclick="showLoginModal()" class="btn btn-outline" id="loginBtn">Login</button>
+      <button onclick="logout()" class="btn btn-outline" id="logoutBtn" style="display: none;">Logout</button>
+    </div>
+    
+    <div id="walletContent">
+      <div class="card wallet-card">
+        <div class="wallet-balance">
+          <h3><i class="fas fa-wallet"></i> My Wallet Balance</h3>
+          <div class="amount" id="walletBalance">E0.00</div>
+          <div style="display: flex; gap: 15px; justify-content: center; margin-top: 15px;">
+            <span>💰 Total Deposits: <strong id="totalDeposits">E0</strong></span>
+            <span>⏳ Pending: <strong id="pendingDeposits">E0</strong></span>
+          </div>
+          <div class="interest-info">
+            <i class="fas fa-chart-line"></i> Monthly Interest: <strong>0.50%</strong>
+            <div>Est. monthly earnings: <strong id="monthlyInterest">E0.00</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Currency Converter -->
+      <div class="card">
+        <div class="section-title"><i class="fas fa-exchange-alt"></i> Currency Converter</div>
+        <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 15px; align-items: center;">
+          <div>
+            <select id="fromCurrency" style="width:100%; padding:12px; border-radius:40px; margin-bottom:10px;">
+              <option value="SZL">🇸🇿 SZL - Lilangeni</option>
+              <option value="ZMW">🇿🇲 ZMW - Kwacha</option>
+              <option value="USD">🇺🇸 USD - Dollar</option>
+            </select>
+            <input type="number" id="fromAmount" value="100" style="width:100%; padding:12px; border-radius:40px;" oninput="convertCurrency()">
+          </div>
+          <button onclick="swapCurrencies()" style="background:var(--accent-green); width:50px; height:50px; border-radius:50%; color:white; border:none; cursor:pointer;">⇄</button>
+          <div>
+            <select id="toCurrency" style="width:100%; padding:12px; border-radius:40px; margin-bottom:10px;">
+              <option value="ZMW" selected>🇿🇲 ZMW - Kwacha</option>
+              <option value="SZL">🇸🇿 SZL - Lilangeni</option>
+              <option value="USD">🇺🇸 USD - Dollar</option>
+            </select>
+            <input type="text" id="toAmount" readonly style="width:100%; padding:12px; border-radius:40px; background:var(--bg-primary);">
+          </div>
+        </div>
+      </div>
+
+      <!-- Make Deposit - With Mobile Money -->
+      <div class="card">
+        <div class="section-title"><i class="fas fa-plus-circle"></i> Make a Deposit</div>
+        
+        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+          <select id="depositCurrency" style="padding:1px; border-radius:20px; flex:1;">
+            <option value="SZL">🇸🇿 SZL - Lilangeni (E)</option>
+            <option value="ZMW">🇿🇲 ZMW - Kwacha (ZK)</option>
+            <option value="USD">🇺🇸 USD - Dollar ($)</option>
+          </select>
+          <input type="number" id="depositAmount" placeholder="Amount" style="flex:1; padding:1px; border-radius:10px;">
+        </div>
+        
+        <!-- Mobile Money Details -->
+        <div style="background: linear-gradient(135deg, #ff8c00, #ff6b00); border-radius: 20px; padding: 20px; margin-bottom: 20px;">
+          <h4 style="color: white; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-mobile-alt"></i> MTN Mobile Money
+          </h4>
+          <div style="background: rgba(255,255,255,0.2); border-radius: 16px; padding: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <div style="font-size: 12px; opacity: 0.8;">Account Name</div>
+                <div style="font-weight: 700;">PRAYER DOME GROUP</div>
+              </div>
+              <div>
+                <div style="font-size: 12px; opacity: 0.8;">Mobile Money Number</div>
+                <div style="font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
+                  <i class="fas fa-phone"></i> +268 7604 3539
+                  <button onclick="copyToClipboard('+26876043539')" class="btn" style="background: rgba(255,255,255,0.2); padding: 5px 10px; font-size: 11px;">Copy</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="background: rgba(255,255,255,0.15); border-radius: 16px; padding: 12px; margin-top: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 13px;">
+              <i class="fas fa-info-circle"></i>
+              <span>Send money to this number and upload screenshot as proof</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Alternative Bank Details -->
+        <div style="background: var(--bg-primary); border-radius: 20px; padding: 20px; margin-bottom: 20px;">
+          <h4 style="color: var(--accent-green); margin-bottom: 15px;"><i class="fas fa-university"></i> MOMO TRANSFER</h4>
+          <p><strong>Account Name:</strong> PRAYER DOME GROUP</p>
+          <p><strong>Bank:</strong> MTN MOMO</p>
+          <p><strong>Account Number:</strong> 76043539</p>
+          <div style="margin-top: 10px;">
+            <button onclick="copyToClipboard('76043539')" class="btn btn-outline" style="padding: 5px 12px; font-size: 12px;">Copy Account Number</button>
+          </div>
+        </div>
+        
+        <!-- Upload Area -->
+        <div class="upload-area" onclick="uploadPaymentProof()">
+          <i class="fas fa-cloud-upload-alt" style="font-size: 2rem;"></i>
+          <p>Upload Payment Proof (Screenshot)</p>
+          <small>JPG, PNG, PDF (Max 5MB)</small>
+        </div>
+        <div id="proofPreview" style="margin-top: 10px;"></div>
+        
+        <button class="btn btn-primary" onclick="submitDeposit()" style="width:100%; margin-top:20px;" id="depositBtn">
+          <i class="fas fa-paper-plane"></i> Submit Deposit
+        </button>
+        <p style="font-size:12px; margin-top:10px; text-align:center;">
+          <i class="fas fa-clock"></i> Deposits verified within 24-48 hours
+        </p>
+      </div>
+
+      <!-- Transaction History -->
+      <div class="card">
+        <div class="section-title"><i class="fas fa-history"></i> Transaction History</div>
+        <div id="transactionHistory" style="max-height: 400px; overflow-y: auto;"></div>
+      </div>
+
+      <!-- Withdrawal -->
+<div class="card">
+  <div class="section-title"><i class="fas fa-hand-holding-usd"></i> Request Withdrawal</div>
+  <div style="display: flex; gap: 15px;">
+    <input type="number" id="withdrawAmount" placeholder="Amount (Minimum E100)" style="flex:2; padding:12px; border-radius:40px;">
+    <button class="btn btn-secondary" onclick="requestWithdrawal()" style="flex:1;">
+      <i class="fas fa-arrow-up"></i> Withdraw
+    </button>
+  </div>
+  <p style="font-size:12px; margin-top:10px;">
+    <i class="fas fa-info-circle"></i> Minimum E100. Withdrawals processed within 3-5 business days.
+  </p>
+</div>
+
+<!-- Login Modal -->
+<div id="loginModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <h2>Sign In</h2>
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button class="btn btn-primary" onclick="login()" style="width:100%;">Sign In</button>
+    <button class="btn btn-outline" onclick="googleLogin()" style="width:100%; margin-top:10px;">Google Sign In</button>
+    <button class="btn btn-outline" onclick="closeLoginModal()" style="width:100%; margin-top:10px;">Cancel</button>
+    <div style="text-align: center; margin-top: 15px;"><a href="account.html" style="color: var(--accent-green);">Don't have an account? Register here</a></div>
+  </div>
+</div>
+
+<!-- Claim Support Modal -->
+<div id="claimSupportModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <h2>Claim Support</h2>
+    <select id="claimType">
+      <option value="business">Business Support</option>
+      <option value="education">Education Support</option>
+      <option value="funeral">Funeral Support</option>
+    </select>
+    <input type="number" id="claimAmount" placeholder="Amount Requested">
+    <textarea id="claimReason" rows="3" placeholder="Reason for support..."></textarea>
+    <button class="btn btn-primary" onclick="submitClaim()" style="width:100%;">Submit Claim</button>
+    <button class="btn btn-outline" onclick="closeClaimModal()" style="width:100%; margin-top:10px;">Cancel</button>
+  </div>
+</div>
+
+<footer class="support-footer">
+  <div class="footer-container">
+    <div class="footer-grid">
+      <div class="footer-section">
+        <h3>Prayer Dome</h3>
+        <p><i class="fas fa-church"></i> A House of Prayer for All Nations</p>
+        <p><i class="fas fa-map-marker-alt"></i> Eswatini & Zambia</p>
+        <p><i class="fas fa-phone"></i> +268 7658 1804</p>
+      </div>
+      <div class="footer-section">
+        <h3>Support Programs</h3>
+        <p>Business Support</p>
+        <p>Education Support</p>
+        <p>Funeral Cover</p>
+        <p>Savings Account</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2018 Prayer Dome Ministry. All Rights Reserved.</p>
+      <p>"A House of Prayer for All Nations" - Matthew 21:13</p>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, getDoc, doc, setDoc, updateDoc, query, where, orderBy, Timestamp, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCxvql0r_aeerphxTA0UUedRppdBxGf7wo",
+  authDomain: "prayer-dome.firebaseapp.com",
+  projectId: "prayer-dome",
+  storageBucket: "prayer-dome.firebasestorage.app",
+  messagingSenderId: "198295153196",
+  appId: "1:198295153196:web:1222b31948d7974ba3bf89"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+let currentUser = null;
+let uploadedDocuments = {};
+let currentExchangeRates = { USD: 1, SZL: 18.5, ZMW: 24.5 };
+let uploadedProofUrl = null;
+let paymentProofWidget = null;
+
+// ==================== PLANS WITH IMAGES ====================
+const businessPlans = [
+  { name: "Starter Plan", range: "$5 – $50", localRange: "E85 – E850 / ZK95 – ZK950", supportAmount: 100, image: "https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg" },
+  { name: "Growth Plan", range: "$50 – $100", localRange: "E850 – E1,700 / ZK950 – ZK1,900", supportAmount: 500, image: "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg" },
+  { name: "Advanced Plan", range: "$100 – $500", localRange: "E1,700 – E8,500 / ZK1,900 – ZK9,500", supportAmount: 1000, image: "https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg" },
+  { name: "Premium Plan", range: "$500 – $1,000", localRange: "E8,500 – E17,000 / ZK9,500 – ZK19,000", supportAmount: 5000, image: "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg" }
+];
+
+const educationPlans = [
+  { name: "Education Starter", range: "$5 – $50", localRange: "E85 – E850 / ZK95 – ZK950", supportAmount: 100, image: "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg" },
+  { name: "Education Growth", range: "$50 – $100", localRange: "E850 – E1,700 / ZK950 – ZK1,900", supportAmount: 500, image: "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg" },
+  { name: "Education Advanced", range: "$100 – $500", localRange: "E1,700 – E8,500 / ZK1,900 – ZK9,500", supportAmount: 1000, image: "https://images.pexels.com/photos/5428836/pexels-photo-5428836.jpeg" },
+  { name: "Education Premium", range: "$500 – $1,000", localRange: "E8,500 – E17,000 / ZK9,500 – ZK19,000", supportAmount: 5000, image: "https://images.pexels.com/photos/5428836/pexels-photo-5428836.jpeg" }
+];
+
+const savingsPlans = [
+  { name: "Flexible Savings", range: "Any Amount", localRange: "Start with any amount", interest: "0.50% monthly", image: "https://images.pexels.com/photos/730564/pexels-photo-730564.jpeg" }
+];
+
+const funeralPlans = [
+  { name: "Funeral Starter", range: "$5 – $50", localRange: "E85 – E850 / ZK95 – ZK950", coverAmount: 500, image: "https://images.pexels.com/photos/2634020/pexels-photo-2634020.jpeg" },
+  { name: "Funeral Family", range: "$50 – $100", localRange: "E850 – E1,700 / ZK950 – ZK1,900", coverAmount: 1500, image: "https://images.pexels.com/photos/2634020/pexels-photo-2634020.jpeg" },
+  { name: "Funeral Extended", range: "$100 – $500", localRange: "E1,700 – E8,500 / ZK1,900 – ZK9,500", coverAmount: 3000, image: "https://images.pexels.com/photos/2634020/pexels-photo-2634020.jpeg" },
+  { name: "Funeral Premium", range: "$500 – $1,000", localRange: "E8,500 – E17,000 / ZK9,500 – ZK19,000", coverAmount: 5000, image: "https://images.pexels.com/photos/2634020/pexels-photo-2634020.jpeg" }
+];
+
+// Helper Functions
+function showToast(msg, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3500);
+}
+
+function showLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; }
+function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
+
+window.copyToClipboard = function(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    showToast(`✅ Copied: ${text}`, 'success');
+  }).catch(() => {
+    showToast('Failed to copy', 'error');
+  });
+};
+
+window.showSection = function(section) {
+  document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+  document.getElementById(`${section}Section`).style.display = 'block';
+  document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+  if (event && event.target) event.target.classList.add('active');
+  if (section === 'wallet') loadWalletData();
+};
+
+// Render Plans with Images
+function renderBusinessPlans() {
+  const grid = document.getElementById('businessPlansGrid');
+  if (grid) grid.innerHTML = businessPlans.map(p => `
+    <div class="plan-card" onclick="joinPlan('business', '${p.name}')">
+      <div class="plan-image"><img src="${p.image}" alt="${p.name}"></div>
+      <div class="plan-content">
+        <div style="background: var(--accent-green); color:white; padding:4px 12px; border-radius:20px; display:inline-block; font-size:12px;">${p.range}</div>
+        <h3 style="margin-top:12px;">${p.name}</h3>
+        <div class="plan-amount">${p.localRange}<span style="font-size:14px;">/month</span></div>
+        <button class="btn btn-primary" style="width:100%; margin-top:10px;">Join Plan</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderEducationPlans() {
+  const grid = document.getElementById('educationPlansGrid');
+  if (grid) grid.innerHTML = educationPlans.map(p => `
+    <div class="plan-card" onclick="joinPlan('education', '${p.name}')">
+      <div class="plan-image"><img src="${p.image}" alt="${p.name}"></div>
+      <div class="plan-content">
+        <div style="background: var(--accent-blue); color:white; padding:4px 12px; border-radius:20px; display:inline-block; font-size:12px;">${p.range}</div>
+        <h3 style="margin-top:12px;">${p.name}</h3>
+        <div class="plan-amount">${p.localRange}<span style="font-size:14px;">/month</span></div>
+        <button class="btn btn-primary" style="width:100%; margin-top:10px;">Join Plan</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderSavingsPlans() {
+  const grid = document.getElementById('savingsPlansGrid');
+  if (grid) grid.innerHTML = savingsPlans.map(p => `
+    <div class="plan-card" onclick="showSection('wallet')">
+      <div class="plan-image"><img src="${p.image}" alt="${p.name}"></div>
+      <div class="plan-content">
+        <h3>${p.name}</h3>
+        <div class="plan-amount">${p.localRange}</div>
+        <ul style="list-style:none; margin:10px 0;"><li><i class="fas fa-chart-line" style="color:var(--accent-green);"></i> ${p.interest} interest</li></ul>
+        <button class="btn btn-primary" style="width:100%;">Start Saving</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderFuneralPlans() {
+  const grid = document.getElementById('funeralPlansGrid');
+  if (grid) grid.innerHTML = funeralPlans.map(p => `
+    <div class="plan-card" onclick="joinPlan('funeral', '${p.name}')">
+      <div class="plan-image"><img src="${p.image}" alt="${p.name}"></div>
+      <div class="plan-content">
+        <div style="background: var(--accent-purple); color:white; padding:4px 12px; border-radius:20px; display:inline-block; font-size:12px;">${p.range}</div>
+        <h3 style="margin-top:12px;">${p.name}</h3>
+        <div class="plan-amount">${p.localRange}<span style="font-size:14px;">/month</span></div>
+        <button class="btn btn-primary" style="width:100%; margin-top:10px;">Join Plan</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.joinPlan = async function(type, planName) {
+  if (!currentUser) { showToast('Please login first', 'error'); showLoginModal(); return; }
+  try {
+    await setDoc(doc(db, "userPlans", `${currentUser.uid}_${type}`), {
+      userId: currentUser.uid, type, planName, joinedAt: serverTimestamp(), status: 'active'
+    });
+    showToast(`✅ Joined ${planName}!`, 'success');
+    confetti({ particleCount: 100, spread: 70 });
+  } catch (error) { showToast(error.message, 'error'); }
+};
+
+// Document Upload Functions
+function initCloudinaryWidget(documentType, callback) {
+  const widget = cloudinary.createUploadWidget({
+    cloudName: 'prayerdome',
+    uploadPreset: 'support_documents',
+    folder: `support_docs/${documentType}`,
+    maxFileSize: 10 * 1024 * 1024,
+    clientAllowedFormats: ['jpg', 'jpeg', 'png', 'pdf']
+  }, (error, result) => {
+    if (error) { showToast('Upload failed: ' + error.message, 'error'); return; }
+    if (result && result.event === 'success') {
+      uploadedDocuments[documentType] = result.info.secure_url;
+      const previewDiv = document.getElementById(`${documentType}_preview`);
+      if (previewDiv) {
+        previewDiv.innerHTML = `<div class="uploaded-file"><i class="fas fa-check-circle"></i> Uploaded!</div>`;
+      }
+      if (callback) callback(result.info.secure_url);
+    }
+  });
+  return widget;
+}
+
+window.uploadDocument = function(documentType) {
+  if (!currentUser) { showToast('Please login first', 'error'); showLoginModal(); return; }
+  const widget = initCloudinaryWidget(documentType);
+  widget.open();
+};
+
+// Payment Proof Upload - FIXED
+function initPaymentProofWidget() {
+  if (paymentProofWidget) return paymentProofWidget;
+  
+  paymentProofWidget = cloudinary.createUploadWidget({
+    cloudName: 'prayerdome',
+    uploadPreset: 'donation_proofs',
+    folder: 'payment_proofs',
+    maxFileSize: 5 * 1024 * 1024,
+    clientAllowedFormats: ['jpg', 'jpeg', 'png', 'pdf'],
+    multiple: false,
+    cropping: false
+  }, (error, result) => {
+    if (error) {
+      console.error('Upload error:', error);
+      showToast('Upload failed: ' + error.message, 'error');
+      return;
+    }
+    if (result && result.event === 'success') {
+      uploadedProofUrl = result.info.secure_url;
+      const proofPreview = document.getElementById('proofPreview');
+      if (proofPreview) {
+        proofPreview.innerHTML = `
+          <div class="uploaded-file">
+            <i class="fas fa-check-circle" style="color: var(--accent-green);"></i>
+            <span>Proof uploaded successfully!</span>
+            <img src="${uploadedProofUrl}" style="max-width: 60px; border-radius: 8px;">
+          </div>
+        `;
+      }
+      showToast('✅ Payment proof uploaded!', 'success');
+    }
+  });
+  return paymentProofWidget;
+}
+
+window.uploadPaymentProof = function() {
+  if (!currentUser) {
+    showToast('Please login first', 'error');
+    showLoginModal();
+    return;
+  }
+  const widget = initPaymentProofWidget();
+  if (widget) widget.open();
+};
+
+// Submit All Documents
+window.submitAllDocuments = async function() {
+  if (!currentUser) { showToast('Please login first', 'error'); showLoginModal(); return; }
+  
+  const requiredDocs = ['id_front', 'id_back'];
+  const missing = requiredDocs.filter(d => !uploadedDocuments[d]);
+  if (missing.length > 0) { showToast('Please upload ID front and back first', 'error'); return; }
+  
+  const docData = {
+    userId: currentUser.uid,
+    fullName: document.getElementById('docFullName').value,
+    phone: document.getElementById('docPhone').value,
+    nrc: document.getElementById('docNRC').value,
+    address: document.getElementById('docAddress').value,
+    nextKin: {
+      name: document.getElementById('nextKinName').value,
+      phone: document.getElementById('nextKinPhone').value,
+      relation: document.getElementById('nextKinRelation').value,
+      address: document.getElementById('nextKinAddress').value
+    },
+    documents: uploadedDocuments,
+    submittedAt: serverTimestamp(),
+    status: 'pending'
+  };
+  
+  if (!docData.fullName || !docData.phone || !docData.nrc) {
+    showToast('Please fill all required personal fields', 'error');
+    return;
+  }
+  
+  showLoading();
+  try {
+    await addDoc(collection(db, "userDocuments"), docData);
+    showToast('All documents submitted for verification!', 'success');
+    confetti({ particleCount: 100, spread: 70 });
+    uploadedDocuments = {};
+    document.querySelectorAll('[id$="_preview"]').forEach(el => el.innerHTML = '');
+  } catch (error) {
+    showToast(error.message, 'error');
+  } finally {
+    hideLoading();
+  }
+};
+
+// Claim Support
+window.openClaimSupportModal = function(type) {
+  if (!currentUser) { showToast('Please login first', 'error'); showLoginModal(); return; }
+  document.getElementById('claimType').value = type;
+  document.getElementById('claimSupportModal').style.display = 'flex';
+};
+
+window.closeClaimModal = function() { document.getElementById('claimSupportModal').style.display = 'none'; };
+
+window.submitClaim = async function() {
+  const type = document.getElementById('claimType').value;
+  const amount = parseFloat(document.getElementById('claimAmount').value);
+  const reason = document.getElementById('claimReason').value;
+  
+  if (!amount || amount <= 0) { showToast('Enter valid amount', 'error'); return; }
+  if (!reason) { showToast('Please explain your reason', 'error'); return; }
+  
+  showLoading();
+  try {
+    await addDoc(collection(db, "supportClaims"), {
+      userId: currentUser.uid, userName: currentUser.displayName || currentUser.email,
+      type, amount, reason, status: 'pending', createdAt: serverTimestamp()
+    });
+    showToast('Claim submitted! Admin will review.', 'success');
+    closeClaimModal();
+    confetti({ particleCount: 80, spread: 60 });
+  } catch (error) { showToast(error.message, 'error'); }
+  finally { hideLoading(); }
+};
+
+// ==================== PIN VERIFICATION FOR WITHDRAWALS ====================
+let walletPIN = localStorage.getItem('wallet_pin');
+let isWalletUnlocked = false;
+
+async function verifyWalletPIN() {
+  if (isWalletUnlocked) return true;
+  if (!walletPIN) {
+    // No PIN set, ask to set one
+    const setPin = confirm('No wallet PIN set. Would you like to set one for security?');
+    if (setPin) {
+      await setupWalletPIN();
+      return false;
+    }
+    return true; // Allow if user declines
+  }
+  
+  return new Promise((resolve) => {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width: 350px;">
+        <h3><i class="fas fa-lock"></i> Enter Wallet PIN</h3>
+        <div class="pin-input" style="display: flex; gap: 12px; justify-content: center; margin: 25px 0;">
+          <input type="password" maxlength="1" class="pin-digit" id="pin1" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
+          <input type="password" maxlength="1" class="pin-digit" id="pin2" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
+          <input type="password" maxlength="1" class="pin-digit" id="pin3" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
+          <input type="password" maxlength="1" class="pin-digit" id="pin4" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
+        </div>
+        <button class="btn btn-primary" id="verifyPinBtn" style="width: 100%;">Verify</button>
+        <button class="btn btn-outline" id="cancelPinBtn" style="width: 100%; margin-top: 10px;">Cancel</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    
+    const inputs = ['pin1', 'pin2', 'pin3', 'pin4'];
+    inputs.forEach((id, i) => {
+      document.getElementById(id).addEventListener('input', (e) => {
+        if (e.target.value.length === 1 && i < 3) {
+          document.getElementById(inputs[i+1]).focus();
+        }
+      });
+    });
+    
+    document.getElementById('verifyPinBtn').onclick = () => {
+      const enteredPin = inputs.map(id => document.getElementById(id).value).join('');
+      const storedPin = atob(walletPIN);
+      
+      if (enteredPin === storedPin) {
+        isWalletUnlocked = true;
+        modal.remove();
+        resolve(true);
+      } else {
+        showToast('❌ Incorrect PIN', 'error');
+        inputs.forEach(id => document.getElementById(id).value = '');
+        document.getElementById('pin1').focus();
+        resolve(false);
+      }
+    };
+    
+    document.getElementById('cancelPinBtn').onclick = () => {
+      modal.remove();
+      resolve(false);
+    };
+  });
+}
+
+async function setupWalletPIN() {
+  return new Promise((resolve) => {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width: 350px;">
+        <h3><i class="fas fa-key"></i> Set Wallet PIN</h3>
+        <p style="font-size: 12px; margin-bottom: 15px;">Create a 4-digit PIN to secure your wallet</p>
+        <div class="pin-input" style="display: flex; gap: 12px; justify-content: center; margin: 25px 0;">
+          <input type="password" maxlength="1" class="pin-digit" id="pin1" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
+          <input type="password" maxlength="1" class="pin-digit" id="pin2" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
+          <input type="password" maxlength="1" class="pin-digit" id="pin3" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
+          <input type="password" maxlength="1" class="pin-digit" id="pin4" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
+        </div>
+        <button class="btn btn-primary" id="setPinBtn" style="width: 100%;">Set PIN</button>
+        <button class="btn btn-outline" id="cancelPinBtn" style="width: 100%; margin-top: 10px;">Skip</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    
+    const inputs = ['pin1', 'pin2', 'pin3', 'pin4'];
+    inputs.forEach((id, i) => {
+      document.getElementById(id).addEventListener('input', (e) => {
+        if (e.target.value.length === 1 && i < 3) {
+          document.getElementById(inputs[i+1]).focus();
+        }
+      });
+    });
+    
+    document.getElementById('setPinBtn').onclick = () => {
+      const enteredPin = inputs.map(id => document.getElementById(id).value).join('');
+      if (enteredPin.length === 4 && /^\d{4}$/.test(enteredPin)) {
+        walletPIN = btoa(enteredPin);
+        localStorage.setItem('wallet_pin', walletPIN);
+        isWalletUnlocked = true;
+        modal.remove();
+        showToast('✅ PIN set successfully!', 'success');
+        resolve(true);
+      } else {
+        showToast('Please enter a 4-digit PIN', 'error');
+        inputs.forEach(id => document.getElementById(id).value = '');
+        document.getElementById('pin1').focus();
+        resolve(false);
+      }
+    };
+    
+    document.getElementById('cancelPinBtn').onclick = () => {
+      modal.remove();
+      resolve(false);
+    };
+  });
+}
+
+// Wallet Functions
+async function loadWalletData() {
+  if (!currentUser) {
+    document.getElementById('walletBalance').innerHTML = 'E0.00';
+    document.getElementById('totalDeposits').innerHTML = 'E0';
+    document.getElementById('pendingDeposits').innerHTML = 'E0';
+    document.getElementById('monthlyInterest').innerHTML = 'E0.00';
+    return;
+  }
+  
+  try {
+    const walletDoc = await getDoc(doc(db, "wallets", currentUser.uid));
+    let balance = 0;
+    if (walletDoc.exists()) {
+      balance = walletDoc.data().balance || 0;
+    } else {
+      await setDoc(doc(db, "wallets", currentUser.uid), { userId: currentUser.uid, balance: 0, createdAt: serverTimestamp() });
+    }
+    
+    document.getElementById('walletBalance').innerHTML = `E${balance.toFixed(2)}<br><span style="font-size:1rem;">ZK${(balance * currentExchangeRates.ZMW).toFixed(2)}</span>`;
+    
+    const monthlyInterest = balance * 0.005;
+    document.getElementById('monthlyInterest').innerHTML = `E${monthlyInterest.toFixed(2)}`;
+    
+    const depositsSnap = await getDocs(query(collection(db, "deposits"), where("userId", "==", currentUser.uid)));
+    let totalApproved = 0, totalPending = 0;
+    const transactions = [];
+    
+    depositsSnap.forEach(doc => {
+      const data = doc.data();
+      const amt = data.amountInSZL || data.amount;
+      if (data.status === 'approved') {
+        totalApproved += amt;
+        transactions.push({ type: 'deposit', amount: amt, status: 'approved', date: data.createdAt });
+      } else if (data.status === 'pending') {
+        totalPending += amt;
+        transactions.push({ type: 'deposit', amount: amt, status: 'pending', date: data.createdAt });
+      }
+    });
+    
+    document.getElementById('totalDeposits').innerHTML = `E${totalApproved.toFixed(2)}`;
+    document.getElementById('pendingDeposits').innerHTML = `E${totalPending.toFixed(2)}`;
+    
+    const historyDiv = document.getElementById('transactionHistory');
+    if (transactions.length === 0) {
+      historyDiv.innerHTML = '<div style="text-align: center; padding: 40px;">No transactions yet</div>';
+    } else {
+      historyDiv.innerHTML = transactions.sort((a, b) => (b.date?.toDate() || 0) - (a.date?.toDate() || 0)).map(tx => `
+        <div class="transaction-item">
+          <div><strong>Deposit</strong><div style="font-size:11px;">${tx.date?.toDate().toLocaleDateString() || 'Pending'}</div></div>
+          <div class="transaction-positive">+ E${tx.amount?.toFixed(2)}<div style="font-size:10px;">${tx.status}</div></div>
+        </div>
+      `).join('');
+    }
+  } catch (error) { console.error('Error loading wallet:', error); }
+}
+
+window.submitDeposit = async function() {
+  if (!currentUser) { showToast('Please login', 'error'); showLoginModal(); return; }
+  const amount = parseFloat(document.getElementById('depositAmount').value);
+  const currency = document.getElementById('depositCurrency').value;
+  if (!amount || amount <= 0) { showToast('Enter amount', 'error'); return; }
+  if (!uploadedProofUrl) { showToast('Upload payment proof first', 'error'); return; }
+  
+  const amountInUSD = amount / (currentExchangeRates[currency] || 1);
+  const amountInSZL = amountInUSD * currentExchangeRates.SZL;
+  
+  const btn = document.getElementById('depositBtn');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+  btn.disabled = true;
+  
+  try {
+    await addDoc(collection(db, "deposits"), {
+      userId: currentUser.uid, userEmail: currentUser.email, userName: currentUser.displayName || currentUser.email,
+      amount, currency, amountInSZL, amountInUSD, proofUrl: uploadedProofUrl, status: 'pending', createdAt: serverTimestamp()
+    });
+    uploadedProofUrl = null;
+    document.getElementById('proofPreview').innerHTML = '';
+    document.getElementById('depositAmount').value = '';
+    showToast('Deposit submitted for verification!', 'success');
+    confetti({ particleCount: 80, spread: 60 });
+    loadWalletData();
+  } catch (error) { showToast(error.message, 'error'); }
+  finally { btn.innerHTML = originalText; btn.disabled = false; }
+};
+
+window.requestWithdrawal = async function() {
+  if (!currentUser) { 
+    showToast('Please login first', 'error'); 
+    showLoginModal(); 
+    return; 
+  }
+  
+  const amount = parseFloat(document.getElementById('withdrawAmount').value);
+  
+  // Validate amount
+  if (!amount || isNaN(amount)) {
+    showToast('Please enter a valid amount', 'error');
+    return;
+  }
+  
+  if (amount < 100) {
+    showToast('Minimum withdrawal amount is E100', 'error');
+    return;
+  }
+  
+  // Show loading on button
+  const withdrawBtn = document.querySelector('#walletSection .btn-secondary');
+  const originalText = withdrawBtn.innerHTML;
+  withdrawBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+  withdrawBtn.disabled = true;
+  
+  try {
+    // Get current wallet balance
+    const walletDoc = await getDoc(doc(db, "wallets", currentUser.uid));
+    
+    if (!walletDoc.exists()) {
+      showToast('Wallet not found. Please contact support.', 'error');
+      return;
+    }
+    
+    const currentBalance = walletDoc.data().balance || 0;
+    
+    if (amount > currentBalance) {
+      showToast(`Insufficient balance. Your balance is E${currentBalance.toFixed(2)}`, 'error');
+      return;
+    }
+    
+    // Create withdrawal request
+    const withdrawalRef = await addDoc(collection(db, "withdrawals"), {
+      userId: currentUser.uid,
+      userEmail: currentUser.email,
+      userName: currentUser.displayName || currentUser.email,
+      amount: amount,
+      status: 'pending',
+      createdAt: serverTimestamp(),
+      requestedAt: serverTimestamp()
+    });
+    
+    // Clear input
+    document.getElementById('withdrawAmount').value = '';
+    
+    showToast(`✅ Withdrawal request of E${amount.toFixed(2)} submitted successfully!`, 'success');
+    confetti({ particleCount: 80, spread: 60 });
+    
+    // Refresh wallet data
+    await loadWalletData();
+    
+  } catch (error) {
+    console.error('Withdrawal error:', error);
+    showToast('Error: ' + error.message, 'error');
+  } finally {
+    withdrawBtn.innerHTML = originalText;
+    withdrawBtn.disabled = false;
+  }
+};
+
+// Currency Functions
+async function fetchExchangeRates() {
+  try {
+    const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+    const data = await response.json();
+    currentExchangeRates = { USD: 1, SZL: data.rates.SZL || 18.5, ZMW: data.rates.ZMW || 24.5 };
+    convertCurrency();
+  } catch (error) { console.error('Rate fetch error'); }
+}
+
+window.convertCurrency = function() {
+  const from = document.getElementById('fromCurrency').value;
+  const to = document.getElementById('toCurrency').value;
+  const amount = parseFloat(document.getElementById('fromAmount').value);
+  if (isNaN(amount)) return;
+  const result = amount * (currentExchangeRates[to] / currentExchangeRates[from]);
+  document.getElementById('toAmount').value = `${result.toFixed(2)} ${to}`;
+};
+
+window.swapCurrencies = function() {
+  const from = document.getElementById('fromCurrency');
+  const to = document.getElementById('toCurrency');
+  const temp = from.value;
+  from.value = to.value;
+  to.value = temp;
+  convertCurrency();
+};
+
+// Auth Functions
+function showLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+
+window.login = async function() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) { showToast('Enter email and password', 'error'); return; }
+  showLoading();
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    closeLoginModal();
+    showToast('Login successful!', 'success');
+    showSection('wallet');
+  } catch (error) { showToast(error.message, 'error'); }
+  finally { hideLoading(); }
+};
+
+window.googleLogin = async function() {
+  const provider = new GoogleAuthProvider();
+  try {
+    const result = await signInWithPopup(auth, provider);
+    closeLoginModal();
+    showToast(`Welcome ${result.user.displayName}!`, 'success');
+    showSection('wallet');
+  } catch (error) { showToast(error.message, 'error'); }
+};
+
+window.logout = async function() {
+  await signOut(auth);
+  showToast('Logged out', 'success');
+  showSection('community');
+};
+
+// Hero Slider
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+if (slides.length) {
+  setInterval(() => {
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (currentSlide + 1) % slides.length;
+    slides[currentSlide].classList.add('active');
+  }, 5000);
+}
+
+// Auth State
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+  if (user) {
+    document.getElementById('loginBtn').style.display = 'none';
+    document.getElementById('logoutBtn').style.display = 'inline-flex';
+    loadWalletData();
+  } else {
+    document.getElementById('loginBtn').style.display = 'inline-flex';
+    document.getElementById('logoutBtn').style.display = 'none';
+    loadWalletData();
+  }
+});
+
+// Initialize
+fetchExchangeRates();
+renderBusinessPlans();
+renderEducationPlans();
+renderSavingsPlans();
+renderFuneralPlans();
+setInterval(fetchExchangeRates, 3600000);
+
+window.showLoginModal = showLoginModal;
+window.closeLoginModal = closeLoginModal;
+</script>
+</body>
+</html>
