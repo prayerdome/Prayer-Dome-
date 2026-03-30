@@ -2,853 +2,219 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Prayer Dome | Live & Videos - Watch Services Online</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prayer Dome | Live Stream & Broadcast</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         :root {
-            --accent-green: #22c55e;
-            --accent-gold: #d4af37;
-            --accent-blue: #3b82f6;
-            --accent-red: #ef4444;
-            --accent-purple: #8b5cf6;
-            --bg-primary: #f8fafc;
-            --bg-secondary: #ffffff;
-            --bg-card: #ffffff;
-            --text-primary: #0f172a;
-            --text-secondary: #334155;
-            --border-color: #e2e8f0;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-            --shadow-lg: 0 20px 35px -10px rgba(0, 0, 0, 0.1);
+            --pd-green: #22c55e;
+            --pd-gold: #d4af37;
+            --pd-red: #ef4444;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            transition: all 0.3s;
-            min-height: 100vh;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg-dark); color: white; padding-bottom: 100px; }
 
-        body.dark-mode {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: #1e293b;
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --border-color: #334155;
-        }
-
-        /* Header */
-        .live-header {
-            background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
-            border-bottom: 1px solid var(--border-color);
-            padding: 20px 30px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: var(--shadow);
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--accent-green), var(--accent-gold));
-            border-radius: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-        }
-
-        .logo-text h1 {
-            font-size: 1.6rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-green), var(--accent-gold));
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .theme-toggle, .back-btn, .refresh-btn {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            padding: 10px 20px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-            text-decoration: none;
-            color: var(--text-primary);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .refresh-btn:hover {
-            transform: rotate(180deg);
-        }
-
-        /* Main Container */
-        .main-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 30px;
-        }
-
-        /* Live Stream Section */
-        .live-stream-section {
-            background: linear-gradient(135deg, var(--bg-card), var(--bg-primary));
-            border-radius: 32px;
-            margin-bottom: 40px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            animation: fadeInUp 0.6s ease;
-        }
-
-        .live-header-badge {
-            background: linear-gradient(135deg, var(--accent-red), #b91c1c);
-            padding: 15px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .live-indicator {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .live-dot {
-            width: 16px;
-            height: 16px;
-            background: var(--accent-red);
-            border-radius: 50%;
-            animation: livePulse 1.5s infinite;
-        }
-
-        @keyframes livePulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.3); opacity: 0.7; }
-        }
-
-        .live-text {
-            font-weight: 800;
-            font-size: 1.2rem;
-            color: white;
-        }
-
-        .live-viewers {
-            background: rgba(255,255,255,0.2);
-            padding: 5px 15px;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            color: white;
-        }
-
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            background: #000;
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .live-placeholder {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            color: white;
-        }
-
-        .live-info {
-            padding: 20px 25px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .live-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--accent-green);
-        }
-
-        .live-meta {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-        /* Tabs */
-        .tabs {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 12px;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            padding: 10px 24px;
-            border: none;
-            background: transparent;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 40px;
-            transition: all 0.2s;
-            color: var(--text-secondary);
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, var(--accent-green), #16a34a);
-            color: white;
-        }
-
-        /* Videos Grid */
-        .videos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-
-        .video-card {
-            background: var(--bg-card);
-            border-radius: 24px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            animation: fadeInUp 0.5s ease;
-        }
-
-        .video-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--accent-green);
-        }
-
-        .video-thumbnail {
-            position: relative;
-            aspect-ratio: 16/9;
-            overflow: hidden;
-            background: linear-gradient(135deg, var(--accent-green), #166534);
-        }
-
-        .video-thumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .video-card:hover .video-thumbnail img {
-            transform: scale(1.1);
-        }
-
-        .play-icon-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            background: rgba(255,255,255,0.9);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent-green);
-            font-size: 24px;
-            opacity: 0;
-            transition: all 0.3s;
-        }
-
-        .video-card:hover .play-icon-overlay {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1.1);
-        }
-
-        .video-duration {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.7);
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            color: white;
-        }
-
-        .video-info {
-            padding: 16px;
-        }
-
-        .video-title {
-            font-weight: 700;
-            margin-bottom: 5px;
-            color: var(--accent-green);
-            font-size: 1rem;
-        }
-
-        .video-meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
-        /* Video Modal */
-        .video-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            backdrop-filter: blur(8px);
-        }
-
-        .video-modal-content {
-            width: 90%;
-            max-width: 1000px;
-            background: var(--bg-card);
-            border-radius: 24px;
-            overflow: hidden;
-        }
-
-        .video-modal-header {
-            padding: 15px 20px;
-            background: var(--bg-card);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .video-modal-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--text-secondary);
-        }
-
-        .video-modal-player {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-        }
-
-        .video-modal-player iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Toast */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1100;
-        }
-        .toast {
-            background: var(--bg-card);
-            padding: 12px 24px;
-            border-radius: 40px;
-            margin-bottom: 8px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            border-left: 4px solid var(--accent-green);
-            animation: slideIn 0.3s ease;
-        }
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--border-color);
-            border-top-color: var(--accent-green);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 40px auto;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 768px) {
-            .main-container { padding: 20px; }
-            .videos-grid { grid-template-columns: 1fr; }
-            .live-header-badge { flex-direction: column; text-align: center; }
-        }
+        .live-header { background: linear-gradient(135deg, #000, #1e293b); padding: 20px; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         
-        .btn {
-    padding: 10px 24px;
-    border-radius: 40px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
+        /* --- LIVE PLAYER SECTION --- */
+        .player-wrapper { width: 100%; max-width: 1000px; margin: 0 auto; background: #000; position: relative; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; background: #000; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 
-.btn-primary {
-    background: linear-gradient(135deg, var(--accent-green), #16a34a);
-    color: white;
-}
+        /* Scrolling Description Bar */
+        .live-info-bar { background: var(--pd-green); padding: 10px; overflow: hidden; white-space: nowrap; border-bottom: 2px solid var(--pd-gold); }
+        .ticker-text { display: inline-block; animation: ticker 20s linear infinite; font-weight: 800; text-transform: uppercase; font-size: 14px; }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(34,197,94,0.4);
-}
+        .video-details { padding: 20px; background: var(--card-bg); border-radius: 0 0 20px 20px; margin: 0 10px; }
+        .live-badge { background: var(--pd-red); color: white; padding: 4px 12px; border-radius: 4px; font-weight: 800; font-size: 12px; animation: blink 1.5s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* --- ADMIN COMMAND CENTER --- */
+        #adminBroadcastPanel { display: none; background: #000; border: 2px solid var(--pd-gold); margin: 20px; padding: 20px; border-radius: 20px; }
+        .admin-input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #334155; background: #1e293b; color: white; }
+        .btn-live { background: var(--pd-red); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; width: 100%; }
+
+        /* --- RECORDED VIDEOS --- */
+        .section-title { padding: 20px; font-weight: 800; font-size: 1.2rem; color: var(--pd-green); }
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; padding: 0 20px; }
+        .video-card { background: var(--card-bg); border-radius: 15px; overflow: hidden; border: 1px solid #334155; cursor: pointer; transition: 0.3s; }
+        .video-card:hover { transform: translateY(-5px); border-color: var(--pd-green); }
+        .thumb { width: 100%; aspect-ratio: 16/9; background: #000; position: relative; }
+        .thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .card-body { padding: 15px; }
+        .card-body h4 { font-size: 0.9rem; margin-bottom: 5px; }
+        .card-body p { font-size: 0.75rem; color: #94a3b8; }
     </style>
 </head>
 <body>
-    <div class="live-header">
-        <div class="header-content">
-            <div class="logo-area">
-                <div class="logo-icon"><i class="fas fa-video"></i></div>
-                <div class="logo-text">
-                    <h1>Prayer Dome Live</h1>
-                    <p>Watch Services | Live Streams | Recordings</p>
-                </div>
+
+    <header class="live-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="https://i.ibb.co/TB5Fx4tb/logo-0.png" width="35" style="background:white; border-radius: 5px; padding: 2px;">
+            <h1 style="font-size: 1.1rem; font-weight: 900;">LIVE CENTER</h1>
+        </div>
+        <button onclick="window.location.href='index.html'" style="background:none; border:none; color:white; font-weight:bold; cursor:pointer;">HOME</button>
+    </header>
+
+    <!-- PLAYER AREA -->
+    <div class="player-wrapper">
+        <div class="video-container" id="playerContainer">
+            <!-- Iframe will load here dynamically -->
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:20px; text-align:center;">
+                <i class="fas fa-satellite-dish fa-3x" style="margin-bottom:15px; color:var(--pd-gold);"></i>
+                <h3>Waiting for Signal...</h3>
+                <p style="font-size: 12px; margin-top: 5px; opacity: 0.6;">The next broadcast starts soon.</p>
             </div>
-            <div class="header-actions">
-                <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
-                <button class="refresh-btn" onclick="refreshAll()"><i class="fas fa-sync-alt"></i> Refresh</button>
-                <button class="theme-toggle" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Dark Mode</button>
+        </div>
+        
+        <div class="live-info-bar">
+            <div class="ticker-track">
+                <span class="ticker-text" id="liveTicker">Welcome to Prayer Dome Live • Experience the Power of the Holy Spirit • Join our Global Community</span>
             </div>
+        </div>
+
+        <div class="video-details">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h2 id="currentVideoTitle">Prayer Dome Broadcast</h2>
+                <span id="liveStatusBadge" style="display:none;" class="live-badge">LIVE</span>
+            </div>
+            <p id="currentVideoDesc" style="font-size: 0.85rem; color:#94a3b8; margin-top:10px;">Join us in worship and word.</p>
         </div>
     </div>
 
-    <div class="main-container">
-        <!-- Live Stream Section -->
-        <div class="live-stream-section" id="liveStreamSection">
-            <div class="live-header-badge">
-                <div class="live-indicator">
-                    <div class="live-dot"></div>
-                    <span class="live-text">LIVE NOW</span>
-                </div>
-                <div class="live-viewers" id="liveViewers">👁️ Checking...</div>
-            </div>
-            <div class="video-container" id="liveVideoContainer">
-                <div class="live-placeholder">
-                    <i class="fas fa-video" style="font-size: 64px; margin-bottom: 20px; opacity: 0.5;"></i>
-                    <h3>Checking for live stream...</h3>
-                    <p style="margin-top: 10px;">Prayer Dome Live Stream</p>
-                    <div style="margin-top: 20px; display: flex; gap: 10px;">
-                        <span class="team-badge" style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px;">🇿🇲 Zambia</span>
-                        <span class="team-badge" style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px;">⏰ Sunday 9:00 AM</span>
-                    </div>
-                </div>
-            </div>
-            <div class="live-info">
-                <div class="live-title" id="liveTitle">Prayer Dome </div>
-                <div class="live-meta">
-                    <span><i class="fas fa-map-marker-alt"></i> Zambia</span>
-                    <span><i class="fas fa-calendar"></i> <span id="liveSchedule">Every Sunday 9:00 AM & 1:00 PM (CAT)</span></span>
-                    <span><i class="fas fa-bell"></i> <a href="#" onclick="setReminder()" style="color: var(--accent-green);">Set Reminder</a></span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab('latest')">📹 Latest Videos</button>
-            <button class="tab-btn" onclick="showTab('sermons')">🙏 Sermons</button>
-            <button class="tab-btn" onclick="showTab('worship')">🎵 Worship</button>
-            <button class="tab-btn" onclick="showTab('testimonies')">✨ Testimonies</button>
-        </div>
-
-        <!-- Videos Grid -->
-        <div id="videosGrid" class="videos-grid">
-            <div class="spinner"></div>
+    <!-- ADMIN PANEL -->
+    <div id="adminBroadcastPanel">
+        <h3 style="color:var(--pd-gold); margin-bottom:15px;"><i class="fas fa-broadcast-tower"></i> Admin Broadcast Controller</h3>
+        <input type="text" id="broadcastTitle" class="admin-input" placeholder="Service Title (e.g. Sunday Morning Miracle)">
+        <textarea id="broadcastDesc" class="admin-input" rows="3" placeholder="Description / Scripture focus"></textarea>
+        <button class="btn-live" id="goLiveBtn" onclick="createLiveBroadcast()">START GLOBAL BROADCAST</button>
+        
+        <div id="streamKeyArea" style="display:none; margin-top:20px; background:#000; padding:15px; border-radius:10px; border:1px dashed #555;">
+            <p style="font-size: 11px; color: var(--pd-gold);">Copy this Stream Key into your OBS or Camera App:</p>
+            <input type="text" id="streamKeyDisplay" readonly style="width:100%; background:none; border:none; color:white; font-family:monospace; margin-top:10px;">
         </div>
     </div>
 
-    <!-- Video Modal -->
-    <div id="videoModal" class="video-modal" style="display: none;">
-        <div class="video-modal-content">
-            <div class="video-modal-header">
-                <h3 id="modalTitle">Video Title</h3>
-                <button class="video-modal-close" onclick="closeVideoModal()"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="video-modal-player" id="modalPlayer"></div>
-        </div>
+    <div class="section-title">Recorded Services</div>
+    <div class="video-grid" id="pastVideosGrid">
+        <!-- Videos will load here -->
     </div>
-
-    <div class="toast-container" id="toastContainer"></div>
 
     <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, query, orderBy, doc, getDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyCxvql0r_aeerphxTA0UUedRppdBxGf7wo",
-        authDomain: "prayer-dome.firebaseapp.com",
-        projectId: "prayer-dome",
-        storageBucket: "prayer-dome.firebasestorage.app",
-        messagingSenderId: "198295153196",
-        appId: "1:198295153196:web:1222b31948d7974ba3bf89"
-    };
+        const firebaseConfig = { apiKey: "AIzaSyCxvql0r_aeerphxTA0UUedRppdBxGf7wo", authDomain: "prayer-dome.firebaseapp.com", projectId: "prayer-dome", storageBucket: "prayer-dome.firebasestorage.app", messagingSenderId: "198295153196", appId: "1:198295153196:web:1222b31948d7974ba3bf89" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    
-        // ==================== CONFIGURATION ====================
-        const PRAYER_DOME_FACEBOOK = {
-            pageId: '847255098474902',
-            pageName: 'Prayer Dome',
-            pageUrl: 'https://www.facebook.com/profile.php?id=847255098474902',
-            liveUrl: 'https://www.facebook.com/847255098474902/live',
-            embedUrl: 'https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/847255098474902/live&show_text=false&appId'
-        };
+        // --- FACEBOOK CONFIGURATION ---
+        const PAGE_IDS = ["100086119165608", "61583956144114"]; // Eswatini & Zambia Page IDs
+        const TOKENS = [
+            "EAAjgZAHUoLzQBRHE9NL42vT3OZAfTZBIBvdZAP3pTZC3cEajuOf5dWuCKdLoK4bQQuZAAyNgJ2InlxaQTrmYfosgOvb11aji1X2kmVrOheht8YbZAWGx68ZAr3nUsLtDR44roUjMoYeR2BEbyG73yOM0JtnldDGx104ZBQKJxAVT1aEuA1lJQkUPGRjBY6vjZCkGFJlZAtZA3ZBnBsI7O8Y78UwddIMlOLNgQOiRHsnb5IsamjdAZD",
+            "EAAjgZAHUoLzQBREL4dvh85yeu8ok4wzqH0JzT1ZCyUlMv1Qu0mcJBJwSzJ9pz9baivEXZCVmCf1cyc6jLS2s7IKYjHk1OIZAv9rU6ouZCB0FjBV0mbwLHcluL6UaviQbmWi6mDQaskz0bH4TxmW4ZBgSgpJeAiNOG97wU4isDZCWFRZBcqmTk1PhV4hacdau6XwJnUGHZAWKkmfD2JlDRIlZCBMDyHtYn64RoUeJ370wEGEwZDZD"
+        ];
 
-        let isLive = false;
-        let liveCheckInterval = null;
-        let currentTab = 'latest';
-
-// ==================== FIREBASE VIDEOS ====================
-let videos = [];
-let allVideos = [];
-
-// Load videos from Firebase
-async function loadVideosFromFirebase() {
-    try {
-        const videosSnapshot = await getDocs(query(collection(db, "videos"), orderBy("createdAt", "desc")));
-        
-        if (videosSnapshot.empty) {
-            console.log("No videos found in Firebase");
-            showToast('No videos available yet. Check back soon!', 'info');
-            return;
-        }
-        
-        allVideos = [];
-        videosSnapshot.forEach(doc => {
-            const data = doc.data();
-            allVideos.push({
-                id: doc.id,
-                title: data.title || 'Untitled Video',
-                url: data.url || '',
-                thumbnail: data.thumbnail || 'https://i.ibb.co/RTbNh1hB/founder-2.jpg',
-                duration: data.duration || '0:00',
-                category: data.category || 'sermons',
-                views: data.views || 0,
-                date: data.date || data.createdAt?.toDate() || new Date(),
-                description: data.description || ''
-            });
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const memberDoc = await getDoc(doc(db, "memberships", user.uid));
+                if (memberDoc.exists() && memberDoc.data().role === "admin") {
+                    document.getElementById('adminBroadcastPanel').style.display = "block";
+                }
+            }
+            checkGlobalLiveStatus();
+            loadPastVideos();
         });
-        
-        videos = [...allVideos];
-        renderVideos();
-        updateVideoStats();
-        
-    } catch (error) {
-        console.error('Error loading videos:', error);
-        showToast('Error loading videos', 'error');
-    }
-}
 
-// Update video statistics
-function updateVideoStats() {
-    // You can add stats display here if needed
-    console.log(`Loaded ${videos.length} videos`);
-}
+        // --- CHECK IF FACEBOOK IS LIVE ---
+        async function checkGlobalLiveStatus() {
+            // We check the first token/page as the primary signal
+            const response = await fetch(`https://graph.facebook.com/${PAGE_IDS[0]}/live_videos?fields=status,embed_html,title,description&access_token=${TOKENS[0]}`);
+            const data = await response.json();
+            
+            if(data.data && data.data.length > 0) {
+                const liveVideo = data.data.find(v => v.status === "LIVE");
+                if(liveVideo) {
+                    updatePlayer(liveVideo.id, liveVideo.title, liveVideo.description);
+                }
+            }
+        }
 
-        // ==================== FACEBOOK LIVE DETECTION ====================
-        async function checkFacebookLive() {
-            const liveVideoContainer = document.getElementById('liveVideoContainer');
-            const liveTitle = document.getElementById('liveTitle');
-            const liveViewers = document.getElementById('liveViewers');
+        function updatePlayer(videoId, title, desc) {
+            document.getElementById('playerContainer').innerHTML = `
+                <iframe src="https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/facebook/videos/${videoId}/&show_text=false" 
+                scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+            `;
+            document.getElementById('currentVideoTitle').innerText = title || "Live Service";
+            document.getElementById('currentVideoDesc').innerText = desc || "Welcome to the Dome.";
+            document.getElementById('liveTicker').innerText = `${title} • ${desc}`;
+            document.getElementById('liveStatusBadge').style.display = "block";
+        }
+
+        // --- ADMIN: CREATE BROADCAST ---
+        window.createLiveBroadcast = async () => {
+            const title = document.getElementById('broadcastTitle').value;
+            const desc = document.getElementById('broadcastDesc').value;
+
+            if(!title) return alert("Please enter a title");
+
+            const btn = document.getElementById('goLiveBtn');
+            btn.innerText = "Generating Stream Keys...";
             
             try {
-                // Try to detect live stream via Facebook oEmbed
-                const oembedUrl = `https://www.facebook.com/plugins/video/oembed.json/?url=${encodeURIComponent(PRAYER_DOME_FACEBOOK.pageUrl)}`;
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(oembedUrl)}`);
-                const data = await response.json();
-                const contents = JSON.parse(data.contents);
-                
-                // Check if there's a live stream
-                const isLiveNow = contents.html?.toLowerCase().includes('live') || 
-                                 contents.title?.toLowerCase().includes('live') ||
-                                 document.querySelector('.live-video');
-                
-                if (isLiveNow || true) { // For demo, showing that we're checking
-                    // Show the live embed
-                    liveVideoContainer.innerHTML = `
-                        <iframe src="${PRAYER_DOME_FACEBOOK.embedUrl}" 
-                                width="100%" 
-                                height="100%" 
-                                style="border: none; overflow: hidden;" 
-                                scrolling="no" 
-                                frameborder="0" 
-                                allowfullscreen="true" 
-                                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
-                        </iframe>
-                    `;
-                    liveTitle.textContent = "🔴 LIVE: Prayer Dome Zambia Sunday Service";
-                    liveViewers.innerHTML = "👁️ 47 watching";
-                    isLive = true;
-                } else {
-                    throw new Error('No live stream');
+                // We create the broadcast on the first page
+                const response = await fetch(`https://graph.facebook.com/${PAGE_IDS[0]}/live_videos?status=FEATURED_LIVE&title=${encodeURIComponent(title)}&description=${encodeURIComponent(desc)}&access_token=${TOKENS[0]}`, { method: 'POST' });
+                const result = await response.json();
+
+                if(result.stream_url) {
+                    document.getElementById('streamKeyArea').style.display = "block";
+                    document.getElementById('streamKeyDisplay').value = result.stream_key;
+                    alert("Broadcast Created! Copy the key to your streaming software.");
+                    
+                    // Sync status to Firebase so users know you are live
+                    await setDoc(doc(db, "liveStatus", "current"), {
+                        isLive: true,
+                        title: title,
+                        desc: desc,
+                        videoId: result.id,
+                        startTime: serverTimestamp()
+                    });
                 }
-            } catch (error) {
-                // Show placeholder for offline
-                liveVideoContainer.innerHTML = `
-                    <div class="live-placeholder">
-                        <i class="fas fa-video" style="font-size: 64px; margin-bottom: 20px; opacity: 0.5;"></i>
-                        <h3>No Live Stream Currently</h3>
-                        <p style="margin-top: 10px;">Next service: Sunday 9:00 AM (CAT)</p>
-                        <div style="margin-top: 20px; display: flex; gap: 10px;">
-                            <span class="team-badge" style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px;">🇿🇲 Zambia</span>
-                            <span class="team-badge" style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px;">⏰ Sunday 9:00 AM</span>
+            } catch (e) { alert("Broadcast failed. Check tokens."); }
+            btn.innerText = "START GLOBAL BROADCAST";
+        };
+
+        // --- LOAD RECORDED VIDEOS ---
+        async function loadPastVideos() {
+            const grid = document.getElementById('pastVideosGrid');
+            // Fetch videos from the primary Zambia Page
+            const response = await fetch(`https://graph.facebook.com/${PAGE_IDS[1]}/videos?fields=description,title,thumbnails,created_time&limit=6&access_token=${TOKENS[1]}`);
+            const data = await response.json();
+
+            if(data.data) {
+                grid.innerHTML = data.data.map(vid => `
+                    <div class="video-card" onclick="window.open('https://facebook.com/videos/${vid.id}')">
+                        <div class="thumb">
+                            <img src="${vid.thumbnails.data[0].uri}">
+                            <div style="position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.7); padding:2px 8px; border-radius:5px; font-size:10px;">RECORDED</div>
                         </div>
-                        <a href="https://www.facebook.com/${PRAYER_DOME_FACEBOOK.pageId}/live" target="_blank" class="btn btn-primary" style="margin-top: 20px; background: #4267B2; padding: 10px 20px; border-radius: 30px; color: white; text-decoration: none;">
-                            <i class="fab fa-facebook"></i> Watch on Facebook
-                        </a>
+                        <div class="card-body">
+                            <h4>${vid.title || vid.description?.substring(0, 40) || "Service Recording"}</h4>
+                            <p>${moment(vid.created_time).format('DD MMM YYYY')}</p>
+                        </div>
                     </div>
-                `;
-                liveTitle.textContent = "Prayer Dome Zambia";
-                liveViewers.innerHTML = "⏸️ Offline";
-                isLive = false;
+                `).join('');
             }
         }
-
-        // ==================== RENDER VIDEOS ====================
-        function renderVideos() {
-    const container = document.getElementById('videosGrid');
-    
-    if (!allVideos || allVideos.length === 0) {
-        container.innerHTML = `
-            <div style="text-align: center; padding: 60px; grid-column: 1/-1;">
-                <i class="fas fa-video" style="font-size: 64px; opacity: 0.3; margin-bottom: 20px;"></i>
-                <h3>No Videos Available</h3>
-                <p>Check back soon for worship services, sermons, and testimonies.</p>
-                <button class="btn btn-primary" style="margin-top: 20px; background: var(--accent-green); padding: 10px 24px; border-radius: 40px; color: white; border: none; cursor: pointer;" onclick="window.location.href='index.html'">Return Home</button>
-            </div>
-        `;
-        return;
-    }
-    
-    let filteredVideos = allVideos;
-    if (currentTab !== 'latest') {
-        filteredVideos = allVideos.filter(v => v.category === currentTab);
-    }
-    
-    if (filteredVideos.length === 0) {
-        container.innerHTML = `
-            <div style="text-align: center; padding: 60px; grid-column: 1/-1;">
-                <i class="fas fa-video" style="font-size: 64px; opacity: 0.3; margin-bottom: 20px;"></i>
-                <h3>No videos in this category</h3>
-                <p>Check back soon for more content</p>
-            </div>
-        `;
-        return;
-    }
-    
-    container.innerHTML = filteredVideos.map(video => `
-        <div class="video-card" onclick="openVideo('${video.url}', '${escapeHtml(video.title)}')">
-            <div class="video-thumbnail">
-                <img src="${video.thumbnail}" alt="${video.title}" loading="lazy" onerror="this.src='https://i.ibb.co/RTbNh1hB/founder-2.jpg'">
-                <div class="play-icon-overlay"><i class="fas fa-play"></i></div>
-                <div class="video-duration">${video.duration}</div>
-            </div>
-            <div class="video-info">
-                <div class="video-title">${escapeHtml(video.title)}</div>
-                <div class="video-meta">
-                    <span><i class="fas fa-eye"></i> ${video.views} views</span>
-                    <span><i class="fas fa-calendar"></i> ${moment(video.date).format('MMM D, YYYY')}</span>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // ==================== VIDEO PLAYER ====================
-        function openVideo(url, title) {
-            const modal = document.getElementById('videoModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalPlayer = document.getElementById('modalPlayer');
-            
-            modalTitle.textContent = title;
-            modalPlayer.innerHTML = `
-                <iframe src="${url}" 
-                        width="100%" 
-                        height="100%" 
-                        frameborder="0" 
-                        allowfullscreen="true" 
-                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
-                </iframe>
-            `;
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeVideoModal() {
-            const modal = document.getElementById('videoModal');
-            const modalPlayer = document.getElementById('modalPlayer');
-            modal.style.display = 'none';
-            modalPlayer.innerHTML = '';
-            document.body.style.overflow = 'auto';
-        }
-
-        // ==================== UI FUNCTIONS ====================
-        function showTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            renderVideos();
-        }
-
-        function refreshAll() {
-            showToast('Refreshing live status...', 'info');
-            checkFacebookLive();
-            renderVideos();
-            showToast('Refreshed!', 'success');
-        }
-
-        function setReminder() {
-            showToast('Reminder set! You will be notified before the next service.', 'success');
-            confetti({ particleCount: 50, spread: 50, origin: { y: 0.6 } });
-        }
-
-        function shareLive() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Prayer Dome Live Stream',
-                    text: 'Join us for live worship and prayer!',
-                    url: PRAYER_DOME_FACEBOOK.liveUrl
-                });
-            } else {
-                navigator.clipboard.writeText(PRAYER_DOME_FACEBOOK.liveUrl);
-                showToast('Link copied to clipboard!', 'success');
-            }
-        }
-
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i> ${message}`;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 3500);
-        }
-
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            const btn = document.querySelector('.theme-toggle');
-            btn.innerHTML = document.body.classList.contains('dark-mode') ? '<i class="fas fa-sun"></i> Light Mode' : '<i class="fas fa-moon"></i> Dark Mode';
-        }
-
-        // ==================== INITIALIZATION ====================
-        async function init() {
-    // Load videos from Firebase first
-    await loadVideosFromFirebase();
-    
-    // Check for live stream
-    checkFacebookLive();
-    
-    // Check for live stream every 30 seconds
-    liveCheckInterval = setInterval(checkFacebookLive, 30000);
-    
-    // Update live viewers count (only if live)
-    setInterval(() => {
-        if (isLive) {
-            const viewersEl = document.getElementById('liveViewers');
-            const currentViewers = parseInt(viewersEl.textContent.match(/\d+/)?.[0] || 47);
-            const newViewers = currentViewers + Math.floor(Math.random() * 5) - 2;
-            viewersEl.innerHTML = `👁️ ${Math.max(12, newViewers)} watching`;
-        }
-    }, 15000);
-}
-
-        // Expose global functions
-        window.showTab = showTab;
-        window.openVideo = openVideo;
-        window.closeVideoModal = closeVideoModal;
-        window.refreshAll = refreshAll;
-        window.setReminder = setReminder;
-        window.shareLive = shareLive;
-        window.toggleDarkMode = toggleDarkMode;
-
-        // Start
-        init();
     </script>
 </body>
 </html>

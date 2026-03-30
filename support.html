@@ -1,1564 +1,818 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>Prayer Dome | Community Support Program</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
-  <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --accent-green: #22c55e;
-      --accent-gold: #d4af37;
-      --accent-blue: #3b82f6;
-      --accent-red: #ef4444;
-      --accent-purple: #8b5cf6;
-      --accent-orange: #f97316;
-      --bg-primary: #f8fafc;
-      --bg-secondary: #ffffff;
-      --bg-card: #ffffff;
-      --text-primary: #0f172a;
-      --text-secondary: #334155;
-      --border-color: #e2e8f0;
-      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-      --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.2);
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      transition: all 0.3s;
-    }
-
-    body.dark-mode {
-      --bg-primary: #0f172a;
-      --bg-secondary: #1e293b;
-      --bg-card: #1e293b;
-      --text-primary: #f8fafc;
-      --text-secondary: #cbd5e1;
-      --border-color: #334155;
-    }
-
-    .nav-tabs {
-      display: flex;
-      gap: 8px;
-      background: var(--bg-secondary);
-      padding: 12px 16px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      overflow-x: auto;
-      border-bottom: 2px solid var(--border-color);
-      box-shadow: var(--shadow);
-    }
-
-    .nav-tab {
-      padding: 12px 24px;
-      border: none;
-      background: transparent;
-      font-weight: 600;
-      cursor: pointer;
-      border-radius: 40px;
-      transition: all 0.3s;
-      color: var(--text-secondary);
-      white-space: nowrap;
-    }
-
-    .nav-tab.active {
-      background: linear-gradient(135deg, var(--accent-green), #16a34a);
-      color: white;
-      box-shadow: 0 4px 12px rgba(34,197,94,0.3);
-    }
-
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 24px 20px;
-    }
-
-    .card {
-      background: var(--bg-card);
-      border-radius: 28px;
-      padding: 28px;
-      margin-bottom: 24px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border-color);
-      transition: all 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .hero-slider {
-      position: relative;
-      border-radius: 32px;
-      overflow: hidden;
-      margin-bottom: 32px;
-      height: 400px;
-    }
-
-    .slide {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      background-size: cover;
-      background-position: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      color: white;
-    }
-
-    .slide.active {
-      opacity: 1;
-    }
-
-    .slide-content {
-      background: rgba(0,0,0,0.5);
-      padding: 40px;
-      border-radius: 32px;
-      max-width: 80%;
-    }
-
-    .slide-content h1 {
-      font-size: 3rem;
-      margin-bottom: 16px;
-    }
-
-    .plans-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 24px;
-      margin-top: 20px;
-    }
-
-    .plan-card {
-      background: var(--bg-card);
-      border-radius: 24px;
-      padding: 0;
-      border: 1px solid var(--border-color);
-      transition: all 0.4s;
-      cursor: pointer;
-      overflow: hidden;
-    }
-
-    .plan-card:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--accent-green);
-    }
-
-    .plan-image {
-      height: 180px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .plan-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s;
-    }
-
-    .plan-card:hover .plan-image img {
-      transform: scale(1.1);
-    }
-
-    .plan-content {
-      padding: 20px;
-    }
-
-    .plan-amount {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--accent-green);
-      margin: 10px 0;
-    }
-
-    .wallet-card {
-      background: linear-gradient(135deg, var(--accent-green), #166534);
-      color: white;
-    }
-
-    .wallet-balance {
-      text-align: center;
-      padding: 20px;
-    }
-
-    .wallet-balance .amount {
-      font-size: 3rem;
-      font-weight: 800;
-      margin: 10px 0;
-    }
-
-    .interest-info {
-      background: rgba(255,255,255,0.2);
-      border-radius: 20px;
-      padding: 12px;
-      margin-top: 15px;
-    }
-
-    .btn {
-      padding: 10px 15px;
-      border-radius: 20px;
-      border: none;
-      font-weight: 300;
-      cursor: pointer;
-      transition: all 0.3s;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 1rem;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent-green), #16a34a);
-      color: white;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(34,197,94,0.4);
-    }
-
-    .btn-secondary {
-      background: var(--bg-primary);
-      border: 2px solid var(--accent-green);
-      color: var(--accent-green);
-    }
-
-    .btn-secondary:hover {
-      background: var(--accent-green);
-      color: white;
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 2px solid var(--border-color);
-      color: var(--text-secondary);
-    }
-
-    .btn-outline:hover {
-      border-color: var(--accent-green);
-      color: var(--accent-green);
-    }
-
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      backdrop-filter: blur(8px);
-    }
-
-    .modal-content {
-      background: var(--bg-card);
-      border-radius: 32px;
-      padding: 32px;
-      max-width: 550px;
-      width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .modal-content input, .modal-content select, .modal-content textarea {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 2px solid var(--border-color);
-      border-radius: 16px;
-      background: var(--bg-primary);
-    }
-
-    .upload-area {
-      border: 2px dashed var(--border-color);
-      border-radius: 20px;
-      padding: 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      margin-bottom: 15px;
-    }
-
-    .upload-area:hover {
-      border-color: var(--accent-green);
-      background: rgba(34,197,94,0.05);
-    }
-
-    .uploaded-file {
-      background: rgba(34,197,94,0.1);
-      padding: 10px;
-      border-radius: 12px;
-      margin-top: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .toast-container {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1100;
-    }
-
-    .toast {
-      background: var(--bg-card);
-      padding: 12px 24px;
-      border-radius: 40px;
-      margin-bottom: 10px;
-      box-shadow: var(--shadow-lg);
-      border-left: 5px solid var(--accent-green);
-      animation: slideIn 0.3s ease;
-    }
-
-    .toast.error {
-      border-left-color: var(--accent-red);
-    }
-
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-      backdrop-filter: blur(4px);
-    }
-
-    .loading-spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid var(--border-color);
-      border-top-color: var(--accent-green);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .section-title {
-      font-size: 1.8rem;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--accent-green);
-    }
-
-    .document-section {
-      background: var(--bg-primary);
-      border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    .document-section h4 {
-      color: var(--accent-gold);
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .moving-words-container {
-      background: rgba(0, 0, 0, 0.25);
-      padding: 12px 20px;
-      border-radius: 60px;
-      backdrop-filter: blur(8px);
-      flex: 1;
-      min-width: 280px;
-      overflow: hidden;
-    }
-
-    .moving-words {
-      display: flex;
-      align-items: center;
-      gap: 40px;
-      animation: scrollWords 20s linear infinite;
-      white-space: nowrap;
-    }
-
-    .moving-word-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 15px;
-      font-size: 20px;
-      font-weight: 800;
-      color: white;
-      padding: 0 20px;
-    }
-
-    .moving-word-item i {
-      font-size: 28px;
-      color: var(--accent-gold);
-    }
-
-    @keyframes scrollWords {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    .moving-words-container:hover .moving-words {
-      animation-play-state: paused;
-    }
-
-    .back-button {
-      background: white;
-      color: var(--accent-green);
-      border: none;
-      padding: 12px 28px;
-      border-radius: 50px;
-      cursor: pointer;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: all 0.3s ease;
-    }
-
-    .back-button:hover {
-      transform: translateX(-3px);
-      background: var(--accent-gold);
-      color: white;
-    }
-
-    .support-footer {
-      background: var(--bg-secondary);
-      margin-top: 60px;
-      border-top: 2px solid var(--border-color);
-    }
-
-    .footer-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 50px 30px 30px;
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 40px;
-      margin-bottom: 40px;
-    }
-
-    .footer-section h3 {
-      color: var(--accent-green);
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-
-    .footer-section p {
-      margin: 12px 0;
-      color: var(--text-secondary);
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .footer-bottom {
-      text-align: center;
-      padding-top: 30px;
-      border-top: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      font-size: 13px;
-    }
-
-    .transaction-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .transaction-positive {
-      color: var(--accent-green);
-    }
-
-    .transaction-negative {
-      color: var(--accent-red);
-    }
-
-    @media (max-width: 768px) {
-      .hero-slider { height: 300px; }
-      .slide-content h1 { font-size: 1.8rem; }
-      .plans-grid { grid-template-columns: 1fr; }
-      .nav-tabs { padding: 8px 12px; }
-      .nav-tab { padding: 8px 16px; font-size: 14px; }
-      .moving-word-item { font-size: 14px; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Prayer Dome | Global Support & Secure Fintech Wallet</title>
+    
+    <!-- Professional Icons & Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+
+    <style>
+        :root {
+            --pd-green: #15803d;
+            --pd-gold: #d4af37;
+            --pd-navy: #0f172a;
+            --pd-red: #ef4444;
+            --bg-base: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.9);
+            --border: #e2e8f0;
+            --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        /* --- GLOBAL RESET --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-base); color: var(--pd-navy); transition: 0.4s; overflow-x: hidden; padding-bottom: 120px; }
+        body.dark-mode { --bg-base: #020617; --glass: rgba(15, 23, 42, 0.95); --pd-navy: #f8fafc; --border: #1e293b; }
+
+        /* --- HIGH-END HEADER --- */
+        .app-header {
+            background: linear-gradient(135deg, var(--pd-green), #064e3b);
+            padding: 20px 25px; color: white; position: sticky; top: 0; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; color: white;}
+        .logo-container { width: 40px; height: 40px; background: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; padding: 5px; }
+        .logo-container img { width: 100%; height: auto; }
+        .header-title h1 { font-size: 1.1rem; font-weight: 900; letter-spacing: -0.5px; }
+
+        /* --- NAVIGATION TABS --- */
+        .tab-wrapper { display: flex; background: var(--glass); margin: 15px; padding: 6px; border-radius: 50px; border: 1px solid var(--border); backdrop-filter: blur(10px); overflow-x: auto;}
+        .tab-item { flex: 1; padding: 12px; text-align: center; border-radius: 50px; font-weight: 800; font-size: 0.7rem; cursor: pointer; transition: 0.3s; color: #94a3b8; white-space: nowrap; min-width: 120px;}
+        .tab-item.active { background: var(--pd-green); color: white; box-shadow: 0 4px 10px rgba(21, 128, 61, 0.3); }
+
+        /* --- CONTENT WRAPPER --- */
+        .page-container { padding: 0 20px; max-width: 800px; margin: 0 auto; }
+        .view-section { display: none; animation: fadeIn 0.4s ease; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- PROGRAM DISPLAY CARDS --- */
+        .hero-card { background: var(--bg-card); border-radius: 35px; overflow: hidden; margin-bottom: 30px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: 0.4s; }
+        .hero-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); border-color: var(--pd-green);}
+        .hero-image { width: 100%; height: 220px; position: relative; overflow: hidden; }
+        .hero-image img { width: 100%; height: 100%; object-fit: cover; }
+        .img-tint { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7)); }
+        
+        .hero-body { padding: 30px; }
+        .hero-tag { font-size: 10px; font-weight: 900; color: var(--pd-green); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; display: block; }
+        .hero-title { font-family: 'Merriweather', serif; font-size: 1.6rem; margin-bottom: 15px; color: var(--pd-navy); }
+        .hero-text { font-size: 0.9rem; color: #64748b; line-height: 1.7; margin-bottom: 25px; }
+
+        .tier-box { background: var(--bg-base); padding: 15px; border-radius: 18px; margin-bottom: 12px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+        .tier-box:hover { border-color: var(--pd-gold); transform: translateX(5px);}
+        .tier-name { font-weight: 800; font-size: 0.85rem; }
+        .tier-val { color: var(--pd-green); font-weight: 900; font-size: 0.85rem; }
+
+        /* --- FINTECH SECURITY (PIN INTERFACE) --- */
+        #secureOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.98); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; padding: 20px; backdrop-filter: blur(10px);}
+        .secure-icon { width: 80px; height: 80px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: var(--pd-gold); margin-bottom: 20px; }
+        .pin-display { display: flex; gap: 15px; margin: 30px 0; }
+        .pin-dot { width: 15px; height: 15px; border: 2px solid var(--pd-gold); border-radius: 50%; transition: 0.3s; }
+        .pin-dot.active { background: var(--pd-gold); box-shadow: 0 0 15px var(--pd-gold); }
+        
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; max-width: 300px; }
+        .n-key { width: 75px; height: 75px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 600; cursor: pointer; transition: 0.2s;}
+        .n-key:active { background: var(--pd-gold); color: black; transform: scale(0.9);}
+        .btn-ok { grid-column: span 3; background: var(--pd-green); border-radius: 50px; height: 60px; margin-top: 15px; font-weight: 900; letter-spacing: 2px; }
+
+        /* --- WALLET DASHBOARD --- */
+        .wallet-card { background: linear-gradient(135deg, #1e293b, #020617); border-radius: 40px; padding: 35px; color: white; position: relative; overflow: hidden; margin-bottom: 30px; border: 1px solid var(--pd-gold); text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.3);}
+        .balance-label { font-size: 0.75rem; font-weight: 700; opacity: 0.6; text-transform: uppercase; letter-spacing: 2px; }
+        .balance-val { font-size: 3.2rem; font-weight: 900; color: var(--pd-gold); margin: 10px 0; text-shadow: 0 4px 15px rgba(212,175,55,0.3);}
+        
+        .secret-reveal { background: var(--bg-card); border: 2px dashed var(--border); border-radius: 30px; padding: 35px; text-align: center; margin: 25px 0; }
+        .blur-text { filter: blur(8px); transition: 0.6s ease; user-select: none; pointer-events: none; }
+        .blur-text.unveiled { filter: blur(0); user-select: text; pointer-events: auto; }
+
+        .transaction-list { margin-top: 20px; }
+        .tx-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); }
+        .tx-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .tx-icon.dep { background: rgba(34,197,94,0.1); color: var(--pd-green); }
+        .tx-icon.wth { background: rgba(239,68,68,0.1); color: var(--pd-red); }
+
+        /* --- BUTTONS --- */
+        .btn-main { width: 100%; padding: 18px; border-radius: 20px; border: none; font-weight: 900; font-size: 1rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .btn-green { background: var(--pd-green); color: white; }
+        .btn-gold { background: var(--pd-gold); color: black; }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .btn-main:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* --- MODALS & FORMS --- */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); padding: 20px;}
+        .modal-body { background: var(--bg-card); border-radius: 30px; padding: 30px; width: 100%; max-width: 500px; animation: modalIn 0.3s ease; max-height: 90vh; overflow-y: auto;}
+        @keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; font-weight: 700; font-size: 0.85rem; margin-bottom: 8px; color: var(--pd-navy);}
+        input, select, textarea { width: 100%; padding: 15px; border-radius: 15px; border: 2px solid var(--border); background: var(--bg-base); color: var(--pd-navy); font-size: 1rem; outline: none; transition: 0.3s; font-family: inherit;}
+        input:focus, select:focus, textarea:focus { border-color: var(--pd-green); }
+
+        .upload-zone { border: 2px dashed var(--border); border-radius: 15px; padding: 20px; text-align: center; cursor: pointer; transition: 0.3s; background: var(--bg-base); margin-bottom: 15px;}
+        .upload-zone:hover { border-color: var(--pd-green); background: rgba(34,197,94,0.05); }
+
+        /* --- TOASTS & LOADERS --- */
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;}
+        .toast { background: var(--bg-card); padding: 15px 20px; border-radius: 15px; box-shadow: var(--shadow-lg); border-left: 5px solid var(--pd-green); display: flex; align-items: center; gap: 10px; font-weight: 700; animation: slideIn 0.3s ease; font-size: 0.9rem;}
+        .toast.error { border-left-color: var(--pd-red); }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        .loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-base); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--pd-navy);}
+        .spinner { width: 50px; height: 50px; border: 4px solid var(--border); border-top-color: var(--pd-green); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px;}
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
 
-<!-- Header -->
-<div style="background: linear-gradient(135deg, var(--accent-green), #166534); padding: 15px 20px;">
-  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
-    <button onclick="window.location.href='index.html'" class="back-button">
-      <i class="fas fa-arrow-left"></i> Back to Prayer Dome
-    </button>
-    <div class="moving-words-container">
-      <div class="moving-words">
-        <div class="moving-word-item"><i class="fas fa-bible"></i><span>💪 I CAN DO ALL THINGS THROUGH CHRIST</span></div>
-        <div class="moving-word-item"><i class="fas fa-hand-holding-heart"></i><span>📖 GIVE AND IT SHALL BE GIVEN TO YOU</span></div>
-        <div class="moving-word-item"><i class="fas fa-users"></i><span>🙌 WHERE TWO OR THREE GATHER IN MY NAME</span></div>
-        <div class="moving-word-item"><i class="fas fa-church"></i><span>💰 THE LORD WILL OPEN THE HEAVENS</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="toast-container" id="toastContainer"></div>
-<div id="loadingOverlay" class="loading-overlay" style="display: none;">
-  <div class="loading-spinner"></div>
-</div>
-
-<!-- Navigation Tabs -->
-<div class="nav-tabs">
-  <button class="nav-tab active" onclick="showSection('community')"><i class="fas fa-home"></i> Community</button>
-  <button class="nav-tab" onclick="showSection('business')"><i class="fas fa-briefcase"></i> Business</button>
-  <button class="nav-tab" onclick="showSection('education')"><i class="fas fa-graduation-cap"></i> Education</button>
-  <button class="nav-tab" onclick="showSection('savings')"><i class="fas fa-piggy-bank"></i> Savings</button>
-  <button class="nav-tab" onclick="showSection('funeral')"><i class="fas fa-hand-holding-heart"></i> Funeral</button>
-  <button class="nav-tab" onclick="showSection('documents')"><i class="fas fa-file-alt"></i> Documents</button>
-  <button class="nav-tab" onclick="showSection('wallet')"><i class="fas fa-wallet"></i> Wallet</button>
-</div>
-
-<div class="container" id="appContainer">
-  <!-- COMMUNITY SECTION -->
-  <div id="communitySection" class="section">
-    <div class="hero-slider">
-      <div class="slide active" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://i.ibb.co/JWYjXgnN/together-we-can.jpg')">
-        <div class="slide-content">
-          <i class="fas fa-hand-holding-heart" style="font-size: 4rem; margin-bottom: 20px;"></i>
-          <h1>Together We Rise</h1>
-          <p>Together we build. No one should struggle alone.</p>
-          <button class="btn btn-primary" style="margin-top: 25px;" onclick="showSection('business')">Join Now</button>
-        </div>
-      </div>
-      <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://i.ibb.co/gFVb6Rvv/hands-together.jpg')">
-        <div class="slide-content">
-          <i class="fas fa-users" style="font-size: 4rem; margin-bottom: 20px;"></i>
-          <h1>Don't Be Frustrated with Debt</h1>
-          <p>Together we create financial stability.</p>
-        </div>
-      </div>
+    <!-- FULL PAGE LOADER -->
+    <div class="loader-overlay" id="globalLoader">
+        <div class="spinner"></div>
+        <h3 id="loaderText">Authenticating...</h3>
     </div>
 
-    <div class="card">
-      <div class="section-title"><i class="fas fa-quote-left"></i> Our Promise</div>
-      <p style="font-size: 1.2rem; line-height: 1.8;">This system is built on trust, discipline, and community. Every member contributes, and every member benefits.</p>
-    </div>
-  </div>
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastBox"></div>
 
-  <!-- BUSINESS SECTION -->
-  <div id="businessSection" class="section" style="display: none;">
-    <div class="card">
-      <div class="section-title"><i class="fas fa-briefcase"></i> Business Support Plans</div>
-      <p>Build your future through consistent saving and receive financial support after qualification.</p>
-      <div class="plans-grid" id="businessPlansGrid"></div>
-      <div style="margin-top: 30px; text-align: center;">
-        <button class="btn btn-secondary" onclick="openClaimSupportModal('business')"><i class="fas fa-hand-holding-heart"></i> Claim Business Support</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- EDUCATION SECTION -->
-  <div id="educationSection" class="section" style="display: none;">
-    <div class="card">
-      <div class="section-title"><i class="fas fa-graduation-cap"></i> Education Support Plans</div>
-      <p>Save for your children's education or your own further studies.</p>
-      <div class="plans-grid" id="educationPlansGrid"></div>
-      <div style="margin-top: 30px; text-align: center;">
-        <button class="btn btn-secondary" onclick="openClaimSupportModal('education')">
-          <i class="fas fa-graduation-cap"></i> Request Education Support
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- SAVINGS SECTION -->
-  <div id="savingsSection" class="section" style="display: none;">
-    <div class="card">
-      <div class="section-title"><i class="fas fa-piggy-bank"></i> Savings Account</div>
-      <p>Save consistently and grow your money with monthly interest of <strong>0.50%</strong>.</p>
-      <div class="plans-grid" id="savingsPlansGrid"></div>
-    </div>
-  </div>
-
-  <!-- FUNERAL SECTION -->
-  <div id="funeralSection" class="section" style="display: none;">
-    <div class="card">
-      <div class="section-title"><i class="fas fa-hand-holding-heart"></i> Funeral Cover Plans</div>
-      <div class="plans-grid" id="funeralPlansGrid"></div>
-      <div style="margin-top: 30px; text-align: center;">
-        <button class="btn btn-secondary" onclick="openClaimSupportModal('funeral')">Claim Funeral Support</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- DOCUMENTS SECTION -->
-  <div id="documentsSection" class="section" style="display: none;">
-    <div class="card">
-      <div class="section-title"><i class="fas fa-file-alt"></i> Document Submission</div>
-      <p>Upload required documents for verification. All documents are securely stored and reviewed by admin.</p>
-      
-      <form id="documentForm" onsubmit="event.preventDefault(); submitAllDocuments()">
+    <!-- SECURITY: NUMPAD PIN WALL -->
+    <div id="secureOverlay">
+        <div class="secure-icon" id="js-secure-icon"><i class="fas fa-fingerprint"></i></div>
+        <h2 id="js-secure-title">Secure Access</h2>
+        <p id="js-secure-sub" style="opacity:0.6; font-size:0.8rem; margin-top:5px; text-align:center;">Please authenticate to continue</p>
         
-        <!-- Personal Information -->
-        <div class="document-section">
-          <h4><i class="fas fa-user"></i> Personal Information</h4>
-          <input type="text" id="docFullName" placeholder="Full Name *" required>
-          <input type="text" id="docPhone" placeholder="Phone Number *" required>
-          <input type="text" id="docNRC" placeholder="NRC / Passport Number *" required>
-          <input type="text" id="docAddress" placeholder="Physical Address">
+        <div class="pin-display">
+            <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
         </div>
 
-        <!-- Next of Kin -->
-        <div class="document-section">
-          <h4><i class="fas fa-users"></i> Next of Kin Information</h4>
-          <input type="text" id="nextKinName" placeholder="Next of Kin Full Name *" required>
-          <input type="text" id="nextKinPhone" placeholder="Next of Kin Phone *" required>
-          <input type="text" id="nextKinRelation" placeholder="Relationship *" required>
-          <input type="text" id="nextKinAddress" placeholder="Next of Kin Address">
+        <div class="numpad">
+            <div class="n-key" onclick="tapPin(1)">1</div><div class="n-key" onclick="tapPin(2)">2</div><div class="n-key" onclick="tapPin(3)">3</div>
+            <div class="n-key" onclick="tapPin(4)">4</div><div class="n-key" onclick="tapPin(5)">5</div><div class="n-key" onclick="tapPin(6)">6</div>
+            <div class="n-key" onclick="tapPin(7)">7</div><div class="n-key" onclick="tapPin(8)">8</div><div class="n-key" onclick="tapPin(9)">9</div>
+            <div class="n-key" style="background:transparent;" onclick="cancelSecure()"><i class="fas fa-times"></i></div>
+            <div class="n-key" onclick="tapPin(0)">0</div>
+            <div class="n-key" style="background:transparent;" onclick="clearPin()"><i class="fas fa-backspace"></i></div>
+            <button class="btn-main btn-ok" id="js-pin-confirm" onclick="confirmPinAction()">CONFIRM PIN</button>
         </div>
-
-        <!-- IDENTITY DOCUMENTS -->
-        <div class="document-section">
-          <h4><i class="fas fa-id-card"></i> Identity Verification</h4>
-          <div class="upload-area" onclick="uploadDocument('id_front')">
-            <i class="fas fa-id-card"></i> NRC / Passport (Front)
-            <div id="id_front_preview"></div>
-          </div>
-          <div class="upload-area" onclick="uploadDocument('id_back')">
-            <i class="fas fa-id-card"></i> NRC / Passport (Back)
-            <div id="id_back_preview"></div>
-          </div>
-        </div>
-
-        <!-- PROOF OF RESIDENCE -->
-        <div class="document-section">
-          <h4><i class="fas fa-home"></i> Proof of Residence</h4>
-          <div class="upload-area" onclick="uploadDocument('proof_address')">
-            <i class="fas fa-file-alt"></i> Utility Bill / Bank Statement
-            <div id="proof_address_preview"></div>
-          </div>
-        </div>
-
-        <!-- PROOF OF INCOME -->
-        <div class="document-section">
-          <h4><i class="fas fa-chart-line"></i> Proof of Income / Employment</h4>
-          <div class="upload-area" onclick="uploadDocument('income_proof')">
-            <i class="fas fa-file-invoice-dollar"></i> Payslip / Business Registration
-            <div id="income_proof_preview"></div>
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 25px;">
-          <i class="fas fa-paper-plane"></i> Submit All Documents
-        </button>
-      </form>
     </div>
-  </div>
 
-  <!-- WALLET SECTION -->
-  <div id="walletSection" class="section" style="display: none;">
-    <div id="authButtons" style="display: flex; gap: 5px; justify-content: flex-end; margin-bottom: 10px;">
-      <button onclick="showLoginModal()" class="btn btn-outline" id="loginBtn">Login</button>
-      <button onclick="logout()" class="btn btn-outline" id="logoutBtn" style="display: none;">Logout</button>
+    <!-- HEADER -->
+    <header class="app-header">
+        <a href="index.html" class="header-left" style="text-decoration: none; color: white;">
+            <div class="logo-container"><img src="https://i.ibb.co/TB5Fx4tb/logo-0.png" alt="Logo"></div>
+            <div class="header-title">
+                <h1>PRAYER DOME</h1>
+                <span style="font-size: 10px; opacity: 0.8;">SUPPORT & FINANCE</span>
+            </div>
+        </a>
+        <i class="fas fa-shield-halved" style="color: var(--pd-gold); font-size: 24px;"></i>
+    </header>
+
+    <!-- TABS -->
+    <div class="tab-wrapper">
+        <div class="tab-item active" onclick="setView('programs', this)">GLOBAL VISION</div>
+        <div class="tab-item" onclick="setView('myplans', this)">MY PLANS</div>
+        <div class="tab-item" onclick="setView('wallet', this)">SECURE WALLET</div>
     </div>
-    
-    <div id="walletContent">
-      <div class="card wallet-card">
-        <div class="wallet-balance">
-          <h3><i class="fas fa-wallet"></i> My Wallet Balance</h3>
-          <div class="amount" id="walletBalance">E0.00</div>
-          <div style="display: flex; gap: 15px; justify-content: center; margin-top: 15px;">
-            <span>💰 Total Deposits: <strong id="totalDeposits">E0</strong></span>
-            <span>⏳ Pending: <strong id="pendingDeposits">E0</strong></span>
-          </div>
-          <div class="interest-info">
-            <i class="fas fa-chart-line"></i> Monthly Interest: <strong>0.50%</strong>
-            <div>Est. monthly earnings: <strong id="monthlyInterest">E0.00</strong></div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Currency Converter -->
-      <div class="card">
-        <div class="section-title"><i class="fas fa-exchange-alt"></i> Currency Converter</div>
-        <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 15px; align-items: center;">
-          <div>
-            <select id="fromCurrency" style="width:100%; padding:12px; border-radius:40px; margin-bottom:10px;">
-              <option value="SZL">🇸🇿 SZL - Lilangeni</option>
-              <option value="ZMW">🇿🇲 ZMW - Kwacha</option>
-              <option value="USD">🇺🇸 USD - Dollar</option>
-            </select>
-            <input type="number" id="fromAmount" value="100" style="width:100%; padding:12px; border-radius:40px;" oninput="convertCurrency()">
-          </div>
-          <button onclick="swapCurrencies()" style="background:var(--accent-green); width:50px; height:50px; border-radius:50%; color:white; border:none; cursor:pointer;">⇄</button>
-          <div>
-            <select id="toCurrency" style="width:100%; padding:12px; border-radius:40px; margin-bottom:10px;">
-              <option value="ZMW" selected>🇿🇲 ZMW - Kwacha</option>
-              <option value="SZL">🇸🇿 SZL - Lilangeni</option>
-              <option value="USD">🇺🇸 USD - Dollar</option>
-            </select>
-            <input type="text" id="toAmount" readonly style="width:100%; padding:12px; border-radius:40px; background:var(--bg-primary);">
-          </div>
-        </div>
-      </div>
-
-      <!-- Make Deposit - With Mobile Money -->
-      <div class="card">
-        <div class="section-title"><i class="fas fa-plus-circle"></i> Make a Deposit</div>
+    <main class="page-container">
         
-        <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-          <select id="depositCurrency" style="padding:1px; border-radius:20px; flex:1;">
-            <option value="SZL">🇸🇿 SZL - Lilangeni (E)</option>
-            <option value="ZMW">🇿🇲 ZMW - Kwacha (ZK)</option>
-            <option value="USD">🇺🇸 USD - Dollar ($)</option>
-          </select>
-          <input type="number" id="depositAmount" placeholder="Amount" style="flex:1; padding:1px; border-radius:10px;">
-        </div>
-        
-        <!-- Mobile Money Details -->
-        <div style="background: linear-gradient(135deg, #ff8c00, #ff6b00); border-radius: 20px; padding: 20px; margin-bottom: 20px;">
-          <h4 style="color: white; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-            <i class="fas fa-mobile-alt"></i> MTN Mobile Money
-          </h4>
-          <div style="background: rgba(255,255,255,0.2); border-radius: 16px; padding: 15px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-              <div>
-                <div style="font-size: 12px; opacity: 0.8;">Account Name</div>
-                <div style="font-weight: 700;">PRAYER DOME GROUP</div>
-              </div>
-              <div>
-                <div style="font-size: 12px; opacity: 0.8;">Mobile Money Number</div>
-                <div style="font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
-                  <i class="fas fa-phone"></i> +268 7604 3539
-                  <button onclick="copyToClipboard('+26876043539')" class="btn" style="background: rgba(255,255,255,0.2); padding: 5px 10px; font-size: 11px;">Copy</button>
+        <!-- ========================================== -->
+        <!-- SECTION 1: PROGRAMS (ENROLLMENT)           -->
+        <!-- ========================================== -->
+        <div id="view-programs" class="view-section active">
+            
+            <!-- BUSINESS -->
+            <div class="hero-card">
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=2070&auto=format&fit=crop" alt="Business">
+                    <div class="img-tint"></div>
                 </div>
-              </div>
+                <div class="hero-body">
+                    <span class="hero-tag">Economic Growth</span>
+                    <h2 class="hero-title">Business Seeding</h2>
+                    <p class="hero-text">Empower your hand to work. We support members with Material Goods or Direct Capital for expansion. Seed for 12 months to trigger your support.</p>
+                    
+                    <div class="tier-box" onclick="openEnrollForm('Business Support', 85)"><span class="tier-name">STANDARD PLAN</span><span class="tier-val">E85 /mo</span></div>
+                </div>
             </div>
-          </div>
-          <div style="background: rgba(255,255,255,0.15); border-radius: 16px; padding: 12px; margin-top: 12px;">
-            <div style="display: flex; align-items: center; gap: 10px; font-size: 13px;">
-              <i class="fas fa-info-circle"></i>
-              <span>Send money to this number and upload screenshot as proof</span>
+
+            <!-- EDUCATION -->
+            <div class="hero-card">
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=2070&auto=format&fit=crop" alt="Education">
+                    <div class="img-tint"></div>
+                </div>
+                <div class="hero-body">
+                    <span class="hero-tag">Legacy & Knowledge</span>
+                    <h2 class="hero-title">Scholarship Seeding</h2>
+                    <p class="hero-text">A rain of knowledge for the next generation. This program covers Tuition Fees and Educational needs. Open a fund today for 12 months.</p>
+                    <div class="tier-box" onclick="openEnrollForm('Education Support', 85)"><span class="tier-name">STANDARD PLAN</span><span class="tier-val">E85 /mo</span></div>
+                </div>
             </div>
-          </div>
+
+            <!-- FUNERAL COVER -->
+            <div class="hero-card" style="border-top: 5px solid #5f1e1e;">
+                <div class="hero-body">
+                    <span class="hero-tag">Community Care</span>
+                    <h2 class="hero-title">Compassion Cover</h2>
+                    <p class="hero-text">The church stands with you in grief. Dignified support for family and members after a 12-month period.</p>
+                    <div class="tier-box" onclick="openEnrollForm('Funeral Cover', 100)"><span class="tier-name">FAMILY PLAN</span><span class="tier-val">E100 /mo</span></div>
+                </div>
+            </div>
+            
+            <!-- SAVINGS -->
+            <div class="hero-card" style="border-top: 5px solid var(--pd-gold);">
+                <div class="hero-body">
+                    <span class="hero-tag">Stewardship</span>
+                    <h2 class="hero-title">Kingdom Savings</h2>
+                    <p class="hero-text">Grow your resources within the Dome. Every liquid saving earns 0.25% monthly interest automatically. Access your funds anytime.</p>
+                    <div class="tier-box" onclick="openEnrollForm('Savings Plan', 50)"><span class="tier-name">FLEXIBLE SAVINGS</span><span class="tier-val">Min E50 /mo</span></div>
+                </div>
+            </div>
         </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION 2: MY PLANS & CLAIMS               -->
+        <!-- ========================================== -->
+        <div id="view-myplans" class="view-section">
+            <h2 style="margin-bottom: 20px; font-weight: 800;"><i class="fas fa-list-alt" style="color:var(--pd-green);"></i> Active Enrollments</h2>
+            <div id="myPlansList">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- SECTION 3: SECURE WALLET                   -->
+        <!-- ========================================== -->
+        <div id="view-wallet" class="view-section">
+            
+            <div class="wallet-card">
+                <div class="balance-label">Total Secure Balance</div>
+                <div class="balance-val" id="dispBalance">E 0.00</div>
+                <div style="font-size: 12px; opacity: 0.8; margin-bottom: 20px;">Available for Withdrawals & Contributions</div>
+                
+                <div style="display:flex; gap:15px;">
+                    <button class="btn-main btn-gold" style="flex:1;" onclick="openDepositPanel()">+ DEPOSIT</button>
+                    <button class="btn-main btn-green" style="flex:1; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.3);" onclick="openWithdrawPanel()">WITHDRAW</button>
+                </div>
+            </div>
+
+            <!-- SENSITIVE MOMO NUMBERS REVEAL -->
+            <div class="secret-reveal" id="momoRevealSection">
+                <i class="fas fa-lock-open" style="font-size: 1.8rem; color: var(--pd-gold);"></i>
+                <h3 style="margin-top:10px; font-weight:800;">Official Payment Channels</h3>
+                <p style="font-size: 0.8rem; color: var(--text-sub); margin-top: 5px;">Verify PIN to reveal Mobile Money numbers.</p>
+                
+                <div id="revealTarget" class="blur-text" style="margin-top: 25px;">
+                    <div style="background: var(--bg-base); padding: 20px; border-radius: 20px; text-align: left; border: 1px solid var(--border);">
+                        <p style="font-size: 0.7rem; font-weight: 900; color: var(--pd-green); text-transform: uppercase;"><i class="fas fa-mobile-alt"></i> Eswatini / Zambia MoMo</p>
+                        <p style="font-size: 1.8rem; font-weight: 900; letter-spacing: 1px; color: var(--text-main); margin: 5px 0;">+268 76043539</p>
+                        <p style="font-size: 0.8rem; color: var(--text-sub); font-weight:600;">Name: PRAYER DOME GROUP</p>
+                        <button class="btn-main btn-green" style="padding: 10px; font-size: 0.8rem; margin-top:15px;" onclick="copyToClipboard('+26876043539')">COPY NUMBER</button>
+                    </div>
+                </div>
+
+                <button class="btn-main btn-gold" id="btnReveal" style="width: auto; padding: 12px 30px; margin: 20px auto 0;" onclick="pinChallenge('reveal')">REVEAL NUMBERS</button>
+            </div>
+
+            <!-- TRANSACTION HISTORY -->
+            <h3 style="margin: 30px 0 15px; font-weight: 800;"><i class="fas fa-history" style="color:var(--pd-gold);"></i> Transaction History</h3>
+            <div class="hero-card" style="border-radius: 20px;">
+                <div id="txHistoryList" style="max-height: 400px; overflow-y: auto;">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- =========================================================
+         MODALS
+         ========================================================= -->
+
+    <!-- ENROLLMENT MODAL -->
+    <div class="modal" id="modalEnroll">
+        <div class="modal-body">
+            <h2 id="modalFormTitle" style="color: var(--pd-green); font-weight: 900; margin-bottom: 5px;">Enrollment</h2>
+            <p id="modalFormSub" style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 20px;"></p>
+            
+            <div class="form-group">
+                <label>Next of Kin (Full Name)</label>
+                <input type="text" id="enKinName" placeholder="e.g. John Doe">
+            </div>
+            <div class="form-group">
+                <label>Next of Kin (Phone)</label>
+                <input type="tel" id="enKinPhone" placeholder="+268...">
+            </div>
+            <div class="form-group">
+                <label>Relationship</label>
+                <input type="text" id="enKinRel" placeholder="e.g. Spouse, Sibling">
+            </div>
+
+            <button class="btn-main btn-green" id="btnConfirmEnroll" onclick="confirmEnroll()">CONFIRM ACTIVATION</button>
+            <button class="btn-main" style="background:transparent; color:var(--text-sub); border: 2px solid var(--border); margin-top: 10px;" onclick="closeModal('modalEnroll')">Cancel</button>
+        </div>
+    </div>
+
+    <!-- DEPOSIT MODAL -->
+    <div class="modal" id="modalDeposit">
+        <div class="modal-body">
+            <h2 style="color: var(--pd-green); font-weight: 900; margin-bottom: 15px;"><i class="fas fa-plus-circle"></i> Make a Deposit</h2>
+            <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 20px;">Send funds to the MoMo number, then upload the screenshot here.</p>
+            
+            <div class="form-group">
+                <label>Amount Sent (E)</label>
+                <input type="number" id="depAmount" placeholder="e.g. 500">
+            </div>
+            
+            <div class="upload-zone" onclick="triggerCloudinary('deposit')">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--pd-gold); margin-bottom: 10px;"></i>
+                <h4 id="depUpLabel">Tap to Attach Receipt</h4>
+            </div>
+            <div id="depPreview" style="text-align:center; margin-bottom: 15px;"></div>
+            <input type="hidden" id="depUrl">
+
+            <button class="btn-main btn-green" id="btnSubmitDep" onclick="submitDeposit()">SUBMIT FOR APPROVAL</button>
+            <button class="btn-main" style="background:transparent; color:var(--text-sub); margin-top: 10px;" onclick="closeModal('modalDeposit')">Cancel</button>
+        </div>
+    </div>
+
+    <!-- WITHDRAW MODAL -->
+    <div class="modal" id="modalWithdraw">
+        <div class="modal-body">
+            <h2 style="color: var(--pd-red); font-weight: 900; margin-bottom: 15px;"><i class="fas fa-arrow-up"></i> Request Withdrawal</h2>
+            <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 20px;">Funds will be sent to your provided Mobile Money number. Minimum E100.</p>
+            
+            <div class="form-group">
+                <label>Amount to Withdraw (E)</label>
+                <input type="number" id="withAmount" placeholder="e.g. 200">
+            </div>
+            <div class="form-group">
+                <label>MoMo Number to Receive</label>
+                <input type="tel" id="withPhone" placeholder="+268...">
+            </div>
+
+            <button class="btn-main btn-green" style="background: var(--pd-red);" id="btnSubmitWith" onclick="submitWithdrawal()">WITHDRAW FUNDS</button>
+            <button class="btn-main" style="background:transparent; color:var(--text-sub); margin-top: 10px;" onclick="closeModal('modalWithdraw')">Cancel</button>
+        </div>
+    </div>
+
+    <!-- CLAIM MODAL -->
+    <div class="modal" id="modalClaim">
+        <div class="modal-body">
+            <h2 style="color: var(--pd-gold); font-weight: 900; margin-bottom: 15px;"><i class="fas fa-file-invoice"></i> File a Claim</h2>
+            <p style="font-size: 0.85rem; color: var(--text-sub); margin-bottom: 20px;">Upload the necessary supporting documents (PDF or Image).</p>
+            
+            <div class="form-group">
+                <label>Claim Amount (E)</label>
+                <input type="number" id="claimAmount" placeholder="e.g. 5000">
+            </div>
+            <div class="form-group">
+                <label>Reason / Description</label>
+                <textarea id="claimReason" rows="3" placeholder="Briefly describe the situation..."></textarea>
+            </div>
+
+            <div class="upload-zone" onclick="triggerCloudinary('claim')">
+                <i class="fas fa-file-alt" style="font-size: 2rem; color: var(--pd-gold); margin-bottom: 10px;"></i>
+                <h4 id="claimUpLabel">Tap to Attach Documents</h4>
+            </div>
+            <div id="claimPreview" style="text-align:center; margin-bottom: 15px;"></div>
+            <input type="hidden" id="claimUrl">
+
+            <button class="btn-main btn-gold" id="btnSubmitClaim" onclick="submitClaim()">SUBMIT CLAIM TO ADMIN</button>
+            <button class="btn-main" style="background:transparent; color:var(--text-sub); margin-top: 10px;" onclick="closeModal('modalClaim')">Cancel</button>
+        </div>
+    </div>
+
+    <!-- FIREBASE & LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, where, orderBy, getDocs, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyCxvql0r_aeerphxTA0UUedRppdBxGf7wo", authDomain: "prayer-dome.firebaseapp.com", projectId: "prayer-dome", storageBucket: "prayer-dome.firebasestorage.app", messagingSenderId: "198295153196", appId: "1:198295153196:web:1222b31948d7974ba3bf89" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Global State
+        let currentUser = null;
+        let userData = null;
         
-        <!-- Alternative Bank Details -->
-        <div style="background: var(--bg-primary); border-radius: 20px; padding: 20px; margin-bottom: 20px;">
-          <h4 style="color: var(--accent-green); margin-bottom: 15px;"><i class="fas fa-university"></i> MOMO TRANSFER</h4>
-          <p><strong>Account Name:</strong> PRAYER DOME GROUP</p>
-          <p><strong>Bank:</strong> MTN MOMO</p>
-          <p><strong>Account Number:</strong> 76043539</p>
-          <div style="margin-top: 10px;">
-            <button onclick="copyToClipboard('76043539')" class="btn btn-outline" style="padding: 5px 12px; font-size: 12px;">Copy Account Number</button>
-          </div>
-        </div>
+        // Pin Engine State
+        let pinInput = "";
+        let storedPin = null;
+        let actionTarget = ""; // 'wallet', 'reveal', 'withdraw'
         
-        <!-- Upload Area -->
-        <div class="upload-area" onclick="uploadPaymentProof()">
-          <i class="fas fa-cloud-upload-alt" style="font-size: 2rem;"></i>
-          <p>Upload Payment Proof (Screenshot)</p>
-          <small>JPG, PNG, PDF (Max 5MB)</small>
-        </div>
-        <div id="proofPreview" style="margin-top: 10px;"></div>
-        
-        <button class="btn btn-primary" onclick="submitDeposit()" style="width:100%; margin-top:20px;" id="depositBtn">
-          <i class="fas fa-paper-plane"></i> Submit Deposit
-        </button>
-        <p style="font-size:12px; margin-top:10px; text-align:center;">
-          <i class="fas fa-clock"></i> Deposits verified within 24-48 hours
-        </p>
-      </div>
+        // Plan State
+        let selectedPlanName = "";
+        let selectedPlanAmount = 0;
+        let activePlanIdForClaim = null;
 
-      <!-- Transaction History -->
-      <div class="card">
-        <div class="section-title"><i class="fas fa-history"></i> Transaction History</div>
-        <div id="transactionHistory" style="max-height: 400px; overflow-y: auto;"></div>
-      </div>
+        // --- AUTH CHECK ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                try {
+                    const wDoc = await getDoc(doc(db, "wallets", user.uid));
+                    if(wDoc.exists()) {
+                        userData = wDoc.data();
+                        storedPin = userData.pin || null;
+                    } else {
+                        // Create Wallet if missing
+                        await setDoc(doc(db, "wallets", user.uid), { userId: user.uid, balance: 0, currency: 'SZL', createdAt: serverTimestamp() });
+                        userData = { balance: 0 };
+                    }
+                    hideLoading();
+                } catch(e) { console.error(e); hideLoading(); }
+            } else {
+                window.location.href = 'account.html'; // Force login
+            }
+        });
 
-      <!-- Withdrawal -->
-<div class="card">
-  <div class="section-title"><i class="fas fa-hand-holding-usd"></i> Request Withdrawal</div>
-  <div style="display: flex; gap: 15px;">
-    <input type="number" id="withdrawAmount" placeholder="Amount (Minimum E100)" style="flex:2; padding:12px; border-radius:40px;">
-    <button class="btn btn-secondary" onclick="requestWithdrawal()" style="flex:1;">
-      <i class="fas fa-arrow-up"></i> Withdraw
-    </button>
-  </div>
-  <p style="font-size:12px; margin-top:10px;">
-    <i class="fas fa-info-circle"></i> Minimum E100. Withdrawals processed within 3-5 business days.
-  </p>
-</div>
+        // --- UI UTILS ---
+        window.showLoading = (txt = "Processing...") => { document.getElementById('loaderText').innerText = txt; document.getElementById('globalLoader').style.display = 'flex'; };
+        window.hideLoading = () => { document.getElementById('globalLoader').style.display = 'none'; };
+        window.toast = (msg, type='success') => {
+            const b = document.getElementById('toastBox');
+            const t = document.createElement('div');
+            t.className = `toast ${type === 'error' ? 'error' : ''}`;
+            t.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> <span>${msg}</span>`;
+            b.appendChild(t);
+            setTimeout(() => { t.style.animation = 'slideIn 0.3s ease reverse forwards'; setTimeout(() => t.remove(), 300); }, 3500);
+        };
+        window.closeModal = (id) => { document.getElementById(id).style.display = 'none'; };
+        window.copyToClipboard = (txt) => { navigator.clipboard.writeText(txt); toast("Copied!"); };
+        window.toggleDarkMode = () => { document.body.classList.toggle('dark-mode'); };
 
-<!-- Login Modal -->
-<div id="loginModal" class="modal" style="display: none;">
-  <div class="modal-content">
-    <h2>Sign In</h2>
-    <input type="email" id="loginEmail" placeholder="Email">
-    <input type="password" id="loginPassword" placeholder="Password">
-    <button class="btn btn-primary" onclick="login()" style="width:100%;">Sign In</button>
-    <button class="btn btn-outline" onclick="googleLogin()" style="width:100%; margin-top:10px;">Google Sign In</button>
-    <button class="btn btn-outline" onclick="closeLoginModal()" style="width:100%; margin-top:10px;">Cancel</button>
-    <div style="text-align: center; margin-top: 15px;"><a href="account.html" style="color: var(--accent-green);">Don't have an account? Register here</a></div>
-  </div>
-</div>
+        window.setView = (view, el) => {
+            if(view === 'wallet' && !document.getElementById('revealTarget').classList.contains('unveiled')) {
+                // Require PIN to open wallet tab first time
+                pinChallenge('wallet');
+                return;
+            }
+            
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            document.getElementById(`view-${view}`).classList.add('active');
+            if(el) el.classList.add('active');
 
-<!-- Claim Support Modal -->
-<div id="claimSupportModal" class="modal" style="display: none;">
-  <div class="modal-content">
-    <h2>Claim Support</h2>
-    <select id="claimType">
-      <option value="business">Business Support</option>
-      <option value="education">Education Support</option>
-      <option value="funeral">Funeral Support</option>
-    </select>
-    <input type="number" id="claimAmount" placeholder="Amount Requested">
-    <textarea id="claimReason" rows="3" placeholder="Reason for support..."></textarea>
-    <button class="btn btn-primary" onclick="submitClaim()" style="width:100%;">Submit Claim</button>
-    <button class="btn btn-outline" onclick="closeClaimModal()" style="width:100%; margin-top:10px;">Cancel</button>
-  </div>
-</div>
+            if(view === 'myplans') loadMyPlans();
+            if(view === 'wallet') loadWalletData();
+        };
 
-<footer class="support-footer">
-  <div class="footer-container">
-    <div class="footer-grid">
-      <div class="footer-section">
-        <h3>Prayer Dome</h3>
-        <p><i class="fas fa-church"></i> A House of Prayer for All Nations</p>
-        <p><i class="fas fa-map-marker-alt"></i> Eswatini & Zambia</p>
-        <p><i class="fas fa-phone"></i> +268 7658 1804</p>
-      </div>
-      <div class="footer-section">
-        <h3>Support Programs</h3>
-        <p>Business Support</p>
-        <p>Education Support</p>
-        <p>Funeral Cover</p>
-        <p>Savings Account</p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2018 Prayer Dome Ministry. All Rights Reserved.</p>
-      <p>"A House of Prayer for All Nations" - Matthew 21:13</p>
-    </div>
-  </div>
-</footer>
+        // --- PIN ENGINE ---
+        window.pinChallenge = (target) => {
+            actionTarget = target;
+            pinInput = "";
+            updateDots();
+            
+            if(!storedPin) {
+                document.getElementById('js-secure-title').innerText = "Create Wallet PIN";
+                document.getElementById('js-secure-sub').innerText = "Create a 4-digit PIN to secure your funds.";
+            } else {
+                document.getElementById('js-secure-title').innerText = "Security Check";
+                document.getElementById('js-secure-sub').innerText = "Enter your 4-digit PIN to continue.";
+            }
+            
+            document.getElementById('secureOverlay').style.display = 'flex';
+        };
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, getDoc, doc, setDoc, updateDoc, query, where, orderBy, Timestamp, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        window.tapPin = (n) => {
+            if(pinInput.length < 4) { pinInput += n; updateDots(); }
+        };
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCxvql0r_aeerphxTA0UUedRppdBxGf7wo",
-  authDomain: "prayer-dome.firebaseapp.com",
-  projectId: "prayer-dome",
-  storageBucket: "prayer-dome.firebasestorage.app",
-  messagingSenderId: "198295153196",
-  appId: "1:198295153196:web:1222b31948d7974ba3bf89"
-};
+        window.clearPin = () => { pinInput = ""; updateDots(); };
+        window.cancelSecure = () => { document.getElementById('secureOverlay').style.display = 'none'; };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-let currentUser = null;
-let uploadedDocuments = {};
-let currentExchangeRates = { USD: 1, SZL: 18.5, ZMW: 24.5 };
-let uploadedProofUrl = null;
-let paymentProofWidget = null;
-
-// ==================== PLANS WITH IMAGES ====================
-const businessPlans = [
-  { name: "Starter Plan", range: "$5 – $50", localRange: "E85 – E850 / ZK95 – ZK950", supportAmount: 100, image: "https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg" },
-  { name: "Growth Plan", range: "$50 – $100", localRange: "E850 – E1,700 / ZK950 – ZK1,900", supportAmount: 500, image: "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg" },
-  { name: "Advanced Plan", range: "$100 – $500", localRange: "E1,700 – E8,500 / ZK1,900 – ZK9,500", supportAmount: 1000, image: "https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg" },
-  { name: "Premium Plan", range: "$500 – $1,000", localRange: "E8,500 – E17,000 / ZK9,500 – ZK19,000", supportAmount: 5000, image: "https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg" }
-];
-
-const educationPlans = [
-  { name: "Education Starter", range: "$5 – $50", localRange: "E85 – E850 / ZK95 – ZK950", supportAmount: 100, image: "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg" },
-  { name: "Education Growth", range: "$50 – $100", localRange: "E850 – E1,700 / ZK950 – ZK1,900", supportAmount: 500, image: "https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg" },
-  { name: "Education Advanced", range: "$100 – $500", localRange: "E1,700 – E8,500 / ZK1,900 – ZK9,500", supportAmount: 1000, image: "https://images.pexels.com/photos/5428836/pexels-photo-5428836.jpeg" },
-  { name: "Education Premium", range: "$500 – $1,000", localRange: "E8,500 – E17,000 / ZK9,500 – ZK19,000", supportAmount: 5000, image: "https://images.pexels.com/photos/5428836/pexels-photo-5428836.jpeg" }
-];
-
-const savingsPlans = [
-  { name: "Flexible Savings", range: "Any Amount", localRange: "Start with any amount", interest: "0.50% monthly", image: "https://images.pexels.com/photos/730564/pexels-photo-730564.jpeg" }
-];
-
-const funeralPlans = [
-  { name: "Funeral Starter", range: "$5 – $50", localRange: "E85 – E850 / ZK95 – ZK950", coverAmount: 500, image: "https://images.pexels.com/photos/2634020/pexels-photo-2634020.jpeg" },
-  { name: "Funeral Family", range: "$50 – $100", localRange: "E850 – E1,700 / ZK950 – ZK1,900", coverAmount: 1500, image: "https://images.pexels.com/photos/2634020/pexels-photo-2634020.jpeg" },
-  { name: "Funeral Extended", range: "$100 – $500", localRange: "E1,700 – E8,500 / ZK1,900 – ZK9,500", coverAmount: 3000, image: "https://images.pexels.com/photos/2634020/pexels-photo-2634020.jpeg" },
-  { name: "Funeral Premium", range: "$500 – $1,000", localRange: "E8,500 – E17,000 / ZK9,500 – ZK19,000", coverAmount: 5000, image: "https://images.pexels.com/photos/2634020/pexels-photo-2634020.jpeg" }
-];
-
-// Helper Functions
-function showToast(msg, type = 'success') {
-  const container = document.getElementById('toastContainer');
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
-  container.appendChild(toast);
-  setTimeout(() => toast.remove(), 3500);
-}
-
-function showLoading() { document.getElementById('loadingOverlay').style.display = 'flex'; }
-function hideLoading() { document.getElementById('loadingOverlay').style.display = 'none'; }
-
-window.copyToClipboard = function(text) {
-  navigator.clipboard.writeText(text).then(() => {
-    showToast(`✅ Copied: ${text}`, 'success');
-  }).catch(() => {
-    showToast('Failed to copy', 'error');
-  });
-};
-
-window.showSection = function(section) {
-  document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
-  document.getElementById(`${section}Section`).style.display = 'block';
-  document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
-  if (event && event.target) event.target.classList.add('active');
-  if (section === 'wallet') loadWalletData();
-};
-
-// Render Plans with Images
-function renderBusinessPlans() {
-  const grid = document.getElementById('businessPlansGrid');
-  if (grid) grid.innerHTML = businessPlans.map(p => `
-    <div class="plan-card" onclick="joinPlan('business', '${p.name}')">
-      <div class="plan-image"><img src="${p.image}" alt="${p.name}"></div>
-      <div class="plan-content">
-        <div style="background: var(--accent-green); color:white; padding:4px 12px; border-radius:20px; display:inline-block; font-size:12px;">${p.range}</div>
-        <h3 style="margin-top:12px;">${p.name}</h3>
-        <div class="plan-amount">${p.localRange}<span style="font-size:14px;">/month</span></div>
-        <button class="btn btn-primary" style="width:100%; margin-top:10px;">Join Plan</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function renderEducationPlans() {
-  const grid = document.getElementById('educationPlansGrid');
-  if (grid) grid.innerHTML = educationPlans.map(p => `
-    <div class="plan-card" onclick="joinPlan('education', '${p.name}')">
-      <div class="plan-image"><img src="${p.image}" alt="${p.name}"></div>
-      <div class="plan-content">
-        <div style="background: var(--accent-blue); color:white; padding:4px 12px; border-radius:20px; display:inline-block; font-size:12px;">${p.range}</div>
-        <h3 style="margin-top:12px;">${p.name}</h3>
-        <div class="plan-amount">${p.localRange}<span style="font-size:14px;">/month</span></div>
-        <button class="btn btn-primary" style="width:100%; margin-top:10px;">Join Plan</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function renderSavingsPlans() {
-  const grid = document.getElementById('savingsPlansGrid');
-  if (grid) grid.innerHTML = savingsPlans.map(p => `
-    <div class="plan-card" onclick="showSection('wallet')">
-      <div class="plan-image"><img src="${p.image}" alt="${p.name}"></div>
-      <div class="plan-content">
-        <h3>${p.name}</h3>
-        <div class="plan-amount">${p.localRange}</div>
-        <ul style="list-style:none; margin:10px 0;"><li><i class="fas fa-chart-line" style="color:var(--accent-green);"></i> ${p.interest} interest</li></ul>
-        <button class="btn btn-primary" style="width:100%;">Start Saving</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-function renderFuneralPlans() {
-  const grid = document.getElementById('funeralPlansGrid');
-  if (grid) grid.innerHTML = funeralPlans.map(p => `
-    <div class="plan-card" onclick="joinPlan('funeral', '${p.name}')">
-      <div class="plan-image"><img src="${p.image}" alt="${p.name}"></div>
-      <div class="plan-content">
-        <div style="background: var(--accent-purple); color:white; padding:4px 12px; border-radius:20px; display:inline-block; font-size:12px;">${p.range}</div>
-        <h3 style="margin-top:12px;">${p.name}</h3>
-        <div class="plan-amount">${p.localRange}<span style="font-size:14px;">/month</span></div>
-        <button class="btn btn-primary" style="width:100%; margin-top:10px;">Join Plan</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-window.joinPlan = async function(type, planName) {
-  if (!currentUser) { showToast('Please login first', 'error'); showLoginModal(); return; }
-  try {
-    await setDoc(doc(db, "userPlans", `${currentUser.uid}_${type}`), {
-      userId: currentUser.uid, type, planName, joinedAt: serverTimestamp(), status: 'active'
-    });
-    showToast(`✅ Joined ${planName}!`, 'success');
-    confetti({ particleCount: 100, spread: 70 });
-  } catch (error) { showToast(error.message, 'error'); }
-};
-
-// Document Upload Functions
-function initCloudinaryWidget(documentType, callback) {
-  const widget = cloudinary.createUploadWidget({
-    cloudName: 'prayerdome',
-    uploadPreset: 'support_documents',
-    folder: `support_docs/${documentType}`,
-    maxFileSize: 10 * 1024 * 1024,
-    clientAllowedFormats: ['jpg', 'jpeg', 'png', 'pdf']
-  }, (error, result) => {
-    if (error) { showToast('Upload failed: ' + error.message, 'error'); return; }
-    if (result && result.event === 'success') {
-      uploadedDocuments[documentType] = result.info.secure_url;
-      const previewDiv = document.getElementById(`${documentType}_preview`);
-      if (previewDiv) {
-        previewDiv.innerHTML = `<div class="uploaded-file"><i class="fas fa-check-circle"></i> Uploaded!</div>`;
-      }
-      if (callback) callback(result.info.secure_url);
-    }
-  });
-  return widget;
-}
-
-window.uploadDocument = function(documentType) {
-  if (!currentUser) { showToast('Please login first', 'error'); showLoginModal(); return; }
-  const widget = initCloudinaryWidget(documentType);
-  widget.open();
-};
-
-// Payment Proof Upload - FIXED
-function initPaymentProofWidget() {
-  if (paymentProofWidget) return paymentProofWidget;
-  
-  paymentProofWidget = cloudinary.createUploadWidget({
-    cloudName: 'prayerdome',
-    uploadPreset: 'donation_proofs',
-    folder: 'payment_proofs',
-    maxFileSize: 5 * 1024 * 1024,
-    clientAllowedFormats: ['jpg', 'jpeg', 'png', 'pdf'],
-    multiple: false,
-    cropping: false
-  }, (error, result) => {
-    if (error) {
-      console.error('Upload error:', error);
-      showToast('Upload failed: ' + error.message, 'error');
-      return;
-    }
-    if (result && result.event === 'success') {
-      uploadedProofUrl = result.info.secure_url;
-      const proofPreview = document.getElementById('proofPreview');
-      if (proofPreview) {
-        proofPreview.innerHTML = `
-          <div class="uploaded-file">
-            <i class="fas fa-check-circle" style="color: var(--accent-green);"></i>
-            <span>Proof uploaded successfully!</span>
-            <img src="${uploadedProofUrl}" style="max-width: 60px; border-radius: 8px;">
-          </div>
-        `;
-      }
-      showToast('✅ Payment proof uploaded!', 'success');
-    }
-  });
-  return paymentProofWidget;
-}
-
-window.uploadPaymentProof = function() {
-  if (!currentUser) {
-    showToast('Please login first', 'error');
-    showLoginModal();
-    return;
-  }
-  const widget = initPaymentProofWidget();
-  if (widget) widget.open();
-};
-
-// Submit All Documents
-window.submitAllDocuments = async function() {
-  if (!currentUser) { showToast('Please login first', 'error'); showLoginModal(); return; }
-  
-  const requiredDocs = ['id_front', 'id_back'];
-  const missing = requiredDocs.filter(d => !uploadedDocuments[d]);
-  if (missing.length > 0) { showToast('Please upload ID front and back first', 'error'); return; }
-  
-  const docData = {
-    userId: currentUser.uid,
-    fullName: document.getElementById('docFullName').value,
-    phone: document.getElementById('docPhone').value,
-    nrc: document.getElementById('docNRC').value,
-    address: document.getElementById('docAddress').value,
-    nextKin: {
-      name: document.getElementById('nextKinName').value,
-      phone: document.getElementById('nextKinPhone').value,
-      relation: document.getElementById('nextKinRelation').value,
-      address: document.getElementById('nextKinAddress').value
-    },
-    documents: uploadedDocuments,
-    submittedAt: serverTimestamp(),
-    status: 'pending'
-  };
-  
-  if (!docData.fullName || !docData.phone || !docData.nrc) {
-    showToast('Please fill all required personal fields', 'error');
-    return;
-  }
-  
-  showLoading();
-  try {
-    await addDoc(collection(db, "userDocuments"), docData);
-    showToast('All documents submitted for verification!', 'success');
-    confetti({ particleCount: 100, spread: 70 });
-    uploadedDocuments = {};
-    document.querySelectorAll('[id$="_preview"]').forEach(el => el.innerHTML = '');
-  } catch (error) {
-    showToast(error.message, 'error');
-  } finally {
-    hideLoading();
-  }
-};
-
-// Claim Support
-window.openClaimSupportModal = function(type) {
-  if (!currentUser) { showToast('Please login first', 'error'); showLoginModal(); return; }
-  document.getElementById('claimType').value = type;
-  document.getElementById('claimSupportModal').style.display = 'flex';
-};
-
-window.closeClaimModal = function() { document.getElementById('claimSupportModal').style.display = 'none'; };
-
-window.submitClaim = async function() {
-  const type = document.getElementById('claimType').value;
-  const amount = parseFloat(document.getElementById('claimAmount').value);
-  const reason = document.getElementById('claimReason').value;
-  
-  if (!amount || amount <= 0) { showToast('Enter valid amount', 'error'); return; }
-  if (!reason) { showToast('Please explain your reason', 'error'); return; }
-  
-  showLoading();
-  try {
-    await addDoc(collection(db, "supportClaims"), {
-      userId: currentUser.uid, userName: currentUser.displayName || currentUser.email,
-      type, amount, reason, status: 'pending', createdAt: serverTimestamp()
-    });
-    showToast('Claim submitted! Admin will review.', 'success');
-    closeClaimModal();
-    confetti({ particleCount: 80, spread: 60 });
-  } catch (error) { showToast(error.message, 'error'); }
-  finally { hideLoading(); }
-};
-
-// ==================== PIN VERIFICATION FOR WITHDRAWALS ====================
-let walletPIN = localStorage.getItem('wallet_pin');
-let isWalletUnlocked = false;
-
-async function verifyWalletPIN() {
-  if (isWalletUnlocked) return true;
-  if (!walletPIN) {
-    // No PIN set, ask to set one
-    const setPin = confirm('No wallet PIN set. Would you like to set one for security?');
-    if (setPin) {
-      await setupWalletPIN();
-      return false;
-    }
-    return true; // Allow if user declines
-  }
-  
-  return new Promise((resolve) => {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-      <div class="modal-content" style="max-width: 350px;">
-        <h3><i class="fas fa-lock"></i> Enter Wallet PIN</h3>
-        <div class="pin-input" style="display: flex; gap: 12px; justify-content: center; margin: 25px 0;">
-          <input type="password" maxlength="1" class="pin-digit" id="pin1" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
-          <input type="password" maxlength="1" class="pin-digit" id="pin2" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
-          <input type="password" maxlength="1" class="pin-digit" id="pin3" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
-          <input type="password" maxlength="1" class="pin-digit" id="pin4" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
-        </div>
-        <button class="btn btn-primary" id="verifyPinBtn" style="width: 100%;">Verify</button>
-        <button class="btn btn-outline" id="cancelPinBtn" style="width: 100%; margin-top: 10px;">Cancel</button>
-      </div>
-    `;
-    document.body.appendChild(modal);
-    
-    const inputs = ['pin1', 'pin2', 'pin3', 'pin4'];
-    inputs.forEach((id, i) => {
-      document.getElementById(id).addEventListener('input', (e) => {
-        if (e.target.value.length === 1 && i < 3) {
-          document.getElementById(inputs[i+1]).focus();
+        function updateDots() {
+            const dots = document.querySelectorAll('.pin-dot');
+            dots.forEach((dot, i) => { dot.classList.toggle('active', i < pinInput.length); });
         }
-      });
-    });
-    
-    document.getElementById('verifyPinBtn').onclick = () => {
-      const enteredPin = inputs.map(id => document.getElementById(id).value).join('');
-      const storedPin = atob(walletPIN);
-      
-      if (enteredPin === storedPin) {
-        isWalletUnlocked = true;
-        modal.remove();
-        resolve(true);
-      } else {
-        showToast('❌ Incorrect PIN', 'error');
-        inputs.forEach(id => document.getElementById(id).value = '');
-        document.getElementById('pin1').focus();
-        resolve(false);
-      }
-    };
-    
-    document.getElementById('cancelPinBtn').onclick = () => {
-      modal.remove();
-      resolve(false);
-    };
-  });
-}
 
-async function setupWalletPIN() {
-  return new Promise((resolve) => {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-      <div class="modal-content" style="max-width: 350px;">
-        <h3><i class="fas fa-key"></i> Set Wallet PIN</h3>
-        <p style="font-size: 12px; margin-bottom: 15px;">Create a 4-digit PIN to secure your wallet</p>
-        <div class="pin-input" style="display: flex; gap: 12px; justify-content: center; margin: 25px 0;">
-          <input type="password" maxlength="1" class="pin-digit" id="pin1" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
-          <input type="password" maxlength="1" class="pin-digit" id="pin2" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
-          <input type="password" maxlength="1" class="pin-digit" id="pin3" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
-          <input type="password" maxlength="1" class="pin-digit" id="pin4" style="width: 50px; height: 60px; text-align: center; font-size: 24px; border-radius: 12px;">
-        </div>
-        <button class="btn btn-primary" id="setPinBtn" style="width: 100%;">Set PIN</button>
-        <button class="btn btn-outline" id="cancelPinBtn" style="width: 100%; margin-top: 10px;">Skip</button>
-      </div>
-    `;
-    document.body.appendChild(modal);
-    
-    const inputs = ['pin1', 'pin2', 'pin3', 'pin4'];
-    inputs.forEach((id, i) => {
-      document.getElementById(id).addEventListener('input', (e) => {
-        if (e.target.value.length === 1 && i < 3) {
-          document.getElementById(inputs[i+1]).focus();
+        window.confirmPinAction = async () => {
+            if(pinInput.length !== 4) return alert("Enter exactly 4 digits");
+
+            if(!storedPin) {
+                // Save new PIN
+                showLoading("Securing Wallet...");
+                try {
+                    await updateDoc(doc(db, "wallets", currentUser.uid), { pin: btoa(pinInput) });
+                    storedPin = btoa(pinInput);
+                    successAnimate("PIN Secured!");
+                } catch(e) { toast(e.message, 'error'); }
+                finally { hideLoading(); }
+            } else {
+                // Verify existing PIN
+                if(btoa(pinInput) === storedPin) {
+                    successAnimate("Verified!");
+                } else {
+                    toast("Invalid PIN", "error");
+                    clearPin();
+                }
+            }
+        };
+
+        function successAnimate(msg) {
+            document.getElementById('js-secure-title').innerText = msg;
+            document.getElementById('js-secure-icon').innerHTML = '<i class="fas fa-check-circle" style="color:var(--pd-green)"></i>';
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            
+            setTimeout(() => {
+                document.getElementById('secureOverlay').style.display = 'none';
+                document.getElementById('js-secure-icon').innerHTML = '<i class="fas fa-fingerprint"></i>';
+                finalizeAccess();
+            }, 1000);
         }
-      });
-    });
-    
-    document.getElementById('setPinBtn').onclick = () => {
-      const enteredPin = inputs.map(id => document.getElementById(id).value).join('');
-      if (enteredPin.length === 4 && /^\d{4}$/.test(enteredPin)) {
-        walletPIN = btoa(enteredPin);
-        localStorage.setItem('wallet_pin', walletPIN);
-        isWalletUnlocked = true;
-        modal.remove();
-        showToast('✅ PIN set successfully!', 'success');
-        resolve(true);
-      } else {
-        showToast('Please enter a 4-digit PIN', 'error');
-        inputs.forEach(id => document.getElementById(id).value = '');
-        document.getElementById('pin1').focus();
-        resolve(false);
-      }
-    };
-    
-    document.getElementById('cancelPinBtn').onclick = () => {
-      modal.remove();
-      resolve(false);
-    };
-  });
-}
 
-// Wallet Functions
-async function loadWalletData() {
-  if (!currentUser) {
-    document.getElementById('walletBalance').innerHTML = 'E0.00';
-    document.getElementById('totalDeposits').innerHTML = 'E0';
-    document.getElementById('pendingDeposits').innerHTML = 'E0';
-    document.getElementById('monthlyInterest').innerHTML = 'E0.00';
-    return;
-  }
-  
-  try {
-    const walletDoc = await getDoc(doc(db, "wallets", currentUser.uid));
-    let balance = 0;
-    if (walletDoc.exists()) {
-      balance = walletDoc.data().balance || 0;
-    } else {
-      await setDoc(doc(db, "wallets", currentUser.uid), { userId: currentUser.uid, balance: 0, createdAt: serverTimestamp() });
-    }
-    
-    document.getElementById('walletBalance').innerHTML = `E${balance.toFixed(2)}<br><span style="font-size:1rem;">ZK${(balance * currentExchangeRates.ZMW).toFixed(2)}</span>`;
-    
-    const monthlyInterest = balance * 0.005;
-    document.getElementById('monthlyInterest').innerHTML = `E${monthlyInterest.toFixed(2)}`;
-    
-    const depositsSnap = await getDocs(query(collection(db, "deposits"), where("userId", "==", currentUser.uid)));
-    let totalApproved = 0, totalPending = 0;
-    const transactions = [];
-    
-    depositsSnap.forEach(doc => {
-      const data = doc.data();
-      const amt = data.amountInSZL || data.amount;
-      if (data.status === 'approved') {
-        totalApproved += amt;
-        transactions.push({ type: 'deposit', amount: amt, status: 'approved', date: data.createdAt });
-      } else if (data.status === 'pending') {
-        totalPending += amt;
-        transactions.push({ type: 'deposit', amount: amt, status: 'pending', date: data.createdAt });
-      }
-    });
-    
-    document.getElementById('totalDeposits').innerHTML = `E${totalApproved.toFixed(2)}`;
-    document.getElementById('pendingDeposits').innerHTML = `E${totalPending.toFixed(2)}`;
-    
-    const historyDiv = document.getElementById('transactionHistory');
-    if (transactions.length === 0) {
-      historyDiv.innerHTML = '<div style="text-align: center; padding: 40px;">No transactions yet</div>';
-    } else {
-      historyDiv.innerHTML = transactions.sort((a, b) => (b.date?.toDate() || 0) - (a.date?.toDate() || 0)).map(tx => `
-        <div class="transaction-item">
-          <div><strong>Deposit</strong><div style="font-size:11px;">${tx.date?.toDate().toLocaleDateString() || 'Pending'}</div></div>
-          <div class="transaction-positive">+ E${tx.amount?.toFixed(2)}<div style="font-size:10px;">${tx.status}</div></div>
-        </div>
-      `).join('');
-    }
-  } catch (error) { console.error('Error loading wallet:', error); }
-}
+        function finalizeAccess() {
+            if(actionTarget === 'wallet') {
+                document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+                document.getElementById('view-wallet').classList.add('active');
+                document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-item')[2].classList.add('active');
+                loadWalletData();
+            } else if (actionTarget === 'reveal') {
+                document.getElementById('revealTarget').classList.add('unveiled');
+                document.getElementById('btnReveal').style.display = 'none';
+            } else if (actionTarget === 'withdraw_req') {
+                document.getElementById('modalWithdraw').style.display = 'flex';
+            }
+        }
 
-window.submitDeposit = async function() {
-  if (!currentUser) { showToast('Please login', 'error'); showLoginModal(); return; }
-  const amount = parseFloat(document.getElementById('depositAmount').value);
-  const currency = document.getElementById('depositCurrency').value;
-  if (!amount || amount <= 0) { showToast('Enter amount', 'error'); return; }
-  if (!uploadedProofUrl) { showToast('Upload payment proof first', 'error'); return; }
-  
-  const amountInUSD = amount / (currentExchangeRates[currency] || 1);
-  const amountInSZL = amountInUSD * currentExchangeRates.SZL;
-  
-  const btn = document.getElementById('depositBtn');
-  const originalText = btn.innerHTML;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
-  btn.disabled = true;
-  
-  try {
-    await addDoc(collection(db, "deposits"), {
-      userId: currentUser.uid, userEmail: currentUser.email, userName: currentUser.displayName || currentUser.email,
-      amount, currency, amountInSZL, amountInUSD, proofUrl: uploadedProofUrl, status: 'pending', createdAt: serverTimestamp()
-    });
-    uploadedProofUrl = null;
-    document.getElementById('proofPreview').innerHTML = '';
-    document.getElementById('depositAmount').value = '';
-    showToast('Deposit submitted for verification!', 'success');
-    confetti({ particleCount: 80, spread: 60 });
-    loadWalletData();
-  } catch (error) { showToast(error.message, 'error'); }
-  finally { btn.innerHTML = originalText; btn.disabled = false; }
-};
+        // --- ENROLLMENT LOGIC ---
+        window.openEnrollForm = (planName, amount) => {
+            if(!currentUser) return toast('Login required', 'error');
+            selectedPlanName = planName;
+            selectedPlanAmount = amount;
+            document.getElementById('modalFormTitle').innerText = `${planName} Enrollment`;
+            document.getElementById('modalFormSub').innerText = `Commitment: E${amount} / month.`;
+            document.getElementById('modalEnroll').style.display = 'flex';
+        };
 
-window.requestWithdrawal = async function() {
-  if (!currentUser) { 
-    showToast('Please login first', 'error'); 
-    showLoginModal(); 
-    return; 
-  }
-  
-  const amount = parseFloat(document.getElementById('withdrawAmount').value);
-  
-  // Validate amount
-  if (!amount || isNaN(amount)) {
-    showToast('Please enter a valid amount', 'error');
-    return;
-  }
-  
-  if (amount < 100) {
-    showToast('Minimum withdrawal amount is E100', 'error');
-    return;
-  }
-  
-  // Show loading on button
-  const withdrawBtn = document.querySelector('#walletSection .btn-secondary');
-  const originalText = withdrawBtn.innerHTML;
-  withdrawBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-  withdrawBtn.disabled = true;
-  
-  try {
-    // Get current wallet balance
-    const walletDoc = await getDoc(doc(db, "wallets", currentUser.uid));
-    
-    if (!walletDoc.exists()) {
-      showToast('Wallet not found. Please contact support.', 'error');
-      return;
-    }
-    
-    const currentBalance = walletDoc.data().balance || 0;
-    
-    if (amount > currentBalance) {
-      showToast(`Insufficient balance. Your balance is E${currentBalance.toFixed(2)}`, 'error');
-      return;
-    }
-    
-    // Create withdrawal request
-    const withdrawalRef = await addDoc(collection(db, "withdrawals"), {
-      userId: currentUser.uid,
-      userEmail: currentUser.email,
-      userName: currentUser.displayName || currentUser.email,
-      amount: amount,
-      status: 'pending',
-      createdAt: serverTimestamp(),
-      requestedAt: serverTimestamp()
-    });
-    
-    // Clear input
-    document.getElementById('withdrawAmount').value = '';
-    
-    showToast(`✅ Withdrawal request of E${amount.toFixed(2)} submitted successfully!`, 'success');
-    confetti({ particleCount: 80, spread: 60 });
-    
-    // Refresh wallet data
-    await loadWalletData();
-    
-  } catch (error) {
-    console.error('Withdrawal error:', error);
-    showToast('Error: ' + error.message, 'error');
-  } finally {
-    withdrawBtn.innerHTML = originalText;
-    withdrawBtn.disabled = false;
-  }
-};
+        window.confirmEnroll = async () => {
+            const kName = document.getElementById('enKinName').value;
+            const kPhone = document.getElementById('enKinPhone').value;
+            const kRel = document.getElementById('enKinRel').value;
+            
+            if(!kName || !kPhone || !kRel) return toast("Fill all fields", "error");
 
-// Currency Functions
-async function fetchExchangeRates() {
-  try {
-    const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
-    const data = await response.json();
-    currentExchangeRates = { USD: 1, SZL: data.rates.SZL || 18.5, ZMW: data.rates.ZMW || 24.5 };
-    convertCurrency();
-  } catch (error) { console.error('Rate fetch error'); }
-}
+            document.getElementById('btnConfirmEnroll').innerText = "Processing...";
+            try {
+                // Check for existing plan
+                const exist = await getDocs(query(collection(db, "activePlans"), where("userId", "==", currentUser.uid), where("planName", "==", selectedPlanName), where("status", "==", "active")));
+                if(!exist.empty) {
+                    toast("You are already enrolled in this plan.", "error");
+                    closeModal('modalEnroll');
+                    return;
+                }
 
-window.convertCurrency = function() {
-  const from = document.getElementById('fromCurrency').value;
-  const to = document.getElementById('toCurrency').value;
-  const amount = parseFloat(document.getElementById('fromAmount').value);
-  if (isNaN(amount)) return;
-  const result = amount * (currentExchangeRates[to] / currentExchangeRates[from]);
-  document.getElementById('toAmount').value = `${result.toFixed(2)} ${to}`;
-};
+                await addDoc(collection(db, "activePlans"), {
+                    userId: currentUser.uid,
+                    userName: currentUser.displayName || currentUser.email,
+                    planName: selectedPlanName,
+                    monthlyAmount: selectedPlanAmount,
+                    nextOfKin: { name: kName, phone: kPhone, relation: kRel },
+                    status: 'active',
+                    createdAt: serverTimestamp()
+                });
 
-window.swapCurrencies = function() {
-  const from = document.getElementById('fromCurrency');
-  const to = document.getElementById('toCurrency');
-  const temp = from.value;
-  from.value = to.value;
-  to.value = temp;
-  convertCurrency();
-};
+                closeModal('modalEnroll');
+                toast(`Successfully enrolled in ${selectedPlanName}!`);
+                confetti();
+                
+                // Clear form
+                document.getElementById('enKinName').value = "";
+                document.getElementById('enKinPhone').value = "";
+                document.getElementById('enKinRel').value = "";
 
-// Auth Functions
-function showLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
-function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+                // Redirect to my plans
+                setView('myplans', document.querySelectorAll('.tab-item')[1]);
 
-window.login = async function() {
-  const email = document.getElementById('loginEmail').value;
-  const password = document.getElementById('loginPassword').value;
-  if (!email || !password) { showToast('Enter email and password', 'error'); return; }
-  showLoading();
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    closeLoginModal();
-    showToast('Login successful!', 'success');
-    showSection('wallet');
-  } catch (error) { showToast(error.message, 'error'); }
-  finally { hideLoading(); }
-};
+            } catch(e) { toast(e.message, 'error'); }
+            finally { document.getElementById('btnConfirmEnroll').innerText = "CONFIRM ACTIVATION"; }
+        };
 
-window.googleLogin = async function() {
-  const provider = new GoogleAuthProvider();
-  try {
-    const result = await signInWithPopup(auth, provider);
-    closeLoginModal();
-    showToast(`Welcome ${result.user.displayName}!`, 'success');
-    showSection('wallet');
-  } catch (error) { showToast(error.message, 'error'); }
-};
+        window.loadMyPlans = async () => {
+            const list = document.getElementById('myPlansList');
+            list.innerHTML = '<div style="text-align:center; padding:40px;"><div class="spinner"></div></div>';
+            
+            try {
+                const snap = await getDocs(query(collection(db, "activePlans"), where("userId", "==", currentUser.uid), orderBy("createdAt", "desc")));
+                if(snap.empty) {
+                    list.innerHTML = `<div style="text-align:center; padding:40px; border:1px dashed var(--border); border-radius:20px;">
+                        <i class="fas fa-box-open" style="font-size: 40px; color:var(--border); margin-bottom:10px;"></i>
+                        <h4>No Active Plans</h4><p style="font-size:0.8rem; color:var(--text-sub);">Enroll in a program from the Global Vision tab.</p>
+                    </div>`;
+                    return;
+                }
 
-window.logout = async function() {
-  await signOut(auth);
-  showToast('Logged out', 'success');
-  showSection('community');
-};
+                let html = '';
+                snap.forEach(d => {
+                    const data = d.data();
+                    const dateStr = data.createdAt ? moment(data.createdAt.toDate()).format('MMM D, YYYY') : 'Recently';
+                    html += `
+                        <div class="hero-card" style="padding: 20px; margin-bottom: 15px; border-left: 5px solid var(--pd-green);">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <h3 style="font-weight:900; color:var(--pd-navy);">${data.planName}</h3>
+                                    <p style="font-size:0.75rem; color:var(--text-sub);">Enrolled: ${dateStr}</p>
+                                </div>
+                                <span style="background:rgba(34,197,94,0.1); color:var(--pd-green); padding:5px 12px; border-radius:20px; font-size:0.7rem; font-weight:800;">ACTIVE</span>
+                            </div>
+                            <div style="background:var(--bg-base); padding:15px; border-radius:15px; margin-top:15px; display:flex; justify-content:space-between;">
+                                <div><div style="font-size:10px; font-weight:800; color:var(--text-sub);">CONTRIBUTION</div><div style="font-weight:900; color:var(--pd-green);">E${data.monthlyAmount}/mo</div></div>
+                                <div style="text-align:right;"><div style="font-size:10px; font-weight:800; color:var(--text-sub);">NEXT OF KIN</div><div style="font-weight:700; font-size:0.9rem;">${data.nextOfKin.name}</div></div>
+                            </div>
+                            <button class="btn-main btn-gold" style="margin-top:15px; padding:12px; font-size:0.85rem;" onclick="openClaimForm('${d.id}')"><i class="fas fa-file-invoice"></i> FILE A CLAIM</button>
+                        </div>
+                    `;
+                });
+                list.innerHTML = html;
+            } catch(e) { console.error(e); }
+        };
 
-// Hero Slider
-let currentSlide = 0;
-const slides = document.querySelectorAll('.slide');
-if (slides.length) {
-  setInterval(() => {
-    slides[currentSlide].classList.remove('active');
-    currentSlide = (currentSlide + 1) % slides.length;
-    slides[currentSlide].classList.add('active');
-  }, 5000);
-}
+        // --- WALLET & TRANSACTIONS ---
+        window.loadWalletData = async () => {
+            try {
+                // Balance
+                const wDoc = await getDoc(doc(db, "wallets", currentUser.uid));
+                if(wDoc.exists()) document.getElementById('dispBalance').innerText = `E ${wDoc.data().balance.toFixed(2)}`;
 
-// Auth State
-onAuthStateChanged(auth, (user) => {
-  currentUser = user;
-  if (user) {
-    document.getElementById('loginBtn').style.display = 'none';
-    document.getElementById('logoutBtn').style.display = 'inline-flex';
-    loadWalletData();
-  } else {
-    document.getElementById('loginBtn').style.display = 'inline-flex';
-    document.getElementById('logoutBtn').style.display = 'none';
-    loadWalletData();
-  }
-});
+                // History
+                const dSnap = await getDocs(query(collection(db, "deposits"), where("userId", "==", currentUser.uid)));
+                const wSnap = await getDocs(query(collection(db, "withdrawals"), where("userId", "==", currentUser.uid)));
+                const cSnap = await getDocs(query(collection(db, "supportClaims"), where("userId", "==", currentUser.uid)));
 
-// Initialize
-fetchExchangeRates();
-renderBusinessPlans();
-renderEducationPlans();
-renderSavingsPlans();
-renderFuneralPlans();
-setInterval(fetchExchangeRates, 3600000);
+                let history =[];
+                dSnap.forEach(d => history.push({ type: 'Deposit', amt: d.data().amount, stat: d.data().status, date: d.data().createdAt?.toDate() || new Date(), pos: true }));
+                wSnap.forEach(w => history.push({ type: 'Withdrawal', amt: w.data().amount, stat: w.data().status, date: w.data().createdAt?.toDate() || new Date(), pos: false }));
+                cSnap.forEach(c => history.push({ type: 'Claim Payout', amt: c.data().requestedAmount, stat: c.data().status, date: c.data().createdAt?.toDate() || new Date(), pos: true })); // Treat approved claim as positive inflow conceptually, or neutral depending on accounting. Let's make it positive.
 
-window.showLoginModal = showLoginModal;
-window.closeLoginModal = closeLoginModal;
-</script>
+                history.sort((a,b) => b.date - a.date);
+
+                const list = document.getElementById('txHistoryList');
+                if(history.length === 0) {
+                    list.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-sub);">No transactions yet.</div>';
+                    return;
+                }
+
+                list.innerHTML = history.map(t => {
+                    const icon = t.type === 'Deposit' ? '<i class="fas fa-arrow-down"></i>' : (t.type === 'Withdrawal' ? '<i class="fas fa-arrow-up"></i>' : '<i class="fas fa-file-invoice-dollar"></i>');
+                    const colorClass = t.pos ? 'transaction-positive' : 'transaction-negative';
+                    const sign = t.pos ? '+' : '-';
+                    const statColor = t.stat === 'approved' ? '#22c55e' : (t.stat === 'rejected' ? '#ef4444' : '#f59e0b');
+
+                    return `
+                        <div class="tx-item">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <div class="tx-icon ${t.pos ? 'dep' : 'wth'}">${icon}</div>
+                                <div><strong style="display:block; font-size:0.9rem;">${t.type}</strong><span style="font-size:0.7rem; color:var(--text-sub);">${moment(t.date).format('MMM D, YYYY')}</span></div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div class="${colorClass}">E${t.amt.toFixed(2)}</div>
+                                <div style="font-size:0.65rem; font-weight:800; color:${statColor}; text-transform:uppercase;">${t.stat}</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch(e) { console.error(e); }
+        };
+
+        window.openDepositPanel = () => { document.getElementById('modalDeposit').style.display = 'flex'; };
+        window.openWithdrawPanel = () => { pinChallenge('withdraw_req'); }; // Requires PIN
+
+        // --- CLOUDINARY UPLOADS ---
+        window.triggerCloudinary = (context) => {
+            cloudinary.createUploadWidget({
+                cloudName: 'prayerdome',
+                uploadPreset: context === 'deposit' ? 'donation_proofs' : 'claim_documents',
+                clientAllowedFormats:['jpg', 'jpeg', 'png', 'pdf'],
+                maxFileSize: 5000000
+            }, (error, result) => {
+                if (!error && result && result.event === "success") {
+                    const url = result.info.secure_url;
+                    if(context === 'deposit') {
+                        document.getElementById('depUrl').value = url;
+                        document.getElementById('depUpLabel').innerText = "✅ Receipt Attached";
+                        document.getElementById('depUpLabel').style.color = "var(--pd-green)";
+                        document.getElementById('depPreview').innerHTML = `<img src="${url}" style="height:60px; border-radius:10px; border:2px solid var(--pd-green);">`;
+                    } else if (context === 'claim') {
+                        document.getElementById('claimUrl').value = url;
+                        document.getElementById('claimUpLabel').innerText = "✅ Documents Attached";
+                        document.getElementById('claimUpLabel').style.color = "var(--pd-green)";
+                        document.getElementById('claimPreview').innerHTML = result.info.format === 'pdf' ? '<i class="fas fa-file-pdf" style="font-size:40px; color:var(--pd-red);"></i>' : `<img src="${url}" style="height:60px; border-radius:10px; border:2px solid var(--pd-green);">`;
+                    }
+                }
+            }).open();
+        };
+
+        // --- FORM SUBMISSIONS ---
+        window.submitDeposit = async () => {
+            const amt = document.getElementById('depAmount').value;
+            const url = document.getElementById('depUrl').value;
+            if(!amt || amt < 50) return toast("Minimum deposit is E50", "error");
+            if(!url) return toast("Attach payment receipt", "error");
+
+            document.getElementById('btnSubmitDep').innerText = "Processing...";
+            try {
+                await addDoc(collection(db, "deposits"), {
+                    userId: currentUser.uid, userEmail: currentUser.email, userName: currentUser.displayName || 'Member',
+                    amount: parseFloat(amt), currency: 'SZL', proofUrl: url, status: 'pending', createdAt: serverTimestamp()
+                });
+                
+                closeModal('modalDeposit');
+                toast("Deposit submitted for approval!");
+                confetti();
+                
+                // Reset
+                document.getElementById('depAmount').value = "";
+                document.getElementById('depUrl').value = "";
+                document.getElementById('depPreview').innerHTML = "";
+                document.getElementById('depUpLabel').innerText = "Tap to Attach Receipt";
+                document.getElementById('depUpLabel').style.color = "inherit";
+
+                loadWalletData();
+            } catch(e) { toast(e.message, 'error'); }
+            finally { document.getElementById('btnSubmitDep').innerText = "SUBMIT FOR APPROVAL"; }
+        };
+
+        window.submitWithdrawal = async () => {
+            const amt = document.getElementById('withAmount').value;
+            const phone = document.getElementById('withPhone').value;
+            if(!amt || amt < 100) return toast("Minimum withdrawal is E100", "error");
+            if(!phone) return toast("Enter MoMo number", "error");
+
+            document.getElementById('btnSubmitWith').innerText = "Processing...";
+            try {
+                // Check balance logic done server side typically, but we do client side check
+                const wDoc = await getDoc(doc(db, "wallets", currentUser.uid));
+                if(!wDoc.exists() || wDoc.data().balance < parseFloat(amt)) {
+                    toast("Insufficient wallet balance", "error");
+                    document.getElementById('btnSubmitWith').innerText = "WITHDRAW FUNDS";
+                    return;
+                }
+
+                await addDoc(collection(db, "withdrawals"), {
+                    userId: currentUser.uid, userEmail: currentUser.email, userName: currentUser.displayName || 'Member',
+                    amount: parseFloat(amt), receivePhone: phone, status: 'pending', createdAt: serverTimestamp()
+                });
+
+                closeModal('modalWithdraw');
+                toast("Withdrawal requested successfully!");
+                document.getElementById('withAmount').value = "";
+                document.getElementById('withPhone').value = "";
+                loadWalletData();
+            } catch(e) { toast(e.message, 'error'); }
+            finally { document.getElementById('btnSubmitWith').innerText = "WITHDRAW FUNDS"; }
+        };
+
+        window.openClaimForm = (planId) => {
+            activePlanIdForClaim = planId;
+            document.getElementById('modalClaim').style.display = 'flex';
+        };
+
+        window.submitClaim = async () => {
+            const amt = document.getElementById('claimAmount').value;
+            const reason = document.getElementById('claimReason').value;
+            const url = document.getElementById('claimUrl').value;
+
+            if(!amt || !reason) return toast("Fill all fields", "error");
+            if(!url) return toast("Attach supporting documents", "error");
+
+            document.getElementById('btnSubmitClaim').innerText = "Processing...";
+            try {
+                await addDoc(collection(db, "supportClaims"), {
+                    userId: currentUser.uid, userEmail: currentUser.email, planId: activePlanIdForClaim,
+                    requestedAmount: parseFloat(amt), reason: reason, documents: { proof: url },
+                    status: 'pending', createdAt: serverTimestamp()
+                });
+
+                closeModal('modalClaim');
+                toast("Claim submitted for admin review!");
+                confetti();
+                
+                document.getElementById('claimAmount').value = "";
+                document.getElementById('claimReason').value = "";
+                document.getElementById('claimUrl').value = "";
+                document.getElementById('claimPreview').innerHTML = "";
+                document.getElementById('claimUpLabel').innerText = "Tap to Attach Documents";
+                document.getElementById('claimUpLabel').style.color = "inherit";
+
+                loadWalletData();
+            } catch(e) { toast(e.message, 'error'); }
+            finally { document.getElementById('btnSubmitClaim').innerText = "SUBMIT CLAIM TO ADMIN"; }
+        };
+
+    </script>
 </body>
 </html>
