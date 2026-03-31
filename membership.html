@@ -351,23 +351,36 @@ function prefillForm(data) {
         
         if(!lastSnap.empty) {
             const lastId = lastSnap.docs[0].data().membershipId;
-            // Extract the numeric part (e.g., from PD20260005 get 5)
-            const match = lastId.match(/PD(\d{4})(\d{4})/);
+            console.log("Last membership ID:", lastId);
+            
+            // Extract the numeric part - handle different formats
+            let lastNum = 0;
+            
+            // Try to match pattern PD20260005
+            const match = lastId.match(/PD(\d{8})/);
             if(match) {
-                const lastYear = parseInt(match[1]);
-                const lastNum = parseInt(match[2]);
+                // Full 8-digit number after PD (year + sequence)
+                const fullNumber = parseInt(match[1]);
+                lastNum = fullNumber % 10000; // Get last 4 digits
+                const lastYear = Math.floor(fullNumber / 10000);
                 
                 if(lastYear === year) {
                     nextNumber = lastNum + 1;
                 } else {
-                    // New year, reset numbering
                     nextNumber = 1;
+                }
+            } else {
+                // Fallback: try to extract any numbers at the end
+                const numMatch = lastId.match(/\d+$/);
+                if(numMatch) {
+                    nextNumber = parseInt(numMatch[0]) + 1;
                 }
             }
         }
         
         // Format: PD20260001 (PD + year + 4-digit number)
         const membershipId = `PD${year}${String(nextNumber).padStart(4, '0')}`;
+        console.log("Generated new ID:", membershipId);
         
         // Get user data from auth
         const userAcc = await getDoc(doc(db, "users", currentUid));
@@ -398,7 +411,7 @@ function prefillForm(data) {
             giftNames: document.getElementById('giftNames').value,
             ministries: Array.from(document.querySelectorAll('input[name="min"]:checked')).map(cb => cb.value),
             titheCommitment: true,
-            status: 'approved', // Auto-approved for now, can be changed to 'pending'
+            status: 'approved',
             role: 'member',
             photoUrl: photo,
             uid: currentUid,
