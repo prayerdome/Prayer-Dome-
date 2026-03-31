@@ -450,18 +450,61 @@ function prefillForm(data) {
     document.getElementById('idRole').innerText = data.role ? data.role.toUpperCase() : "MEMBER";
     document.getElementById('idMarital').innerText = data.maritalStatus || data.marital || "SINGLE";
     
-    // Format date properly
-    const date = data.createdAt ? data.createdAt.toDate() : new Date();
+    // FIXED: Safe date formatting
+    let date = new Date();
+    if (data.createdAt) {
+        if (typeof data.createdAt.toDate === 'function') {
+            date = data.createdAt.toDate();
+        } else if (data.createdAt.seconds) {
+            date = new Date(data.createdAt.seconds * 1000);
+        } else if (data.createdAt instanceof Date) {
+            date = data.createdAt;
+        } else if (typeof data.createdAt === 'string') {
+            date = new Date(data.createdAt);
+        }
+    }
     document.getElementById('idDate').innerText = moment(date).format('DD/MM/YYYY');
     
-    // Generate barcode
-    JsBarcode("#barcodeImg", data.membershipId, { 
-        format: "CODE128", 
-        lineColor: "#000", 
-        width: 2, 
-        height: 40, 
-        displayValue: false 
-    });
+    // Generate barcode - FIXED: Add error handling
+    try {
+        JsBarcode("#barcodeImg", data.membershipId || "PD00000000", { 
+            format: "CODE128", 
+            lineColor: "#000", 
+            width: 2, 
+            height: 40, 
+            displayValue: false 
+        });
+    } catch(e) {
+        console.error("Barcode error:", e);
+        // Fallback - create a simple text barcode
+        const barcodeContainer = document.getElementById('barcodeImg');
+        if (barcodeContainer) {
+            barcodeContainer.innerHTML = `<text x="10" y="25" font-family="monospace" font-size="12">${data.membershipId || "PD00000000"}</text>`;
+        }
+    }
+}
+
+// Helper function to safely format Firestore timestamps
+function formatFirestoreDate(timestamp) {
+    if (!timestamp) return new Date();
+    
+    // Check if it's a Firestore Timestamp object
+    if (typeof timestamp.toDate === 'function') {
+        return timestamp.toDate();
+    }
+    // Check if it has seconds property (Firestore Timestamp)
+    if (timestamp.seconds) {
+        return new Date(timestamp.seconds * 1000);
+    }
+    // If it's already a Date object
+    if (timestamp instanceof Date) {
+        return timestamp;
+    }
+    // If it's a string
+    if (typeof timestamp === 'string') {
+        return new Date(timestamp);
+    }
+    return new Date();
 }
 
     window.switchTab = (t) => {
