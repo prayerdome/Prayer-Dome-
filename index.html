@@ -23,12 +23,14 @@
             --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             --shadow-glow: 0 10px 30px rgba(21, 128, 61, 0.15);
             --nav-bg: rgba(255, 255, 255, 0.85);
+            --glass-bg: rgba(255, 255, 255, 0.7);
         }
 
         body.dark-mode {
             --bg-primary: #020617; --bg-card: #0f172a; --text-main: #f8fafc; --text-sub: #94a3b8; 
             --nav-bg: rgba(15, 23, 42, 0.9); --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             --shadow-glow: 0 10px 30px rgba(21, 128, 61, 0.1);
+            --glass-bg: rgba(15, 23, 42, 0.7);
         }
 
         body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-main); line-height: 1.6; transition: 0.4s; padding-bottom: 140px; overflow-x: hidden;}
@@ -36,17 +38,31 @@
         /* --- SMART LOCK SCREEN --- */
         #lockScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073&auto=format&fit=crop') center/cover;
-            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: white; text-align: center; transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073&auto=format&fit=crop') center/cover;
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; padding-top: 15vh;
+            color: white; transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
         }
-        .ls-time { font-size: 6rem; font-weight: 300; letter-spacing: -3px; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        .ls-date { font-size: 1.2rem; margin-top: -15px; margin-bottom: 50px; opacity: 0.9; font-weight: 500;}
-        .ls-verse-box { background: rgba(255,255,255,0.1); backdrop-filter: blur(20px); padding: 35px; border-radius: 35px; max-width: 85%; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: float 6s ease-in-out infinite; }
-        .ls-verse { font-family: 'Merriweather', serif; font-size: 1.15rem; font-style: italic; margin-bottom: 15px; line-height: 1.6; }
-        .ls-ref { color: var(--accent-gold); font-weight: 800; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .ls-time { font-size: 6.5rem; font-weight: 200; letter-spacing: -3px; text-shadow: 0 4px 20px rgba(0,0,0,0.5); line-height: 1;}
+        .ls-date { font-size: 1.3rem; margin-top: 5px; opacity: 0.9; font-weight: 500; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        
+        .ls-notification {
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            padding: 20px; border-radius: 24px; width: 90%; max-width: 450px; margin-top: 40px;
+            color: #0f172a; text-align: left; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            opacity: 0; transform: translateY(40px);
+            animation: popUpNotif 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.5s forwards;
+        }
+        .dark-mode .ls-notification { background: rgba(30, 41, 59, 0.85); color: white; border: 1px solid rgba(255,255,255,0.1); }
+        
+        @keyframes popUpNotif { to { opacity: 1; transform: translateY(0); } }
+        
+        .ls-notif-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 0.8rem; opacity: 0.7; font-weight: 600;}
+        .ls-notif-app { display: flex; align-items: center; gap: 8px; }
+        .ls-verse { font-family: 'Merriweather', serif; font-size: 1.1rem; line-height: 1.5; font-style: italic; margin-bottom: 8px;}
+        .ls-ref { color: var(--accent-green); font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;}
 
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .ls-unlock-hint { position: absolute; bottom: 50px; left: 0; right: 0; text-align: center; font-size: 0.85rem; font-weight: 700; letter-spacing: 2px; opacity: 0.8; animation: pulseHint 2s infinite; cursor: pointer;}
+        @keyframes pulseHint { 0%, 100% { opacity: 0.5; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-5px); } }
 
         /* --- HEADER --- */
         header {
@@ -55,12 +71,14 @@
             transition: all 0.3s;
         }
         .brand { display: flex; align-items: center; gap: 12px; }
-        .logo-ring { width: 45px; height: 45px; background: linear-gradient(135deg, var(--accent-green), var(--accent-green-light)); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; box-shadow: var(--shadow-glow); }
-        .location-detective { background: rgba(21, 128, 61, 0.1); padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; color: var(--accent-green); display: flex; align-items: center; gap: 6px; transition: 0.3s; border: 1px solid rgba(21, 128, 61, 0.2);}
+        .logo-ring { width: 45px; height: 45px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-glow); padding: 2px;}
+        .logo-ring img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px;}
+        
+        .location-detective { background: rgba(21, 128, 61, 0.1); padding: 8px 16px; border-radius: 50px; font-size: 11px; font-weight: 800; color: var(--accent-green); display: flex; align-items: center; gap: 6px; transition: 0.3s; border: 1px solid rgba(21, 128, 61, 0.2);}
         .location-detective:hover { background: rgba(21, 128, 61, 0.2); }
 
         /* --- HERO --- */
-        .hero { background: linear-gradient(135deg, var(--accent-green), #064e3b); padding: 60px 20px 80px; color: white; text-align: center; position: relative; overflow: hidden;}
+        .hero { background: linear-gradient(135deg, var(--accent-green), #064e3b); padding: 60px 20px 80px; color: white; text-align: center; position: relative; overflow: hidden; margin-top: 15px; border-radius: 0 0 40px 40px;}
         .hero::after { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background: url('https://www.transparenttextures.com/patterns/stardust.png'); opacity: 0.3; pointer-events: none;}
         .hero h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 10px; letter-spacing: -1px; animation: slideUp 0.6s ease; z-index: 2; position: relative;}
         .hero p { opacity: 0.9; font-size: 1.05rem; max-width: 500px; margin: 0 auto; animation: slideUp 0.8s ease; z-index: 2; position: relative;}
@@ -69,35 +87,65 @@
 
         /* --- NOTIFICATION BANNER --- */
         #notificationBanner {
-            display: none; background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; padding: 15px 25px; margin: -25px 20px 20px; border-radius: 20px; cursor: pointer; box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3); position: relative; z-index: 10; animation: pulseBanner 2s infinite;
+            display: none; background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; 
+            padding: 15px 25px; margin: 15px 20px 0; border-radius: 20px; cursor: pointer; 
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3); position: relative; z-index: 90; 
+            animation: slideDownNotif 0.5s ease, pulseBanner 2s infinite alternate;
         }
-        @keyframes pulseBanner { 0%, 100% { box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3); } 50% { box-shadow: 0 10px 35px rgba(239, 68, 68, 0.5); } }
+        @keyframes slideDownNotif { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulseBanner { from { box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3); } to { box-shadow: 0 15px 35px rgba(239, 68, 68, 0.5); } }
 
-        /* --- DEVOTIONAL --- */
-        .devotional-section { margin: -30px 20px 30px; background: var(--bg-card); border-radius: 32px; padding: 35px; box-shadow: var(--shadow); border: 1px solid var(--border-color); position: relative; z-index: 5; transition: 0.3s; }
-        .devotional-section:hover { transform: translateY(-5px); box-shadow: var(--shadow-glow); }
-        .dev-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
-        .founder-circle { width: 65px; height: 65px; border-radius: 50%; border: 3px solid var(--accent-gold); overflow: hidden; box-shadow: var(--shadow); padding: 2px;}
-        .founder-circle img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%;}
-        .dev-title { font-size: 1.5rem; font-weight: 900; color: var(--accent-green); letter-spacing: -0.5px;}
-        .dev-scripture { background: var(--bg-primary); padding: 25px; border-radius: 20px; border-left: 5px solid var(--accent-gold); margin-bottom: 20px; font-family: 'Merriweather', serif; font-style: italic; font-size: 1.05rem; color: var(--text-main); line-height: 1.8;}
-        .dev-reflection { color: var(--text-sub); font-size: 0.95rem; line-height: 1.8; margin-bottom: 20px; }
+        /* --- GLASS CARDS --- */
+        .glass-card {
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255,255,255,0.2); box-shadow: var(--shadow);
+            margin: 0 20px 30px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; z-index: 5;
+        }
+        .dark-mode .glass-card { border: 1px solid rgba(255,255,255,0.05); }
+
+        /* --- FOUNDER SPOTLIGHT --- */
+        .founder-card { padding: 40px; display: flex; flex-direction: column; align-items: center; text-align: center; margin-top: -40px; overflow: hidden;}
+        .founder-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-glow); }
+        .founder-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 60%); animation: spinGlow 15s linear infinite; z-index: -1;}
+        @keyframes spinGlow { to { transform: rotate(360deg); } }
+
+        .founder-img-wrapper { width: 120px; height: 120px; border-radius: 50%; border: 4px solid var(--accent-gold); padding: 3px; background: var(--bg-primary); margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 2;}
+        .founder-img-wrapper img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        
+        .founder-name { font-size: 1.6rem; font-weight: 900; color: var(--accent-green); letter-spacing: -0.5px; margin-bottom: 5px;}
+        .founder-title { font-size: 0.85rem; font-weight: 800; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 20px;}
+        .founder-bio { color: var(--text-sub); font-size: 1rem; line-height: 1.7; max-width: 600px; margin: 0 auto; font-style: italic;}
+
+        /* --- DAILY COMMENTARY & PRAYER --- */
+        .insight-card { padding: 35px; }
+        .insight-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; font-size: 1.4rem; font-weight: 900; color: var(--text-main); }
+        .insight-header i { color: var(--accent-green); }
+        .badge-time { font-size: 10px; font-weight: 900; color: var(--accent-gold); background: rgba(212,175,55,0.1); padding: 5px 12px; border-radius: 12px; border: 1px solid rgba(212,175,55,0.3); text-transform: uppercase;}
+
+        .insight-verse { font-family: 'Merriweather', serif; font-size: 1.1rem; line-height: 1.8; color: var(--text-main); margin-bottom: 25px; padding: 20px; border-left: 4px solid var(--accent-green); background: rgba(34,197,94,0.05); border-radius: 0 16px 16px 0;}
+        .insight-commentary { font-size: 0.95rem; color: var(--text-sub); line-height: 1.8; margin-bottom: 25px; }
+        .insight-prayer { background: rgba(212,175,55,0.05); padding: 20px; border-radius: 16px; border: 1px dashed var(--accent-gold); font-size: 0.95rem; font-style: italic; color: var(--text-main); }
 
         /* --- PORTAL GRID --- */
         .section-label { font-size: 1.2rem; font-weight: 800; margin: 40px 20px 20px; display: flex; align-items: center; gap: 10px; color: var(--text-main);}
         .portal-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 0 20px; }
-        .portal-item { text-align: center; text-decoration: none; color: inherit; transition: 0.3s; outline: none; }
-        .portal-icon { width: 65px; height: 65px; background: var(--bg-card); border-radius: 22px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 1.5rem; color: var(--accent-green); box-shadow: var(--shadow); border: 1px solid var(--border-color); transition: 0.3s; }
-        .portal-item:hover .portal-icon { transform: translateY(-8px); background: linear-gradient(135deg, var(--accent-green), var(--accent-green-light)); color: white; box-shadow: var(--shadow-glow); }
-        .portal-item span { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-sub);}
+        .portal-item { text-align: center; text-decoration: none; color: inherit; transition: 0.3s; outline: none; animation: fadeInUp 0.5s ease backwards;}
+        
+        .portal-icon { width: 65px; height: 65px; background: var(--bg-card); border-radius: 22px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 1.5rem; color: var(--accent-green); box-shadow: var(--shadow); border: 1px solid var(--border-color); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .portal-item:hover .portal-icon { transform: translateY(-8px) scale(1.05); background: linear-gradient(135deg, var(--accent-green), var(--accent-green-light)); color: white; box-shadow: var(--shadow-glow); }
+        .portal-item span { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-sub); transition: 0.3s;}
+        .portal-item:hover span { color: var(--accent-green); }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- BRANCH TRACKER --- */
         .branch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; padding: 0 20px; }
         .branch-card { background: var(--bg-card); border-radius: 24px; padding: 25px; border: 1px solid var(--border-color); box-shadow: var(--shadow); display: flex; justify-content: space-between; align-items: center; transition: 0.3s;}
         .branch-card:hover { transform: translateY(-3px); border-color: var(--accent-green); }
-        .branch-card.closest { border: 2px solid var(--accent-green); background: linear-gradient(to right, rgba(34,197,94,0.05), var(--bg-card));}
+        .branch-card.closest { border: 2px solid var(--accent-green); background: linear-gradient(to right, rgba(34,197,94,0.05), var(--bg-card)); box-shadow: var(--shadow-glow);}
         .branch-info h4 { font-weight: 800; font-size: 1.1rem; margin-bottom: 5px; display: flex; align-items: center; gap: 8px;}
-        .branch-dist { font-size: 12px; background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); font-weight: 800; padding: 5px 12px; border-radius: 20px; }
+        .branch-dist { font-size: 11px; background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); font-weight: 800; padding: 6px 12px; border-radius: 20px; }
 
         /* --- CONTENT CARDS (Events & Testimonies) --- */
         .content-card { background: var(--bg-card); border-radius: 24px; padding: 25px; border: 1px solid var(--border-color); box-shadow: var(--shadow); margin: 0 20px 15px; display: flex; gap: 15px; align-items: center; cursor: pointer; transition: 0.3s;}
@@ -113,18 +161,20 @@
 
         /* --- FOOTER --- */
         footer { padding: 50px 20px 40px; text-align: center; background: var(--bg-card); border-top: 1px solid var(--border-color); margin-top: 40px;}
-        .footer-logo { font-size: 1.8rem; font-weight: 900; color: var(--accent-green); margin-bottom: 10px; letter-spacing: -1px; }
+        .footer-logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px; }
+        .footer-logo img { width: 35px; border-radius: 8px; }
+        .footer-logo span { font-size: 1.5rem; font-weight: 900; color: var(--accent-green); letter-spacing: -0.5px; }
+        
         .copyright { font-size: 12px; color: var(--text-sub); font-weight: 500; letter-spacing: 0.5px; margin-bottom: 25px; }
         
         .social-links { display: flex; justify-content: center; gap: 15px; margin: 25px 0; flex-wrap: wrap; }
         .social-link { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: 0.3s; background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-main); }
-        .social-link.facebook:hover { background: #1877f2; border-color: #1877f2; color: white; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3); }
-        .social-link.whatsapp:hover { background: #25d366; border-color: #25d366; color: white; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3); }
-        .social-link.email:hover { background: #ea4335; border-color: #ea4335; color: white; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(234, 67, 53, 0.3); }
+        .social-link.facebook:hover { background: #1877f2; color: white; border-color: #1877f2; }
+        .social-link.whatsapp:hover { background: #25d366; color: white; border-color: #25d366; }
+        .social-link.email:hover { background: #ea4335; color: white; border-color: #ea4335; }
         
-        /* Admin/Finance Special Buttons */
         .admin-btn-special { background: linear-gradient(135deg, var(--text-main), #334155); color: var(--bg-primary); }
-        .admin-btn-special:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+        .admin-btn-special:hover { transform: translateY(-3px); box-shadow: var(--shadow); color: white;}
 
         .contact-info { margin: 20px 0; padding: 20px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
         .contact-info p { margin: 8px 0; font-size: 0.9rem; color: var(--text-sub); font-weight: 500;}
@@ -156,81 +206,88 @@
             .portal-grid { grid-template-columns: repeat(4, 1fr); gap: 10px;}
             .portal-icon { width: 55px; height: 55px; font-size: 1.2rem; }
             .hero h1 { font-size: 2rem; }
+            .dev-header { flex-direction: column; text-align: center; gap: 15px;}
         }
     </style>
 </head>
 <body>
 
-    <!-- SMART LOCK SCREEN -->
+    <!-- IOS STYLE LOCK SCREEN -->
     <div id="lockScreen" onclick="unlock()">
         <div class="ls-time" id="js-time">00:00</div>
         <div class="ls-date" id="js-date">Loading...</div>
         
-        <div class="ls-verse-box">
+        <div class="ls-notification">
+            <div class="ls-notif-header">
+                <div class="ls-notif-app"><img src="https://i.ibb.co/TB5Fx4tb/logo-0.png" width="16" style="border-radius: 4px;"> PRAYER DOME</div>
+                <span>now</span>
+            </div>
             <p class="ls-verse" id="js-ls-verse">"But seek first the kingdom of God and his righteousness, and all these things will be added to you."</p>
-            <span class="ls-ref">Matthew 6:33</span>
+            <span class="ls-ref" id="js-ls-ref">Matthew 6:33</span>
         </div>
 
-        <div style="position: absolute; bottom: 60px; font-weight: 900; letter-spacing: 4px; font-size: 11px; opacity: 0.8; animation: pulse 2s infinite;">
-            <i class="fas fa-fingerprint" style="font-size: 28px; margin-bottom: 12px;"></i><br>TAP TO ENTER
+        <div class="ls-unlock-hint" onclick="unlock()">
+            <i class="fas fa-fingerprint" style="font-size: 32px; margin-bottom: 8px;"></i><br>TAP TO ENTER
         </div>
     </div>
 
     <!-- HEADER -->
     <header>
         <div class="brand">
-            <div class="logo-ring"><i class="fas fa-church"></i></div>
+            <div class="logo-ring"><img src="https://i.ibb.co/TB5Fx4tb/logo-0.png" style="width: 100%; border-radius: 12px; object-fit: contain;"></div>
             <h2 style="font-size: 1.2rem; font-weight: 900; letter-spacing: -0.5px;">PRAYER DOME</h2>
         </div>
         <div class="location-detective" id="js-user-loc">
             <i class="fas fa-location-arrow"></i>
-            <span>Zambia Branch</span>
+            <span>Locating...</span>
         </div>
     </header>
+
+    <!-- NOTIFICATION BANNER (TOP) -->
+    <div id="notificationBanner" onclick="this.style.display='none'">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <img src="https://i.ibb.co/TB5Fx4tb/logo-0.png" width="24" style="border-radius: 6px;">
+            </div>
+            <div style="flex: 1;">
+                <strong id="notificationTitle" style="font-size: 1.1rem; margin-bottom: 3px; display: block;">Important Announcement</strong>
+                <p id="notificationMessage" style="font-size: 0.9rem; opacity: 0.9;">Loading...</p>
+            </div>
+            <i class="fas fa-times" style="opacity: 0.7; font-size: 20px;"></i>
+        </div>
+    </div>
 
     <!-- HERO -->
     <div class="hero">
         <h1 id="js-greeting">Welcome</h1>
-        <p>A House of Prayer for All Nations. Experience a supernatural atmosphere today.</p>
+        <p id="js-welcome-message">A House of Prayer for All Nations. Experience a supernatural atmosphere today.</p>
     </div>
     
-    <!-- NOTIFICATION BANNER -->
-    <div id="notificationBanner" onclick="this.style.display='none'">
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <div style="background: rgba(255,255,255,0.2); padding: 10px; border-radius: 50%;"><i class="fas fa-bell" style="font-size: 20px;"></i></div>
-            <div style="flex: 1;">
-                <strong id="notificationTitle" style="font-size: 1.1rem; display: block; margin-bottom: 2px;">Important Announcement</strong>
-                <p id="notificationMessage" style="font-size: 0.9rem; opacity: 0.9;">Loading...</p>
-            </div>
-            <i class="fas fa-times" style="opacity: 0.7;"></i>
-        </div>
-    </div>
-
     <main>
-        <!-- DEVOTIONAL -->
-        <section class="devotional-section">
-            <div class="dev-header">
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <div class="founder-circle">
-                        <img src="https://i.ibb.co/RTbNh1hB/founder-2.jpg" alt="Pastor Seedwell">
-                    </div>
-                    <div>
-                        <h2 class="dev-title">Daily Manna</h2>
-                        <span style="font-size: 10px; font-weight: 900; color: var(--text-sub); letter-spacing: 1px;">PASTOR SEEDWELL K. MASUKU</span>
-                    </div>
+        <!-- FOUNDER & VISION SPOTLIGHT -->
+        <section class="founder-card glass-card">
+            <div class="founder-img-wrapper">
+                <img src="https://i.ibb.co/RTbNh1hB/founder-2.jpg" alt="Pastor Seedwell K. Masuku">
+            </div>
+            <div class="founder-info">
+                <h3 class="founder-name">Pastor Seedwell K. Masuku</h3>
+                <span class="founder-title">Founder & President</span>
+                <p class="founder-bio">Called by God to raise an army of intercessors globally. Pastor Seedwell leads Prayer Dome with a mandate to demonstrate the raw power of the Holy Spirit, bringing healing, deliverance, and prophetic direction to the nations.</p>
+            </div>
+        </section>
+
+        <!-- DAILY COMMENTARY & PRAYER -->
+        <section class="insight-card glass-card">
+            <div class="insight-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-book-open"></i> Daily Word
                 </div>
-                <span style="font-size: 11px; font-weight: 900; color: var(--accent-gold); background: rgba(212,175,55,0.1); padding: 5px 10px; border-radius: 12px;" id="js-dev-date"></span>
+                <span class="badge-time" id="js-dev-date">TODAY</span>
             </div>
             
-            <div class="dev-scripture" id="dailyScripture">
-                Loading daily word...
-            </div>
-            
-            <div class="dev-reflection" id="dailyMessage">
-                <div class="loading-spinner"></div>
-            </div>
-            
-            <div style="background: rgba(34, 197, 94, 0.05); padding: 20px; border-radius: 18px; border: 1px dashed var(--accent-green); font-size: 0.95rem; font-style: italic; color: var(--text-main);" id="dailyPrayer">
+            <div class="dev-scripture" id="dailyScripture">Loading daily scripture...</div>
+            <div class="dev-reflection" id="dailyMessage"><div class="loading-spinner"></div></div>
+            <div class="dev-prayer" id="dailyPrayer">
                 <strong style="color: var(--accent-green); font-style: normal; display: block; margin-bottom: 5px;"><i class="fas fa-praying-hands"></i> DAILY PRAYER</strong>
                 Loading...
             </div>
@@ -239,14 +296,14 @@
         <!-- PORTAL GRID -->
         <div class="section-label"><i class="fas fa-compass" style="color: var(--accent-green);"></i> Explore Portals</div>
         <div class="portal-grid">
-            <a href="bible.html" class="portal-item"><div class="portal-icon"><i class="fas fa-bible"></i></div><span>Bible</span></a>
-            <a href="prayer.html" class="portal-item"><div class="portal-icon"><i class="fas fa-hands-praying"></i></div><span>Pray</span></a>
-            <a href="give.html" class="portal-item"><div class="portal-icon"><i class="fas fa-heart"></i></div><span>Give</span></a>
-            <a href="video.html" class="portal-item"><div class="portal-icon"><i class="fas fa-video"></i></div><span>Live</span></a>
-            <a href="quiz.html" class="portal-item"><div class="portal-icon"><i class="fas fa-brain"></i></div><span>Quiz</span></a>
-            <a href="membership.html" class="portal-item"><div class="portal-icon"><i class="fas fa-id-card"></i></div><span>Member</span></a>
-            <a href="support.html" class="portal-item"><div class="portal-icon"><i class="fas fa-hand-holding-heart"></i></div><span>Support</span></a>
-            <a href="team.html" class="portal-item"><div class="portal-icon"><i class="fas fa-users"></i></div><span>Team</span></a>
+            <a href="bible.html" class="portal-item" style="animation-delay: 0.1s;"><div class="portal-icon"><i class="fas fa-bible"></i></div><span>Bible</span></a>
+            <a href="prayer.html" class="portal-item" style="animation-delay: 0.15s;"><div class="portal-icon"><i class="fas fa-hands-praying"></i></div><span>Pray</span></a>
+            <a href="give.html" class="portal-item" style="animation-delay: 0.2s;"><div class="portal-icon"><i class="fas fa-heart"></i></div><span>Give</span></a>
+            <a href="video.html" class="portal-item" style="animation-delay: 0.25s;"><div class="portal-icon"><i class="fas fa-video"></i></div><span>Live</span></a>
+            <a href="quiz.html" class="portal-item" style="animation-delay: 0.3s;"><div class="portal-icon"><i class="fas fa-brain"></i></div><span>Quiz</span></a>
+            <a href="membership.html" class="portal-item" style="animation-delay: 0.35s;"><div class="portal-icon"><i class="fas fa-id-card"></i></div><span>Member</span></a>
+            <a href="support.html" class="portal-item" style="animation-delay: 0.4s;"><div class="portal-icon"><i class="fas fa-hand-holding-heart"></i></div><span>Support</span></a>
+            <a href="team.html" class="portal-item" style="animation-delay: 0.45s;"><div class="portal-icon"><i class="fas fa-users"></i></div><span>Team</span></a>
         </div>
 
         <!-- LIVE PROMO BANNER -->
@@ -297,7 +354,10 @@
 
         <!-- FOOTER -->
         <footer>
-            <div class="footer-logo">PRAYER DOME</div>
+            <div class="footer-logo">
+                <img src="https://i.ibb.co/TB5Fx4tb/logo-0.png" alt="PD">
+                <span>PRAYER DOME</span>
+            </div>
             <p class="copyright">© 2026 PRAYER DOME MINISTRY. ALL RIGHTS RESERVED.</p>
             
             <div class="social-links">
@@ -306,12 +366,12 @@
                 <a href="mailto:info@prayerdome.net" class="social-link email"><i class="fas fa-envelope"></i><span>Email</span></a>
                 
                 <!-- Role-Based Buttons -->
-                <a href="admin.html" id="btn-admin" class="social-link admin-btn-special" style="display: none;"><i class="fas fa-shield-alt"></i><span>Admin Console</span></a>
-                <a href="finance-report.html" id="btn-finance" class="social-link admin-btn-special" style="display: none;"><i class="fas fa-chart-line"></i><span>Finance Report</span></a>
+                <a href="admin.html" id="btn-admin" class="social-link admin-btn-special" style="display: none;"><i class="fas fa-shield-alt" style="color: var(--accent-red);"></i><span>Admin Console</span></a>
+                <a href="finance-report.html" id="btn-finance" class="social-link admin-btn-special" style="display: none;"><i class="fas fa-chart-line" style="color: var(--accent-gold);"></i><span>Finance Report</span></a>
             </div>
             
             <div class="contact-info">
-                <p><i class="fas fa-phone-alt"></i> <a href="tel:+26876581804">+268 7658 1804</a></p>
+                <p><i class="fas fa-phone-alt"></i> <a href="tel:+26876581804" style="color: inherit; text-decoration: none;">+268 7658 1804</a></p>
                 <p><i class="fas fa-map-marker-alt"></i> Eswatini, Ireland & Zambia</p>
             </div>
             
@@ -331,12 +391,11 @@
             <a href="prayer.html" class="nav-link"><i class="fas fa-hands-praying"></i><span>Pray</span></a>
             <a href="give.html" class="nav-link"><i class="fas fa-donate"></i><span>Give</span></a>
             <a href="account.html" class="nav-link"><i class="fas fa-user-circle"></i><span>Account</span></a>
-            <!-- Admin Nav injected here dynamically -->
         </nav>
         
         <div class="ticker-bar">
             <div class="ticker-track">
-                "A HOUSE OF PRAYER FOR ALL NATIONS" • "JESUS CHRIST IS THE SAME YESTERDAY, TODAY AND FOREVER" • "PASTOR SEEDWELL WELCOMES YOU" • "EVERY SUNDAY AT 09:00 AM" • "CONNECTING ZAMBIA, ESWATINI, AND IRELAND" • "SUBMIT YOUR PRAYER REQUESTS TODAY"
+                "A HOUSE OF PRAYER FOR ALL NATIONS" • "JESUS CHRIST IS THE SAME YESTERDAY, TODAY AND FOREVER" • "PASTOR SEEDWELL WELCOMES YOU TO THE DOME" • "EVERY SUNDAY AT 09:00 AM" • "CONNECTING ZAMBIA, ESWATINI, AND IRELAND" • "SUBMIT YOUR PRAYER REQUESTS TODAY"
             </div>
         </div>
     </div>
@@ -363,18 +422,24 @@
         // --- CLOCK & GREETING ---
         function updateUI() {
             const now = moment();
-            document.getElementById('js-time').innerText = now.format('HH:mm');
-            document.getElementById('js-date').innerText = now.format('dddd, D MMMM');
-            document.getElementById('js-dev-date').innerText = now.format('DD MMM YYYY').toUpperCase();
+            const timeEl = document.getElementById('js-time');
+            const dateEl = document.getElementById('js-date');
+            
+            if (timeEl) timeEl.innerText = now.format('HH:mm');
+            if (dateEl) dateEl.innerText = now.format('dddd, D MMMM');
             
             const hour = now.hour();
             let g = "Good Evening";
             if(hour < 12) g = "Good Morning";
             else if(hour < 17) g = "Good Afternoon";
             
+            // Time period for devotional badge
+            document.getElementById('js-dev-date').innerText = g.toUpperCase();
+            
             // Only update if not overridden by auth
-            if(document.getElementById('js-greeting').innerText === "Welcome" || document.getElementById('js-greeting').innerText.startsWith("Good")) {
-                document.getElementById('js-greeting').innerText = g + ", Child of God";
+            const greetEl = document.getElementById('js-greeting');
+            if(greetEl && (greetEl.innerText === "Welcome" || greetEl.innerText.startsWith("Good"))) {
+                greetEl.innerText = g + ", Child of God";
             }
         }
         setInterval(updateUI, 1000);
@@ -390,7 +455,7 @@
             }
         }
 
-        // --- SMART LOCATION & DISTANCE TRACKING ---
+        // --- LOCATION TRACKING USING IPAPI ---
         const branches = {
             chama: { name: "Zambia Branch", lat: -11.214, lon: 33.155, el: 'dist-chama', card: 'card-chama' },
             eswatini: { name: "Eswatini Branch", lat: -26.305, lon: 31.136, el: 'dist-eswatini', card: 'card-eswatini' },
@@ -405,153 +470,289 @@
             return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
         }
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((pos) => {
-                const uLat = pos.coords.latitude;
-                const uLon = pos.coords.longitude;
-                let minDistance = Infinity;
-                let closestBranch = "chama"; // Default to Zambia per instructions
+        function updateLocationUI(uLat, uLon, cityCountryStr) {
+            let minDistance = Infinity;
+            let closestBranch = "chama"; 
 
-                for (const key in branches) {
-                    const b = branches[key];
-                    const dist = calculateDistance(uLat, uLon, b.lat, b.lon);
-                    document.getElementById(b.el).innerHTML = `<i class="fas fa-route"></i> ${dist} KM`;
-                    
-                    if (dist < minDistance) {
-                        minDistance = dist;
-                        closestBranch = key;
-                    }
+            for (const key in branches) {
+                const b = branches[key];
+                const dist = calculateDistance(uLat, uLon, b.lat, b.lon);
+                
+                const distEl = document.getElementById(b.el);
+                if (distEl) distEl.innerHTML = `<i class="fas fa-route"></i> ${dist} KM`;
+                
+                if (dist < minDistance) {
+                    minDistance = dist;
+                    closestBranch = key;
                 }
+            }
 
-                // Highlight closest branch
-                document.getElementById(branches[closestBranch].card).classList.add('closest');
-                document.getElementById('js-user-loc').innerHTML = `<i class="fas fa-location-arrow"></i> <span>Closest: ${branches[closestBranch].name}</span>`;
+            // Highlight closest branch card
+            document.querySelectorAll('.branch-card').forEach(c => c.classList.remove('closest'));
+            const closestCard = document.getElementById(branches[closestBranch].card);
+            if (closestCard) closestCard.classList.add('closest');
 
-            }, () => {
-                // Fallback
-                for (const key in branches) document.getElementById(branches[key].el).innerText = "ACTIVE";
-                document.getElementById('js-user-loc').innerHTML = `<i class="fas fa-globe-africa"></i> <span>Zambia Branch</span>`;
-                document.getElementById('card-chama').classList.add('closest');
-            });
-        } else {
-            // Default to Zambia
-            document.getElementById('js-user-loc').innerHTML = `<i class="fas fa-globe-africa"></i> <span>Zambia Branch</span>`;
-            document.getElementById('card-chama').classList.add('closest');
-            for (const key in branches) document.getElementById(branches[key].el).innerText = "ACTIVE";
+            // Update Header Location
+            const headerLoc = document.getElementById('js-user-loc');
+            if (headerLoc) headerLoc.innerHTML = `<i class="fas fa-map-marker-alt"></i> <span>${cityCountryStr}</span>`;
         }
+
+        // Fetch location reliably via IP
+        fetch('https://ipapi.co/json/')
+            .then(res => res.json())
+            .then(data => {
+                if(data.city && data.country_name && data.latitude && data.longitude) {
+                    const locStr = `${data.city}, ${data.country_name}`;
+                    updateLocationUI(data.latitude, data.longitude, locStr);
+                } else {
+                    throw new Error("Incomplete location data");
+                }
+            })
+            .catch(() => {
+                // Fallback to Geolocation API if IP fails
+                if(navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => { updateLocationUI(pos.coords.latitude, pos.coords.longitude, "Location Found"); },
+                        () => { 
+                            // Ultimate Fallback
+                            for (const key in branches) document.getElementById(branches[key].el).innerText = "ACTIVE";
+                            document.getElementById('js-user-loc').innerHTML = `<i class="fas fa-globe-africa"></i> <span>Global Network</span>`;
+                            document.getElementById('card-chama').classList.add('closest');
+                        }
+                    );
+                }
+            });
         
         // --- DYNAMIC DATA LOADERS ---
+        const localDevotionals = {
+            morning:[
+                {
+                    verse: "Let the morning bring me word of your unfailing love, for I have put my trust in you.",
+                    ref: "Psalm 143:8",
+                    commentary: "As the sun rises, God’s mercies are renewed. Before the noise of the day overwhelms you, take a moment to anchor your spirit in His unfailing love. The battles you face today are already won when you surrender your steps to the Holy Spirit.",
+                    prayer: "Lord, direct my path today. I lean not on my own understanding, but I trust Your guidance. Let Your favor surround me like a shield. Amen."
+                }
+            ],
+            afternoon:[
+                {
+                    verse: "But those who hope in the Lord will renew their strength. They will soar on wings like eagles.",
+                    ref: "Isaiah 40:31",
+                    commentary: "The midday hour often brings fatigue and stress. When your human strength is depleted, God offers supernatural renewal. You are not meant to run this race on your own fumes; tap into the endless well of the Holy Spirit.",
+                    prayer: "Lord, I am tired, but I know You are my strength. Renew my mind and energize my spirit to finish today strong. Amen."
+                }
+            ],
+            evening:[
+                {
+                    verse: "In peace I will lie down and sleep, for you alone, Lord, make me dwell in safety.",
+                    ref: "Psalm 4:8",
+                    commentary: "As the day ends, lay down the burdens you picked up. You cannot fix everything before bedtime, and you don't have to. God is awake, watching over you and your loved ones. Rest in His absolute protection.",
+                    prayer: "Father, thank You for bringing me through this day. I hand over every worry to You. Grant me peaceful, restorative sleep tonight. Amen."
+                }
+            ]
+        };
+
         async function loadDailyDevotional() {
             try {
+                // 1. Check Firebase first
                 const docSnap = await getDoc(doc(db, "content", "daily_devotional"));
-                if (docSnap.exists()) {
+                if (docSnap.exists() && docSnap.data().active === true) {
                     const data = docSnap.data();
-                    document.getElementById('dailyScripture').innerHTML = `"${data.verse}" <br><strong style="color:var(--accent-gold); display:block; margin-top:8px;">— ${data.reference}</strong>`;
-                    document.getElementById('dailyMessage').innerHTML = data.content;
-                    document.getElementById('dailyPrayer').innerHTML = `<strong style="color: var(--accent-green); font-style: normal; display: block; margin-bottom: 5px;"><i class="fas fa-praying-hands"></i> DAILY PRAYER</strong>${data.prayer}`;
-                } else {
-                    document.getElementById('dailyScripture').innerHTML = '"Trust in the Lord with all your heart and lean not on your own understanding." <br><strong style="color:var(--accent-gold); display:block; margin-top:8px;">— Proverbs 3:5</strong>';
-                    document.getElementById('dailyMessage').innerHTML = 'Beloved, as you step out today, remember that your faith is a shield. God is with you in every circumstance. Trust His timing.';
-                    document.getElementById('dailyPrayer').innerHTML = `<strong style="color: var(--accent-green); font-style: normal; display: block; margin-bottom: 5px;"><i class="fas fa-praying-hands"></i> DAILY PRAYER</strong>Father, guide my steps today and let Your light shine through me. Amen.`;
+                    document.getElementById('dailyScripture').innerHTML = `"${data.verse}" <br><strong style="color:var(--accent-gold); display:block; margin-top:8px; font-style:normal;">— ${data.reference}</strong>`;
+                    document.getElementById('dailyMessage').innerHTML = data.commentary || data.content;
+                    document.getElementById('dailyPrayer').innerHTML = data.prayer;
+                    
+                    // Update Lock Screen Verse too
+                    document.getElementById('js-ls-verse').innerText = `"${data.verse}"`;
+                    document.getElementById('js-ls-ref').innerText = data.reference;
+                    return; 
                 }
-            } catch (e) { console.error(e); }
+            } catch (error) { console.error("Firebase devotional check skipped:", error); }
+
+            // 2. Fallback to Local Time-Based Array
+            const hour = moment().hour();
+            let timeOfDay = 'morning';
+            if(hour >= 12 && hour < 17) timeOfDay = 'afternoon';
+            else if(hour >= 17) timeOfDay = 'evening';
+
+            const todayDev = localDevotionals[timeOfDay][0];
+
+            document.getElementById('dailyScripture').innerHTML = `"${todayDev.verse}" <br><strong style="color:var(--accent-gold); display:block; margin-top:8px; font-style:normal;">— ${todayDev.ref}</strong>`;
+            document.getElementById('dailyMessage').innerHTML = todayDev.commentary;
+            document.getElementById('dailyPrayer').innerHTML = todayDev.prayer;
+
+            // Lock screen update
+            document.getElementById('js-ls-verse').innerText = `"${todayDev.verse}"`;
+            document.getElementById('js-ls-ref').innerText = todayDev.ref;
         }
 
         async function loadUpcomingEvents() {
             try {
-                const snap = await getDocs(query(collection(db, "events"), where("date", ">=", Timestamp.fromDate(new Date())), orderBy("date", "asc"), limit(2)));
+                const now = new Date();
+                const eventsQuery = query(
+                    collection(db, "events"), 
+                    where("date", ">=", Timestamp.fromDate(now)),
+                    orderBy("date", "asc"),
+                    limit(2)
+                );
+                const snapshot = await getDocs(eventsQuery);
                 const container = document.getElementById('upcomingEvents');
-                if (snap.empty) { container.innerHTML = '<div class="content-card" style="justify-content:center; color:var(--text-sub);">No upcoming events</div>'; return; }
                 
-                container.innerHTML = snap.docs.map(d => {
-                    const ev = d.data();
+                if (snapshot.empty) {
+                    container.innerHTML = '<div class="content-card" style="justify-content:center; color:var(--text-sub);">No upcoming events</div>';
+                    return;
+                }
+                
+                container.innerHTML = snapshot.docs.map(doc => {
+                    const event = doc.data();
+                    const eventDate = event.date?.toDate() || new Date();
                     return `
                         <div class="content-card" onclick="window.location.href='event.html'">
                             <div class="content-icon"><i class="fas fa-calendar-day"></i></div>
                             <div style="flex:1;">
-                                <h4 style="font-weight: 800; color: var(--text-main); font-size:1.1rem;">${ev.title}</h4>
-                                <p style="font-size: 0.8rem; color: var(--accent-green); font-weight:600;">${moment(ev.date.toDate()).format('dddd, MMMM D • h:mm A')}</p>
-                                <p style="font-size: 0.75rem; color: var(--text-sub); margin-top:2px;"><i class="fas fa-map-marker-alt"></i> ${ev.location}</p>
+                                <h4 style="font-weight: 800; color: var(--text-main); font-size:1.1rem; margin-bottom: 2px;">${event.title || 'Event'}</h4>
+                                <p style="font-size: 0.8rem; color: var(--accent-green); font-weight:600; margin-bottom: 2px;">${moment(eventDate).format('dddd, MMMM D • h:mm A')}</p>
+                                <p style="font-size: 0.75rem; color: var(--text-sub);"><i class="fas fa-map-marker-alt"></i> ${event.location || 'Prayer Dome'}</p>
                             </div>
                             <i class="fas fa-chevron-right" style="color: var(--border-color);"></i>
                         </div>
                     `;
                 }).join('');
-            } catch (e) { console.error(e); }
+                
+            } catch (error) {
+                console.error("Error loading events:", error);
+                document.getElementById('upcomingEvents').innerHTML = '<div class="content-card" style="justify-content:center; color:var(--accent-red);">Unable to load events</div>';
+            }
         }
 
         async function loadRecentTestimonies() {
             try {
-                const snap = await getDocs(query(collection(db, "testimonies"), orderBy("timestamp", "desc"), limit(2)));
+                const testimoniesQuery = query(
+                    collection(db, "testimonies"),
+                    orderBy("timestamp", "desc"),
+                    limit(2)
+                );
+                const snapshot = await getDocs(testimoniesQuery);
                 const container = document.getElementById('recentTestimonies');
-                if (snap.empty) { container.innerHTML = '<div class="content-card" style="justify-content:center; color:var(--text-sub);">No testimonies yet</div>'; return; }
                 
-                container.innerHTML = snap.docs.map(d => {
-                    const t = d.data();
+                if (snapshot.empty) {
+                    container.innerHTML = '<div class="content-card" style="justify-content:center; color:var(--text-sub);">No testimonies yet. Be the first!</div>';
+                    return;
+                }
+                
+                container.innerHTML = snapshot.docs.map(doc => {
+                    const t = doc.data();
                     return `
                         <div class="content-card" onclick="window.location.href='testimony.html'" style="border-left-color: var(--accent-gold);">
-                            <div class="content-icon" style="background: rgba(212, 175, 55, 0.1); color: var(--accent-gold);"><i class="fas fa-quote-left"></i></div>
-                            <div style="flex:1;">
-                                <p style="font-size: 0.9rem; font-style: italic; color: var(--text-main); line-height: 1.5;">"${t.content.substring(0, 80)}..."</p>
-                                <p style="font-size: 0.75rem; color: var(--accent-gold); font-weight:700; margin-top:6px;">— ${t.author || 'Anonymous'}</p>
+                            <div class="content-icon" style="background: rgba(212, 175, 55, 0.1); color: var(--accent-gold);">
+                                <i class="fas fa-quote-left"></i>
+                            </div>
+                            <div style="flex: 1;">
+                                <p style="font-size: 0.9rem; font-style: italic; color: var(--text-main); line-height: 1.5;">"${t.content?.substring(0, 100)}${t.content?.length > 100 ? '...' : ''}"</p>
+                                <p style="font-size: 0.75rem; color: var(--accent-gold); font-weight:700; margin-top:8px;">— ${t.author || 'Anonymous'}</p>
                             </div>
                         </div>
                     `;
                 }).join('');
-            } catch (e) { console.error(e); }
+                
+            } catch (error) {
+                console.error("Error loading testimonies:", error);
+            }
         }
 
         async function loadNotification() {
             try {
-                const docSnap = await getDoc(doc(db, "notifications", "latest_alert"));
-                if (docSnap.exists() && docSnap.data().active) {
-                    const data = docSnap.data();
+                const notifDoc = await getDoc(doc(db, "notifications", "latest_alert"));
+                if (notifDoc.exists() && notifDoc.data().active) {
+                    const data = notifDoc.data();
+                    const banner = document.getElementById('notificationBanner');
                     document.getElementById('notificationTitle').innerText = data.title;
                     document.getElementById('notificationMessage').innerText = data.message;
-                    document.getElementById('notificationBanner').style.display = 'block';
+                    banner.style.display = 'flex';
                     
-                    // Auto hide after 15s
-                    setTimeout(() => { document.getElementById('notificationBanner').style.display = 'none'; }, 15000);
+                    // Auto-hide after 15 seconds
+                    setTimeout(() => {
+                        if(banner) banner.style.display = 'none';
+                    }, 15000);
                 }
-            } catch (e) { console.error(e); }
+            } catch (error) {
+                console.error("Error loading notification:", error);
+            }
         }
 
         // --- AUTHENTICATION & ROLE MANAGEMENT ---
+        async function checkFinanceRole(user) {
+            if (!user) return false;
+            try {
+                const memberDoc = await getDoc(doc(db, "memberships", user.uid));
+                const userData = memberDoc.data();
+                return userData?.role === 'finance' || userData?.role === 'admin';
+            } catch (error) {
+                return false;
+            }
+        }
+
+        async function checkAndShowAdminTab(user) {
+            if (!user) return;
+            try {
+                const memberDoc = await getDoc(doc(db, "memberships", user.uid));
+                const userData = memberDoc.data();
+                const isAdmin = userData?.role === 'admin';
+                
+                const navBar = document.getElementById('mainNavBar');
+                const existingAdminLink = document.getElementById('nav-admin-link');
+                
+                if (isAdmin && !existingAdminLink) {
+                    // Add admin link to bottom navigation
+                    const adminLink = document.createElement('a');
+                    adminLink.href = "admin.html";
+                    adminLink.id = "nav-admin-link";
+                    adminLink.className = "nav-link";
+                    adminLink.innerHTML = '<i class="fas fa-shield-alt" style="color:var(--accent-red);"></i><span style="color:var(--accent-red);">Admin</span>';
+                    navBar.appendChild(adminLink);
+
+                    // Unhide admin button in footer
+                    const btnAdmin = document.getElementById('btn-admin');
+                    if (btnAdmin) btnAdmin.style.display = 'inline-flex';
+                } else if (!isAdmin && existingAdminLink) {
+                    existingAdminLink.remove();
+                }
+            } catch (error) {
+                console.error("Error checking admin status:", error);
+            }
+        }
+
+        // Unified Auth Observer
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 try {
-                    const mDoc = await getDoc(doc(db, "memberships", user.uid));
-                    const uData = mDoc.exists() ? mDoc.data() : null;
+                    const memberDoc = await getDoc(doc(db, "memberships", user.uid));
+                    const userData = memberDoc.exists() ? memberDoc.data() : null;
                     
-                    // Personalize Greeting
-                    const firstName = uData?.fullName?.split(' ')[0] || user.displayName?.split(' ')[0] || 'Beloved';
+                    // 1. Greeting update
+                    const userName = userData?.fullName?.split(' ')[0] || user.displayName?.split(' ')[0] || 'Beloved';
                     const hour = moment().hour();
                     let g = "Good Evening";
                     if(hour < 12) g = "Good Morning";
                     else if(hour < 17) g = "Good Afternoon";
-                    document.getElementById('js-greeting').innerText = `${g}, ${firstName}!`;
-
-                    // Role-Based UI
-                    const role = uData?.role || 'member';
+                    document.getElementById('js-greeting').innerHTML = `${g}, ${userName}!`;
                     
-                    if (role === 'admin') {
-                        document.getElementById('btn-admin').style.display = 'inline-flex';
-                        document.getElementById('btn-finance').style.display = 'inline-flex';
-                        
-                        // Add Admin to Bottom Nav if missing
-                        if(!document.getElementById('nav-admin-link')) {
-                            const navBar = document.getElementById('mainNavBar');
-                            navBar.innerHTML += `<a href="admin.html" id="nav-admin-link" class="nav-link"><i class="fas fa-shield-alt" style="color:var(--accent-red);"></i><span style="color:var(--accent-red);">Admin</span></a>`;
-                        }
-                    } else if (role === 'finance') {
-                        document.getElementById('btn-finance').style.display = 'inline-flex';
+                    // 2. Finance check (Show Finance Report Button in Footer)
+                    const isFinance = await checkFinanceRole(user);
+                    const btnFinance = document.getElementById('btn-finance');
+                    if (btnFinance && isFinance) {
+                        btnFinance.style.display = 'inline-flex';
                     }
 
-                } catch(e) { console.error(e); }
+                    // 3. Admin check (Show Admin Button & Nav Tab)
+                    await checkAndShowAdminTab(user);
+                    
+                } catch (e) {
+                    console.error("Error processing user state:", e);
+                }
             }
         });
 
-        // Initialize Data Loaders
+        // Run Initial Data Fetchers
         loadDailyDevotional();
         loadUpcomingEvents();
         loadRecentTestimonies();

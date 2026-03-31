@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prayer Dome | Global Membership</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Prayer Dome | Global Membership & Profile</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,32 +13,39 @@
     <style>
         :root {
             --accent-green: #15803d;
+            --accent-green-light: #22c55e;
             --accent-gold: #d4af37;
             --bg-primary: #f8fafc;
             --bg-card: #ffffff;
             --text-main: #0f172a;
+            --text-sub: #64748b;
             --border: #e2e8f0;
+            --shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
         }
 
         body.dark-mode {
-            --bg-primary: #020617; --bg-card: #0f172a; --text-main: #f8fafc; --border: #1e293b;
+            --bg-primary: #020617; 
+            --bg-card: #0f172a; 
+            --text-main: #f8fafc; 
+            --text-sub: #94a3b8;
+            --border: #1e293b;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg-primary); color: var(--text-main); transition: 0.3s; padding-bottom: 50px; }
 
-        /* --- UI COMPONENTS --- */
-        .auth-header { background: var(--bg-card); padding: 20px 30px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        /* Header */
+        .auth-header { background: var(--bg-card); padding: 15px 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .logo-ring { width: 45px; height: 45px; background: linear-gradient(135deg, var(--accent-green), var(--accent-gold)); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; }
 
-        .container { max-width: 700px; margin: 30px auto; padding: 0 20px; }
-        .auth-card { background: var(--bg-card); border-radius: 32px; padding: 40px; border: 1px solid var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
+        .auth-card { background: var(--bg-card); border-radius: 32px; padding: 35px; border: 1px solid var(--border); box-shadow: var(--shadow); }
 
         .tabs { display: flex; background: var(--bg-primary); padding: 5px; border-radius: 50px; margin-bottom: 30px; }
         .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; border-radius: 50px; font-weight: 700; transition: 0.3s; color: var(--text-main); opacity: 0.5; }
         .tab.active { background: var(--bg-card); box-shadow: 0 4px 10px rgba(0,0,0,0.1); opacity: 1; color: var(--accent-green); }
 
-        /* --- FORM STYLES --- */
+        /* Forms */
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 0.85rem; }
@@ -46,27 +53,46 @@
         input:focus { border-color: var(--accent-green); }
         .full-width { grid-column: span 2; }
 
-        .btn { padding: 15px 30px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; justify-content: center; width: 100%; }
-        .btn-primary { background: var(--accent-green); color: white; }
+        .btn { padding: 14px 28px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; justify-content: center; width: 100%; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-green), var(--accent-green-light)); color: white; }
         .btn-google { background: white; border: 2px solid var(--border); color: var(--text-main); }
-        .btn-outline { background: transparent; border: 2px solid var(--border); }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-main); }
+        .btn-danger { background: #ef4444; color: white; }
 
-        /* --- PROFILE VIEW --- */
-        .profile-hero { text-align: center; margin-bottom: 30px; }
-        .avatar-frame { width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--accent-gold); padding: 5px; margin: 0 auto 15px; position: relative; }
+        /* Profile */
+        .profile-hero { text-align: center; margin-bottom: 30px; position: relative; }
+        .avatar-frame { width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--accent-gold); padding: 4px; margin: 0 auto 15px; position: relative; cursor: pointer; transition: 0.3s; }
+        .avatar-frame:hover { transform: scale(1.02); border-color: var(--accent-green); }
         .avatar-frame img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .camera-overlay { position: absolute; bottom: 10px; right: 10px; background: var(--accent-green); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; }
         
-        .membership-badge { background: linear-gradient(135deg, var(--accent-green), #064e3b); color: white; padding: 10px 20px; border-radius: 20px; margin: 15px 0; font-weight: 800; display: inline-block; font-family: monospace; letter-spacing: 1px; }
+        .membership-badge { background: linear-gradient(135deg, var(--accent-green), #064e3b); color: white; padding: 12px 24px; border-radius: 30px; margin: 15px auto; font-weight: 800; display: inline-block; font-family: monospace; letter-spacing: 1px; font-size: 0.9rem; }
 
-        .profile-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 25px 0; }
-        .stat-item { background: var(--bg-primary); padding: 15px; border-radius: 20px; text-align: center; border: 1px solid var(--border); }
+        .profile-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 25px 0; }
+        .stat-item { background: var(--bg-primary); padding: 15px 10px; border-radius: 20px; text-align: center; border: 1px solid var(--border); transition: 0.3s; }
+        .stat-item:hover { transform: translateY(-2px); border-color: var(--accent-green); }
+        .stat-number { font-size: 1.5rem; font-weight: 800; color: var(--accent-green); }
+        .stat-label { font-size: 0.7rem; color: var(--text-sub); margin-top: 4px; }
 
-        /* --- TOAST --- */
+        /* Spiritual Growth */
+        .spiritual-card { background: var(--bg-primary); border-radius: 24px; padding: 20px; margin: 20px 0; border: 1px solid var(--border); }
+        .spiritual-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .progress-bar { height: 8px; background: var(--border); border-radius: 10px; overflow: hidden; margin: 10px 0; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-green), var(--accent-gold)); border-radius: 10px; transition: width 0.5s ease; }
+
+        .ministry-tag { display: inline-block; background: rgba(34,197,94,0.1); color: var(--accent-green); padding: 6px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; margin: 4px; }
+
         .toast-box { position: fixed; top: 20px; right: 20px; z-index: 2000; }
         .toast { background: var(--bg-card); padding: 15px 25px; border-radius: 40px; margin-bottom: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-left: 5px solid var(--accent-green); animation: slideIn 0.3s ease; display: flex; align-items: center; gap: 12px; font-weight: 600; }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
         .age-warning { color: #ef4444; font-size: 0.75rem; font-weight: bold; display: none; }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+            .profile-stat-grid { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
 <body>
@@ -75,8 +101,8 @@
 
     <header class="auth-header">
         <div style="display: flex; align-items: center; gap: 12px;">
-            <div class="logo-ring"><i class="fas fa-dove"></i></div>
-            <h1 style="font-size: 1.2rem; font-weight: 900; letter-spacing: -0.5px;">Prayer Dominion</h1>
+            <div class="logo-ring"><i class="fas fa-church"></i></div>
+            <h1 style="font-size: 1.2rem; font-weight: 900;">PRAYER DOME</h1>
         </div>
         <button onclick="toggleDarkMode()" style="background:none; border:none; color:inherit; font-size: 1.4rem; cursor:pointer;"><i class="fas fa-moon"></i></button>
     </header>
@@ -90,7 +116,7 @@
 
         <!-- LOGIN SCREEN -->
         <div id="loginForm" class="auth-card">
-            <h2 style="margin-bottom: 30px; text-align: center;">Welcome Home</h2>
+            <h2 style="margin-bottom: 30px; text-align: center;">Welcome Back</h2>
             <form onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label>Email Address</label>
@@ -112,122 +138,205 @@
         <div id="registerForm" class="auth-card" style="display: none;">
             <h2 style="margin-bottom: 25px; text-align: center;">Join the Family</h2>
             
-            <div class="profile-photo-container">
+            <div style="text-align: center; margin-bottom: 20px;">
                 <div class="avatar-frame"><img id="regPreview" src="https://via.placeholder.com/150"></div>
-                <button onclick="uploadPhoto()" class="btn btn-outline" style="width: auto; padding: 6px 15px; font-size: 11px;">Upload Portrait</button>
+                <button onclick="uploadPhoto('register')" class="btn btn-outline" style="width: auto; padding: 8px 20px; margin-top: 10px;">Upload Photo</button>
                 <input type="hidden" id="uploadedPhoto">
             </div>
 
             <form onsubmit="handleRegister(event)">
                 <div class="form-grid">
-                    <div class="form-group full-width"><label>Full Name</label><input type="text" id="rName" required></div>
-                    <div class="form-group"><label>Email Address</label><input type="email" id="rEmail" required></div>
-                    <div class="form-group"><label>Phone Number</label><input type="tel" id="rPhone" required></div>
+                    <div class="form-group full-width"><label>Full Name *</label><input type="text" id="rName" required></div>
+                    <div class="form-group"><label>Email Address *</label><input type="email" id="rEmail" required></div>
+                    <div class="form-group"><label>Phone Number *</label><input type="tel" id="rPhone" required></div>
                     
                     <div class="form-group">
-                        <label>Date of Birth</label>
+                        <label>Date of Birth *</label>
                         <input type="date" id="rDob" onchange="checkAge(this.value)" required>
-                        <p id="ageWarn" class="age-warning">Access Denied: Must be 13+ years old.</p>
+                        <p id="ageWarn" class="age-warning">⚠️ Must be 13+ years old to register.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select id="rGender">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Prefer not to say">Prefer not to say</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
                         <label>Your Branch</label>
                         <select id="rBranch">
-                            <option value="Chama, Zambia">Zambia - Chama</option>
-                            <option value="Manzini, Eswatini">Eswatini - Manzini</option>
-                            <option value="Cork, Ireland">Ireland - Cork</option>
+                            <option value="Chama, Zambia">🇿🇲 Zambia - Chama (HQ)</option>
+                            <option value="Manzini, Eswatini">🇸🇿 Eswatini - Manzini</option>
+                            <option value="Cork, Ireland">🇮🇪 Ireland - Cork</option>
+                            <option value="Online Global">🌐 Online Global</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label>Role in Church</label>
-                        <select id="rRole">
-                            <option value="Member">Church Member</option>
-                            <option value="Pastor">Pastor / Leader</option>
-                            <option value="Visitor">Visitor / Global Guest</option>
+                        <label>Ministry Interest</label>
+                        <select id="rMinistry">
+                            <option value="Worship">🎵 Worship Team</option>
+                            <option value="Intercessor">🙏 Intercessor</option>
+                            <option value="Usher">🚪 Usher</option>
+                            <option value="Outreach">🤝 Outreach</option>
+                            <option value="Children">👶 Children's Ministry</option>
+                            <option value="Technical">📹 Technical/Media</option>
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label>Where did you hear about us?</label>
-                        <select id="rReferral">
-                            <option value="Social Media">Social Media</option>
-                            <option value="Friend">Friend / Family</option>
-                            <option value="Radio">Radio / TV</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group"><label>Password</label><input type="password" id="rPass" minlength="6" required></div>
-                    <div class="form-group"><label>Confirm Password</label><input type="password" id="rConfirm" required></div>
+                    <div class="form-group"><label>Password *</label><input type="password" id="rPass" minlength="6" required></div>
+                    <div class="form-group"><label>Confirm Password *</label><input type="password" id="rConfirm" required></div>
                 </div>
-                <button type="submit" id="regBtn" class="btn btn-primary">Establish Membership <i class="fas fa-shield-check"></i></button>
+                
+                <div class="form-group full-width">
+                    <label>How did you hear about us?</label>
+                    <select id="rReferral">
+                        <option value="Social Media">Social Media</option>
+                        <option value="Friend/Family">Friend/Family</option>
+                        <option value="Radio/TV">Radio/TV</option>
+                        <option value="Event">Church Event</option>
+                        <option value="Online Search">Online Search</option>
+                    </select>
+                </div>
+
+                <button type="submit" id="regBtn" class="btn btn-primary">Register Membership <i class="fas fa-user-plus"></i></button>
             </form>
         </div>
 
-        <!-- PROFILE MANAGEMENT SCREEN -->
+        <!-- PROFILE MANAGEMENT SCREEN (Enhanced) -->
         <div id="profileSection" class="auth-card" style="display: none;">
             
             <!-- VIEW MODE -->
             <div id="profileView">
                 <div class="profile-hero">
-                    <div class="avatar-frame"><img id="pPhoto" src=""></div>
-                    <h2 id="pNameDisplay">User Name</h2>
-                    <p id="pRoleDisplay" style="color: var(--accent-gold); font-weight: 800; font-size: 0.8rem;"></p>
+                    <div class="avatar-frame" onclick="changeProfilePhoto()">
+                        <img id="pPhoto" src="https://via.placeholder.com/150">
+                        <div class="camera-overlay"><i class="fas fa-camera" style="font-size: 14px;"></i></div>
+                    </div>
+                    <h2 id="pNameDisplay" style="font-size: 1.5rem;">User Name</h2>
+                    <p id="pRoleDisplay" style="color: var(--accent-gold); font-weight: 800; font-size: 0.85rem; margin-top: 5px;"></p>
                     
                     <div class="membership-badge">
-                        <span style="display: block; font-size: 10px; opacity: 0.7;">MEMBERSHIP ID</span>
-                        <span id="pIdDisplay">none</span>
+                        <i class="fas fa-id-card"></i> <span id="pIdDisplay">Not Assigned</span>
                     </div>
                 </div>
 
-                <div class="stat-box" style="margin-bottom: 20px; text-align: left; background: var(--bg-primary); padding: 20px; border-radius: 20px;">
-                    <label style="font-size: 11px; font-weight: 800; opacity: 0.6;">SPIRITUAL BIO</label>
-                    <p id="pBioDisplay" style="font-size: 0.9rem; margin-top: 5px;">No bio added yet.</p>
-                </div>
-
+                <!-- Stats Grid -->
                 <div class="profile-stat-grid">
-                    <div class="stat-item"><div class="stat-number" id="pPrayers">0</div><div style="font-size: 9px;">PRAYERS</div></div>
-                    <div class="stat-item"><div class="stat-number" id="pBranch">Zambia</div><div style="font-size: 9px;">BRANCH</div></div>
-                    <div class="stat-item"><div class="stat-number" id="pWallet">E0</div><div style="font-size: 9px;">WALLET</div></div>
+                    <div class="stat-item"><div class="stat-number" id="pPrayers">0</div><div class="stat-label">PRAYERS</div></div>
+                    <div class="stat-item"><div class="stat-number" id="pDaysActive">0</div><div class="stat-label">DAYS ACTIVE</div></div>
+                    <div class="stat-item"><div class="stat-number" id="pWallet">E0</div><div class="stat-label">WALLET</div></div>
+                    <div class="stat-item"><div class="stat-number" id="pLevel">1</div><div class="stat-label">QUIZ LEVEL</div></div>
                 </div>
 
-                <div style="display: flex; gap: 10px;">
-                    <button onclick="toggleEdit(true)" class="btn btn-primary" style="flex: 2;">Edit Profile <i class="fas fa-pen"></i></button>
-                    <button onclick="handleLogout()" class="btn btn-outline" style="flex: 1; color: #ef4444;"><i class="fas fa-power-off"></i></button>
+                <!-- Spiritual Growth -->
+                <div class="spiritual-card">
+                    <div class="spiritual-header">
+                        <strong><i class="fas fa-seedling" style="color: var(--accent-green);"></i> Spiritual Growth</strong>
+                        <span id="spiritualLevel">Seeker</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill" id="spiritualProgress" style="width: 0%"></div></div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-sub); margin-top: 8px;">
+                        <span>🌱 Seeker</span><span>📖 Disciple</span><span>🔥 Warrior</span><span>👑 Leader</span>
+                    </div>
+                </div>
+
+                <!-- Bio & Ministry -->
+                <div style="background: var(--bg-primary); border-radius: 20px; padding: 20px; margin: 15px 0;">
+                    <p style="font-size: 0.7rem; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin-bottom: 8px;"><i class="fas fa-quote-left"></i> SPIRITUAL BIO</p>
+                    <p id="pBioDisplay" style="font-size: 0.9rem; line-height: 1.6;">No bio added yet. Click edit to share your faith journey.</p>
+                </div>
+
+                <div style="background: var(--bg-primary); border-radius: 20px; padding: 20px; margin: 15px 0;">
+                    <p style="font-size: 0.7rem; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin-bottom: 8px;"><i class="fas fa-hands-helping"></i> MINISTRIES / GIFTS</p>
+                    <div id="pMinistriesDisplay">Not specified</div>
+                </div>
+
+                <div style="background: var(--bg-primary); border-radius: 20px; padding: 20px; margin: 15px 0;">
+                    <p style="font-size: 0.7rem; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin-bottom: 8px;"><i class="fas fa-heart"></i> INTERESTS & PASSIONS</p>
+                    <p id="pInterestsDisplay">No interests added yet.</p>
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 20px;">
+                    <button onclick="toggleEdit(true)" class="btn btn-primary" style="flex: 2;"><i class="fas fa-pen"></i> Edit Profile</button>
+                    <button onclick="handleLogout()" class="btn btn-outline" style="flex: 1; color: #ef4444;"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
             </div>
 
-            <!-- EDIT MODE -->
+            <!-- EDIT MODE (Enhanced) -->
             <div id="profileEdit" style="display: none;">
-                <h3 style="margin-bottom: 20px; color: var(--accent-green);">Update Information</h3>
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="eName">
-                </div>
-                <div class="form-group">
-                    <label>Gender</label>
-                    <select id="eGender">
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Private">Prefer not to say</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Spiritual Bio</label>
-                    <textarea id="eBio" rows="3" placeholder="Tell us about your faith journey..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Phone Number</label>
-                    <input type="tel" id="ePhone">
-                </div>
-                <div class="form-group">
-                    <label>Interests / Ministry Passions</label>
-                    <input type="text" id="eInterests" placeholder="e.g. Worship, Outreach, Bible Study">
-                </div>
+                <h3 style="margin-bottom: 20px; color: var(--accent-green);"><i class="fas fa-user-edit"></i> Edit Your Profile</h3>
                 
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <button onclick="saveProfile()" class="btn btn-primary" style="flex: 2;">Save Everything</button>
+                <div class="form-group">
+                    <label>Profile Photo</label>
+                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                        <img id="editPhotoPreview" src="https://via.placeholder.com/80" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-gold);">
+                        <button onclick="changeProfilePhoto()" class="btn btn-outline" style="width: auto; padding: 8px 20px;"><i class="fas fa-camera"></i> Change Photo</button>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group"><label>Full Name</label><input type="text" id="eName"></div>
+                    <div class="form-group"><label>Phone Number</label><input type="tel" id="ePhone"></div>
+                    <div class="form-group"><label>Gender</label>
+                        <select id="eGender">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Prefer not to say">Prefer not to say</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Your Branch</label>
+                        <select id="eBranch">
+                            <option value="Chama, Zambia">🇿🇲 Zambia - Chama (HQ)</option>
+                            <option value="Manzini, Eswatini">🇸🇿 Eswatini - Manzini</option>
+                            <option value="Cork, Ireland">🇮🇪 Ireland - Cork</option>
+                            <option value="Online Global">🌐 Online Global</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Spiritual Bio / Testimony</label>
+                    <textarea id="eBio" rows="3" placeholder="Share your faith journey, when you gave your life to Christ, etc..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Ministry Involvement (Select all that apply)</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;" id="ministryCheckboxes">
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Worship"> 🎵 Worship</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Intercessor"> 🙏 Intercessor</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Usher"> 🚪 Usher</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Outreach"> 🤝 Outreach</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Children"> 👶 Children's Ministry</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Technical"> 📹 Technical/Media</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Prayer Team"> 📢 Prayer Team</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Counseling"> 💬 Counseling</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Spiritual Gifts</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;" id="giftsCheckboxes">
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Teaching"> 📖 Teaching</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Prophetic"> 🔥 Prophetic</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Healing"> 🩺 Healing</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Leadership"> 👑 Leadership</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Mercy"> 🤗 Mercy</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Evangelism"> 📢 Evangelism</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Administration"> 📊 Administration</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Interests / Passions</label>
+                    <input type="text" id="eInterests" placeholder="e.g., Worship, Bible Study, Outreach, Music">
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 25px;">
+                    <button onclick="saveProfile()" class="btn btn-primary" style="flex: 2;"><i class="fas fa-save"></i> Save Changes</button>
                     <button onclick="toggleEdit(false)" class="btn btn-outline" style="flex: 1;">Cancel</button>
                 </div>
             </div>
@@ -238,7 +347,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -255,6 +364,8 @@
         const db = getFirestore(app);
         const googleProvider = new GoogleAuthProvider();
 
+        let currentPhotoUrl = "";
+
         // --- AUTH OBSERVER ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -270,8 +381,7 @@
             }
         });
 
-        // --- CORE FUNCTIONS ---
-
+        // --- REGISTER ---
         window.handleRegister = async (e) => {
             e.preventDefault();
             const dob = document.getElementById('rDob').value;
@@ -280,38 +390,44 @@
             const name = document.getElementById('rName').value;
             const email = document.getElementById('rEmail').value;
             const pass = document.getElementById('rPass').value;
-            const branch = document.getElementById('rBranch').value;
+            const confirm = document.getElementById('rConfirm').value;
+            
+            if(pass !== confirm) return showToast("Passwords don't match", "error");
+
             const photo = document.getElementById('uploadedPhoto').value;
 
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                await updateProfile(cred.user, { displayName: name, photoURL: photo });
-                await sendEmailVerification(cred.user);
+                await updateProfile(cred.user, { displayName: name, photoURL: photo || "https://via.placeholder.com/150" });
 
                 await setDoc(doc(db, "users", cred.user.uid), {
                     fullName: name,
                     email: email,
                     phone: document.getElementById('rPhone').value,
                     dob: dob,
-                    branch: branch,
-                    role: document.getElementById('rRole').value,
+                    gender: document.getElementById('rGender').value,
+                    branch: document.getElementById('rBranch').value,
+                    ministry: document.getElementById('rMinistry').value,
                     referral: document.getElementById('rReferral').value,
-                    photoURL: photo,
+                    photoURL: photo || "https://via.placeholder.com/150",
                     bio: "",
                     interests: "",
-                    gender: "",
+                    spiritualGifts: [],
+                    ministries: [],
                     prayerCount: 0,
                     walletBalance: 0,
+                    quizLevel: 1,
                     createdAt: serverTimestamp()
                 });
 
-                confetti();
-                speak(`Thank you for registering to Prayer Dominion ${branch}. God bless you.`);
-                showToast("Welcome to the Family!", "success");
+                confetti({ particleCount: 150, spread: 70 });
+                showToast("Welcome to Prayer Dome Family!", "success");
+                window.location.reload();
 
             } catch (e) { showToast(e.message, "error"); }
         };
 
+        // --- LOGIN ---
         window.handleLogin = async (e) => {
             e.preventDefault();
             try {
@@ -320,6 +436,7 @@
             } catch (e) { showToast("Invalid Credentials", "error"); }
         };
 
+        // --- GOOGLE LOGIN ---
         window.handleGoogle = async () => {
             try {
                 const res = await signInWithPopup(auth, googleProvider);
@@ -331,12 +448,14 @@
                         photoURL: res.user.photoURL,
                         branch: "Global",
                         walletBalance: 0,
+                        prayerCount: 0,
                         createdAt: serverTimestamp()
                     });
                 }
             } catch (e) { showToast(e.message, "error"); }
         };
 
+        // --- LOAD PROFILE DATA ---
         async function loadProfileData(user) {
             const userSnap = await getDoc(doc(db, "users", user.uid));
             const memberSnap = await getDoc(doc(db, "memberships", user.uid));
@@ -344,43 +463,117 @@
             if (userSnap.exists()) {
                 const data = userSnap.data();
                 document.getElementById('pNameDisplay').innerText = data.fullName;
-                document.getElementById('pRoleDisplay').innerText = data.role?.toUpperCase() || "MEMBER";
-                document.getElementById('pBioDisplay').innerText = data.bio || "No spiritual bio added yet.";
+                document.getElementById('pRoleDisplay').innerText = data.ministry?.toUpperCase() || "MEMBER";
+                document.getElementById('pBioDisplay').innerText = data.bio || "No spiritual bio added yet. Click Edit to share your testimony.";
                 document.getElementById('pPhoto').src = data.photoURL || "https://via.placeholder.com/150";
                 document.getElementById('pPrayers').innerText = data.prayerCount || 0;
-                document.getElementById('pBranch').innerText = data.branch?.split(',')[0] || "Zambia";
                 document.getElementById('pWallet').innerText = "E" + (data.walletBalance || 0);
-
-                // Edit form defaults
+                document.getElementById('pLevel').innerText = data.quizLevel || 1;
+                
+                // Days active
+                const joinedDate = data.createdAt?.toDate() || new Date();
+                const daysActive = Math.floor((new Date() - joinedDate) / (1000 * 60 * 60 * 24));
+                document.getElementById('pDaysActive').innerText = daysActive || 1;
+                
+                // Ministries display
+                const ministries = data.ministries || [];
+                document.getElementById('pMinistriesDisplay').innerHTML = ministries.length ? ministries.map(m => `<span class="ministry-tag">${m}</span>`).join('') : "Not specified";
+                
+                // Interests display
+                document.getElementById('pInterestsDisplay').innerText = data.interests || "No interests added yet.";
+                
+                // Spiritual Growth Level
+                const prayers = data.prayerCount || 0;
+                let level = "Seeker", progress = 0;
+                if (prayers < 10) { level = "🌱 Seeker"; progress = (prayers / 10) * 25; }
+                else if (prayers < 50) { level = "📖 Disciple"; progress = 25 + ((prayers - 10) / 40) * 25; }
+                else if (prayers < 200) { level = "🔥 Warrior"; progress = 50 + ((prayers - 50) / 150) * 25; }
+                else { level = "👑 Leader"; progress = 75 + Math.min((prayers - 200) / 300, 1) * 25; }
+                document.getElementById('spiritualLevel').innerHTML = level;
+                document.getElementById('spiritualProgress').style.width = `${progress}%`;
+                
+                // Edit form pre-fill
                 document.getElementById('eName').value = data.fullName;
                 document.getElementById('ePhone').value = data.phone || "";
                 document.getElementById('eGender').value = data.gender || "Male";
+                document.getElementById('eBranch').value = data.branch || "Chama, Zambia";
                 document.getElementById('eBio').value = data.bio || "";
                 document.getElementById('eInterests').value = data.interests || "";
+                document.getElementById('editPhotoPreview').src = data.photoURL || "https://via.placeholder.com/80";
+                
+                // Checkboxes for ministries
+                const savedMinistries = data.ministries || [];
+                document.querySelectorAll('#ministryCheckboxes input').forEach(cb => {
+                    cb.checked = savedMinistries.includes(cb.value);
+                });
+                
+                // Checkboxes for gifts
+                const savedGifts = data.spiritualGifts || [];
+                document.querySelectorAll('#giftsCheckboxes input').forEach(cb => {
+                    cb.checked = savedGifts.includes(cb.value);
+                });
+                
+                currentPhotoUrl = data.photoURL || "";
             }
 
-            document.getElementById('pIdDisplay').innerText = memberSnap.exists() ? memberSnap.data().membershipId : "none";
+            document.getElementById('pIdDisplay').innerText = memberSnap.exists() ? memberSnap.data().membershipId : "Pending";
         }
 
+        // --- SAVE PROFILE ---
         window.saveProfile = async () => {
+            const ministries = Array.from(document.querySelectorAll('#ministryCheckboxes input:checked')).map(cb => cb.value);
+            const gifts = Array.from(document.querySelectorAll('#giftsCheckboxes input:checked')).map(cb => cb.value);
+            
             const updates = {
                 fullName: document.getElementById('eName').value,
                 phone: document.getElementById('ePhone').value,
                 gender: document.getElementById('eGender').value,
+                branch: document.getElementById('eBranch').value,
                 bio: document.getElementById('eBio').value,
-                interests: document.getElementById('eInterests').value
+                interests: document.getElementById('eInterests').value,
+                ministries: ministries,
+                spiritualGifts: gifts,
+                photoURL: currentPhotoUrl,
+                updatedAt: serverTimestamp()
             };
+            
             try {
                 await updateDoc(doc(db, "users", auth.currentUser.uid), updates);
-                await updateProfile(auth.currentUser, { displayName: updates.fullName });
-                showToast("Profile Updated!", "success");
+                await updateProfile(auth.currentUser, { displayName: updates.fullName, photoURL: currentPhotoUrl });
+                showToast("Profile Updated Successfully!", "success");
                 toggleEdit(false);
-                loadProfileData(auth.currentUser);
+                await loadProfileData(auth.currentUser);
             } catch (e) { showToast(e.message, "error"); }
         };
 
-        // --- LOGIC HELPERS ---
+        // --- PHOTO UPLOAD ---
+        window.uploadPhoto = (context) => {
+            cloudinary.createUploadWidget({
+                cloudName: 'prayerdome',
+                uploadPreset: 'profile_photos',
+                cropping: true,
+                folder: 'profile_photos'
+            }, (err, res) => {
+                if (!err && res.event === "success") {
+                    const url = res.info.secure_url;
+                    if (context === 'register') {
+                        document.getElementById('uploadedPhoto').value = url;
+                        document.getElementById('regPreview').src = url;
+                    } else {
+                        currentPhotoUrl = url;
+                        document.getElementById('editPhotoPreview').src = url;
+                    }
+                    showToast("Photo uploaded!", "success");
+                }
+            }).open();
+        };
 
+        window.changeProfilePhoto = () => {
+            if (!auth.currentUser) return showToast("Please login first", "error");
+            uploadPhoto('profile');
+        };
+
+        // --- UTILITIES ---
         window.checkAge = (val) => {
             const age = calculateAge(val);
             const btn = document.getElementById('regBtn');
@@ -402,27 +595,6 @@
             return Math.abs(ageDate.getUTCFullYear() - 1970);
         }
 
-        function speak(text) {
-            const msg = new SpeechSynthesisUtterance(text);
-            msg.rate = 0.9;
-            msg.pitch = 1.1;
-            window.speechSynthesis.speak(msg);
-        }
-
-        window.uploadPhoto = () => {
-            cloudinary.openUploadWidget({
-                cloudName: 'prayerdome',
-                uploadPreset: 'profile_photos',
-                cropping: true
-            }, (err, res) => {
-                if (!err && res.event === "success") {
-                    const url = res.info.secure_url;
-                    document.getElementById('uploadedPhoto').value = url;
-                    document.getElementById('regPreview').src = url;
-                }
-            });
-        };
-
         window.switchTab = (type) => {
             document.getElementById('loginForm').style.display = type === 'login' ? 'block' : 'none';
             document.getElementById('registerForm').style.display = type === 'register' ? 'block' : 'none';
@@ -439,8 +611,8 @@
         window.showToast = (msg, type) => {
             const t = document.createElement('div');
             t.className = `toast`;
-            if(type === 'error') t.style.borderLeftColor = 'red';
-            t.innerHTML = `<i class="fas fa-info-circle"></i> ${msg}`;
+            if(type === 'error') t.style.borderLeftColor = '#ef4444';
+            t.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${msg}`;
             document.getElementById('toastContainer').appendChild(t);
             setTimeout(() => t.remove(), 4000);
         };

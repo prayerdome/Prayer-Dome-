@@ -282,12 +282,27 @@
     });
 
     async function checkMembership() {
-        const snap = await getDoc(doc(db, "memberships", currentUid));
-        if(snap.exists()) {
-            renderCard(snap.data());
-            switchTab('card');
-        }
+    const snap = await getDoc(doc(db, "memberships", currentUid));
+    if(snap.exists()) {
+        renderCard(snap.data());
+        // Pre-fill form with existing data if needed
+        prefillForm(snap.data());
+        switchTab('card');
     }
+}
+
+// Add this function to pre-fill the form for existing members (optional)
+function prefillForm(data) {
+    if(document.getElementById('fullName')) document.getElementById('fullName').value = data.fullName || '';
+    if(document.getElementById('dob')) document.getElementById('dob').value = data.dateOfBirth || '';
+    if(document.getElementById('gender')) document.getElementById('gender').value = data.gender || 'Male';
+    if(document.getElementById('idNo')) document.getElementById('idNo').value = data.identityNumber || '';
+    if(document.getElementById('phone')) document.getElementById('phone').value = data.phone || '';
+    if(document.getElementById('email')) document.getElementById('email').value = data.email || '';
+    if(document.getElementById('mType')) document.getElementById('mType').value = data.membershipType || 'New Member';
+    if(document.getElementById('marital')) document.getElementById('marital').value = data.maritalStatus || 'Single';
+    if(document.getElementById('branch')) document.getElementById('branch').value = data.branch || 'Eswatini - Manzini';
+}
 
     // Signature Logic
     function initSigPad() {
@@ -312,58 +327,129 @@
     window.clearSig = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     window.processRegistration = async () => {
-        if(!document.getElementById('titheCommit').checked) return alert("Please commit to church duties.");
+    if(!document.getElementById('titheCommit').checked) return alert("Please commit to church duties.");
+    
+    // Validate required fields
+    const requiredFields = ['fullName', 'dob', 'idNo', 'phone', 'email'];
+    for(let field of requiredFields) {
+        if(!document.getElementById(field).value) {
+            alert(`Please fill in ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+            return;
+        }
+    }
+    
+    document.getElementById('loader').style.display = 'flex';
+    
+    try {
+        // Generate sequential ID in format PD20260001, PD20260002, etc.
+        const membersRef = collection(db, "memberships");
+        const q = query(membersRef, orderBy("membershipId", "desc"), limit(1));
+        const lastSnap = await getDocs(q);
         
-        document.getElementById('loader').style.display = 'flex';
+        let nextNumber = 1;
+        let year = new Date().getFullYear(); // 2026
         
-        try {
-            // Sequential ID logic
-            const q = query(collection(db, "memberships"), orderBy("membershipId", "desc"), limit(1));
-            const lastSnap = await getDocs(q);
-            let nextNum = 1;
-            if(!lastSnap.empty) {
-                const lastId = lastSnap.docs[0].data().membershipId;
-                nextNum = parseInt(lastId.replace('PG2026000', '')) + 1;
+        if(!lastSnap.empty) {
+            const lastId = lastSnap.docs[0].data().membershipId;
+            // Extract the numeric part (e.g., from PD20260005 get 5)
+            const match = lastId.match(/PD(\d{4})(\d{4})/);
+            if(match) {
+                const lastYear = parseInt(match[1]);
+                const lastNum = parseInt(match[2]);
+                
+                if(lastYear === year) {
+                    nextNumber = lastNum + 1;
+                } else {
+                    // New year, reset numbering
+                    nextNumber = 1;
+                }
             }
-            const mId = `PG2026000${nextNum}`;
-
-            // Get photo from account or default
-            const userAcc = await getDoc(doc(db, "users", currentUid));
-            const photo = userAcc.exists() ? userAcc.data().photoURL : "";
-
-            const memberData = {
-                membershipId: mId,
-                fullName: document.getElementById('fullName').value,
-                branch: document.getElementById('branch').value,
-                marital: document.getElementById('marital').value,
-                role: "Member",
-                photoUrl: photo,
-                uid: currentUid,
-                createdAt: serverTimestamp(),
-                status: 'approved'
-            };
-
-            await setDoc(doc(db, "memberships", currentUid), memberData);
-            confetti();
-            renderCard(memberData);
-            switchTab('card');
-
-        } catch (e) { alert(e.message); }
-        finally { document.getElementById('loader').style.display = 'none'; }
-    };
+        }
+        
+        // Format: PD20260001 (PD + year + 4-digit number)
+        const membershipId = `PD${year}${String(nextNumber).padStart(4, '0')}`;
+        
+        // Get user data from auth
+        const userAcc = await getDoc(doc(db, "users", currentUid));
+        const photo = userAcc.exists() ? userAcc.data().photoURL : "https://via.placeholder.com/150";
+        
+        // Collect all form data
+        const memberData = {
+            membershipId: membershipId,
+            fullName: document.getElementById('fullName').value,
+            dateOfBirth: document.getElementById('dob').value,
+            gender: document.getElementById('gender').value,
+            identityNumber: document.getElementById('idNo').value,
+            phone: document.getElementById('phone').value,
+            email: document.getElementById('email').value,
+            membershipType: document.getElementById('mType').value,
+            maritalStatus: document.getElementById('marital').value,
+            dependants: parseInt(document.getElementById('dependants').value) || 0,
+            occupation: document.getElementById('job').value,
+            previousChurch: document.getElementById('prevChurch').value,
+            branch: document.getElementById('branch').value,
+            bornAgain: document.getElementById('bornAgain').value,
+            bornAgainDate: document.getElementById('bornDate').value || null,
+            waterBaptism: document.getElementById('waterBapt').value,
+            baptismDate: document.getElementById('baptDate').value || null,
+            holySpiritBaptism: document.getElementById('holySpirit').checked,
+            speaksTongues: document.getElementById('tongues').checked,
+            spiritualGifts: document.getElementById('gifts').checked,
+            giftNames: document.getElementById('giftNames').value,
+            ministries: Array.from(document.querySelectorAll('input[name="min"]:checked')).map(cb => cb.value),
+            titheCommitment: true,
+            status: 'approved', // Auto-approved for now, can be changed to 'pending'
+            role: 'member',
+            photoUrl: photo,
+            uid: currentUid,
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+        };
+        
+        // Save to Firestore
+        await setDoc(doc(db, "memberships", currentUid), memberData);
+        
+        // Trigger success animation
+        confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+        
+        // Render the card and switch to card view
+        renderCard(memberData);
+        switchTab('card');
+        
+        alert(`✅ Membership Approved!\n\nYour Membership ID: ${membershipId}\n\nWelcome to Prayer Dome Family!`);
+        
+    } catch (e) { 
+        console.error("Registration error:", e);
+        alert("Error: " + e.message); 
+    }
+    finally { 
+        document.getElementById('loader').style.display = 'none'; 
+    }
+};
 
     function renderCard(data) {
-        const photoEl = document.getElementById('idPhoto');
-        photoEl.src = data.photoUrl || "https://via.placeholder.com/150";
-
-        document.getElementById('idName').innerText = data.fullName;
-        document.getElementById('idNumber').innerText = data.membershipId;
-        document.getElementById('idBranch').innerText = data.branch;
-        document.getElementById('idMarital').innerText = data.marital;
-        document.getElementById('idDate').innerText = moment().format('DD/MM/YYYY');
-
-        JsBarcode("#barcodeImg", data.membershipId, { format: "CODE128", lineColor: "#000", width: 2, height: 40, displayValue: false });
-    }
+    const photoEl = document.getElementById('idPhoto');
+    photoEl.src = data.photoUrl || "https://via.placeholder.com/150";
+    
+    document.getElementById('idName').innerText = data.fullName || "MEMBER NAME";
+    document.getElementById('idNumber').innerText = data.membershipId || "PD20260001";
+    document.getElementById('idBranch').innerText = data.branch || "Global";
+    document.getElementById('idRole').innerText = data.role ? data.role.toUpperCase() : "MEMBER";
+    document.getElementById('idMarital').innerText = data.maritalStatus || data.marital || "SINGLE";
+    
+    // Format date properly
+    const date = data.createdAt ? data.createdAt.toDate() : new Date();
+    document.getElementById('idDate').innerText = moment(date).format('DD/MM/YYYY');
+    
+    // Generate barcode
+    JsBarcode("#barcodeImg", data.membershipId, { 
+        format: "CODE128", 
+        lineColor: "#000", 
+        width: 2, 
+        height: 40, 
+        displayValue: false 
+    });
+}
 
     window.switchTab = (t) => {
         document.getElementById('section-apply').style.display = t === 'apply' ? 'block' : 'none';
