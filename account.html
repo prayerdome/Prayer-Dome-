@@ -15,6 +15,7 @@
             --accent-green: #15803d;
             --accent-green-light: #22c55e;
             --accent-gold: #d4af37;
+            --accent-red: #ef4444;
             --bg-primary: #f8fafc;
             --bg-card: #ffffff;
             --text-main: #0f172a;
@@ -71,6 +72,7 @@
 
         .btn { padding: 14px 28px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; justify-content: center; width: 100%; }
         .btn-primary { background: linear-gradient(135deg, var(--accent-green), var(--accent-green-light)); color: white; }
+        .btn-danger { background: linear-gradient(135deg, var(--accent-red), #dc2626); color: white; }
         .btn-google { background: white; border: 2px solid var(--border); color: var(--text-main); }
         .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-main); }
         .btn-sm { padding: 8px 16px; font-size: 0.8rem; width: auto; }
@@ -117,20 +119,6 @@
             from { transform: scale(0.9); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
-        .verify-code-inputs {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin: 25px 0;
-        }
-        .verify-code-inputs input {
-            width: 55px;
-            height: 55px;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            padding: 0;
-        }
         .spam-tip {
             background: rgba(212,175,55,0.1);
             border-left: 4px solid var(--accent-gold);
@@ -140,14 +128,11 @@
             font-size: 0.8rem;
             text-align: left;
         }
-        .resend-timer { color: var(--text-sub); font-size: 0.8rem; margin-top: 15px; }
-        .resend-link { color: var(--accent-green); cursor: pointer; text-decoration: underline; }
-        .resend-link.disabled { opacity: 0.5; cursor: not-allowed; }
 
         .profile-hero { text-align: center; margin-bottom: 30px; }
-        .avatar-frame { width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--accent-gold); margin: 0 auto 15px; position: relative; cursor: pointer; }
+        .avatar-frame { width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--accent-gold); margin: 0 auto 15px; position: relative; cursor: pointer; overflow: hidden; background: var(--bg-primary); }
         .avatar-frame img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        .camera-overlay { position: absolute; bottom: 10px; right: 10px; background: var(--accent-green); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; }
+        .camera-overlay { position: absolute; bottom: 10px; right: 10px; background: var(--accent-green); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; color: white; }
         
         .membership-badge { background: linear-gradient(135deg, var(--accent-green), #064e3b); color: white; padding: 12px 24px; border-radius: 30px; margin: 15px auto; font-weight: 800; display: inline-block; }
         .profile-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 25px 0; }
@@ -160,15 +145,52 @@
         .ministry-tag { display: inline-block; background: rgba(34,197,94,0.1); color: var(--accent-green); padding: 6px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; margin: 4px; }
         .toast-box { position: fixed; top: 20px; right: 20px; z-index: 2000; }
         .toast { background: var(--bg-card); padding: 15px 25px; border-radius: 40px; margin-bottom: 10px; border-left: 5px solid var(--accent-green); animation: slideIn 0.3s ease; display: flex; align-items: center; gap: 12px; font-weight: 600; }
+        .toast.error { border-left-color: var(--accent-red); }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
         .age-warning { color: #ef4444; font-size: 0.75rem; font-weight: bold; display: none; }
-        .recaptcha-container { margin: 15px 0; }
+
+        /* Loading Spinner */
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            flex-direction: column;
+            gap: 15px;
+            backdrop-filter: blur(5px);
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: var(--accent-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Delete Account Button */
+        .delete-account-btn {
+            margin-top: 20px;
+            background: rgba(239,68,68,0.1);
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red);
+        }
+        .delete-account-btn:hover {
+            background: var(--accent-red);
+            color: white;
+        }
 
         @media (max-width: 600px) {
             .form-grid { grid-template-columns: 1fr; }
             .full-width { grid-column: span 1; }
             .profile-stat-grid { grid-template-columns: repeat(2, 1fr); }
-            .verify-code-inputs input { width: 45px; height: 45px; font-size: 1.2rem; }
             .phone-wrapper { flex-direction: column; }
             .country-code { width: 100%; }
         }
@@ -216,7 +238,7 @@
             <h2 style="margin-bottom: 25px; text-align: center;">Join the Family</h2>
             <div style="text-align: center; margin-bottom: 20px;">
                 <div class="avatar-frame"><img id="regPreview" src="https://via.placeholder.com/150"></div>
-                <button onclick="uploadPhoto('register')" class="btn btn-outline" style="width: auto; padding: 8px 20px;">Upload Photo</button>
+                <button type="button" onclick="uploadPhoto('register')" class="btn btn-outline" style="width: auto; padding: 8px 20px;">Upload Photo</button>
                 <input type="hidden" id="uploadedPhoto">
             </div>
 
@@ -237,9 +259,6 @@
                                 <option value="+254">+254 (Kenya)</option>
                                 <option value="+234">+234 (Nigeria)</option>
                                 <option value="+233">+233 (Ghana)</option>
-                                <option value="+263">+263 (Zimbabwe)</option>
-                                <option value="+61">+61 (Australia)</option>
-                                <option value="+91">+91 (India)</option>
                             </select>
                             <input type="tel" id="rPhone" class="phone-number" placeholder="71234567" required>
                         </div>
@@ -270,7 +289,6 @@
                     <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
                         <p id="pRoleDisplay" style="color: var(--accent-gold); font-weight: 800;"></p>
                         <span id="emailVerifiedBadge" class="verification-badge unverified" onclick="verifyEmail()"><i class="fas fa-envelope"></i> <span id="emailStatusText">Verify Email</span></span>
-                        <span id="phoneVerifiedBadge" class="verification-badge unverified" onclick="verifyPhone()"><i class="fas fa-phone"></i> <span id="phoneStatusText">Verify Phone</span></span>
                     </div>
                     <div class="membership-badge"><i class="fas fa-id-card"></i> <span id="pIdDisplay">Not Assigned</span></div>
                 </div>
@@ -289,18 +307,21 @@
                 </div>
                 <div style="background: var(--bg-primary); border-radius: 20px; padding: 20px; margin: 15px 0;"><p id="pBioDisplay">No bio added yet.</p></div>
                 <div style="background: var(--bg-primary); border-radius: 20px; padding: 20px; margin: 15px 0;"><div id="pMinistriesDisplay">Not specified</div></div>
-                <div style="display: flex; gap: 12px;">
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
                     <button onclick="toggleEdit(true)" class="btn btn-primary" style="flex: 2;">Edit Profile</button>
                     <button onclick="handleLogout()" class="btn btn-outline" style="flex: 1; color: #ef4444;">Logout</button>
                 </div>
+                <button onclick="showDeleteAccountModal()" class="btn btn-outline delete-account-btn" style="width: 100%; margin-top: 15px;">
+                    <i class="fas fa-trash-alt"></i> Delete Account
+                </button>
             </div>
             <div id="profileEdit" style="display: none;">
                 <h3 style="margin-bottom: 20px;">Edit Profile</h3>
                 <div class="form-group">
                     <label>Profile Photo</label>
-                    <div style="display: flex; gap: 15px;">
-                        <img id="editPhotoPreview" src="https://via.placeholder.com/80" style="width: 80px; height: 80px; border-radius: 50%;">
-                        <button onclick="changeProfilePhoto()" class="btn btn-outline" style="width: auto;">Change Photo</button>
+                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                        <img id="editPhotoPreview" src="https://via.placeholder.com/80" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                        <button type="button" onclick="changeProfilePhoto()" class="btn btn-outline" style="width: auto;">Change Photo</button>
                     </div>
                 </div>
                 <div class="form-grid">
@@ -324,6 +345,16 @@
                 </div>
                 <div class="form-group"><label>Spiritual Bio</label><textarea id="eBio" rows="3" placeholder="Share your faith journey..."></textarea></div>
                 <div class="form-group"><label>Interests</label><input type="text" id="eInterests" placeholder="Worship, Bible Study, Outreach..."></div>
+                <div class="form-group">
+                    <label>Ministry Involvement</label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;" id="ministryCheckboxes">
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Worship"> 🎵 Worship</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Intercessor"> 🙏 Intercessor</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Usher"> 🚪 Usher</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Outreach"> 🤝 Outreach</label>
+                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Children"> 👶 Children's Ministry</label>
+                    </div>
+                </div>
                 <div style="display: flex; gap: 12px;">
                     <button onclick="saveProfile()" class="btn btn-primary" style="flex: 2;">Save Changes</button>
                     <button onclick="toggleEdit(false)" class="btn btn-outline" style="flex: 1;">Cancel</button>
@@ -343,49 +374,36 @@
                 <strong>📧 Didn't receive the email?</strong><br>
                 • Check your <strong>Spam/Junk folder</strong><br>
                 • Add <strong>noreply@prayerdome.net</strong> to your contacts<br>
-                • Wait a few minutes and check again
+                • Wait a few minutes and check again<br>
+                • Click the link in the email to verify your account
             </div>
             <button class="btn btn-primary" onclick="sendEmailVerificationCode()">Resend Verification Email</button>
+            <button class="btn btn-outline" style="margin-top: 10px;" onclick="closeModal('emailVerifyModal')">Close</button>
         </div>
     </div>
 
-    <!-- Phone Verification Modal -->
-    <div id="phoneVerifyModal" class="verify-modal">
+    <!-- Delete Account Confirmation Modal -->
+    <div id="deleteAccountModal" class="verify-modal">
         <div class="verify-modal-content">
-            <i class="fas fa-phone-alt" style="font-size: 3rem; color: var(--accent-green);"></i>
-            <h2>Verify Your Phone Number</h2>
-            <p>Enter the 6-digit code sent to <strong id="verifyPhoneNumber"></strong></p>
-            <div class="spam-tip">
-                <i class="fas fa-comment-dots"></i>
-                <strong>📱 Didn't receive the SMS?</strong><br>
-                • Check your network signal<br>
-                • Ensure the number is correct<br>
-                • Wait a minute and try again<br>
-                • Click "Resend Code" below
+            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--accent-red);"></i>
+            <h2>Delete Account</h2>
+            <p>Are you sure you want to permanently delete your account?</p>
+            <p style="font-size: 0.85rem; color: var(--text-sub); margin-top: 10px;">This action cannot be undone. All your data will be permanently removed.</p>
+            <div style="margin: 20px 0;">
+                <label>Type "DELETE" to confirm:</label>
+                <input type="text" id="deleteConfirmText" placeholder="DELETE" style="margin-top: 10px; text-align: center;">
             </div>
-            <div class="verify-code-inputs">
-                <input type="text" maxlength="1" class="phone-code-input" data-index="0" onkeyup="moveToNextPhone(this, 0)">
-                <input type="text" maxlength="1" class="phone-code-input" data-index="1" onkeyup="moveToNextPhone(this, 1)">
-                <input type="text" maxlength="1" class="phone-code-input" data-index="2" onkeyup="moveToNextPhone(this, 2)">
-                <input type="text" maxlength="1" class="phone-code-input" data-index="3" onkeyup="moveToNextPhone(this, 3)">
-                <input type="text" maxlength="1" class="phone-code-input" data-index="4" onkeyup="moveToNextPhone(this, 4)">
-                <input type="text" maxlength="1" class="phone-code-input" data-index="5" onkeyup="moveToNextPhone(this, 5)">
-            </div>
-            <button class="btn btn-primary" onclick="confirmPhoneCode()">Verify</button>
-            <div class="resend-timer">
-                <span id="phoneResendTimer"></span>
-                <span id="phoneResendLink" class="resend-link" onclick="resendPhoneCode()">Resend Code</span>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-danger" onclick="deleteAccount()" style="flex: 1;">Delete Permanently</button>
+                <button class="btn btn-outline" onclick="closeModal('deleteAccountModal')" style="flex: 1;">Cancel</button>
             </div>
         </div>
     </div>
-
-    <!-- Hidden reCAPTCHA container -->
-    <div id="recaptcha-container" style="display: none;"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup, sendEmailVerification, sendPasswordResetEmail, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup, sendEmailVerification, sendPasswordResetEmail, deleteUser } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCxvql0r_aeerphxTA0UUedRppdBxGf7wo",
@@ -402,20 +420,30 @@
         const googleProvider = new GoogleAuthProvider();
 
         let currentUserData = null;
-        let currentPhoneVerificationId = null;
-        let currentPhoneNumber = null;
-        let phoneTimerSeconds = 0;
-        let phoneResendTimer = null;
+        let currentPhotoUrl = "";
 
         // Helper Functions
         window.showToast = (msg, type) => {
             const container = document.getElementById('toastContainer');
             const t = document.createElement('div');
-            t.className = `toast`;
-            if(type === 'error') t.style.borderLeftColor = '#ef4444';
+            t.className = `toast ${type === 'error' ? 'error' : ''}`;
             t.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${msg}`;
             container.appendChild(t);
             setTimeout(() => t.remove(), 4000);
+        };
+
+        window.showLoading = () => {
+            if (document.getElementById('customLoader')) return;
+            const loader = document.createElement('div');
+            loader.id = 'customLoader';
+            loader.className = 'spinner-overlay';
+            loader.innerHTML = `<div class="spinner"></div><p style="color: white; font-weight: 600;">Processing...</p>`;
+            document.body.appendChild(loader);
+        };
+
+        window.hideLoading = () => {
+            const loader = document.getElementById('customLoader');
+            if (loader) loader.remove();
         };
 
         window.togglePassword = (inputId, button) => {
@@ -429,44 +457,69 @@
             }
         };
 
-        window.moveToNextPhone = (input, index) => {
-            if (input.value.length === 1) {
-                const next = document.querySelector(`#phoneVerifyModal .phone-code-input[data-index="${index + 1}"]`);
-                if (next) next.focus();
+        window.closeModal = (id) => {
+            document.getElementById(id).style.display = 'none';
+        };
+
+        window.showDeleteAccountModal = () => {
+            document.getElementById('deleteConfirmText').value = '';
+            document.getElementById('deleteAccountModal').style.display = 'flex';
+        };
+
+        // Delete Account Function
+        window.deleteAccount = async () => {
+            const confirmText = document.getElementById('deleteConfirmText').value;
+            if (confirmText !== 'DELETE') {
+                showToast('Please type DELETE to confirm account deletion', 'error');
+                return;
+            }
+            
+            if (!auth.currentUser) {
+                showToast('No user logged in', 'error');
+                return;
+            }
+            
+            showLoading();
+            try {
+                await deleteDoc(doc(db, "users", auth.currentUser.uid));
+                await deleteDoc(doc(db, "memberships", auth.currentUser.uid)).catch(() => {});
+                await deleteDoc(doc(db, "wallets", auth.currentUser.uid)).catch(() => {});
+                await deleteDoc(doc(db, "userTokens", auth.currentUser.uid)).catch(() => {});
+                await deleteUser(auth.currentUser);
+                closeModal('deleteAccountModal');
+                showToast('Account permanently deleted', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            } catch (error) {
+                console.error('Delete account error:', error);
+                if (error.code === 'auth/requires-recent-login') {
+                    showToast('Please sign in again before deleting your account', 'error');
+                } else {
+                    showToast('Error: ' + error.message, 'error');
+                }
+            } finally {
+                hideLoading();
             }
         };
 
-        function startPhoneTimer() {
-            phoneTimerSeconds = 60;
-            const timerSpan = document.getElementById('phoneResendTimer');
-            const resendLink = document.getElementById('phoneResendLink');
-            
-            if (phoneResendTimer) clearInterval(phoneResendTimer);
-            
-            phoneResendTimer = setInterval(() => {
-                if (phoneTimerSeconds <= 0) {
-                    clearInterval(phoneResendTimer);
-                    if (timerSpan) timerSpan.innerHTML = '';
-                    if (resendLink) {
-                        resendLink.classList.remove('disabled');
-                        resendLink.style.pointerEvents = 'auto';
-                    }
-                } else {
-                    phoneTimerSeconds--;
-                    if (timerSpan) timerSpan.innerHTML = `Resend in ${phoneTimerSeconds}s `;
-                    if (resendLink) {
-                        resendLink.classList.add('disabled');
-                        resendLink.style.pointerEvents = 'none';
-                    }
-                }
-            }, 1000);
-        }
-        
         // EMAIL VERIFICATION
         window.verifyEmail = async () => {
             if (!auth.currentUser) return showToast("Please login first", "error");
+            
+            await auth.currentUser.reload();
+            if (auth.currentUser.emailVerified) {
+                showToast("Your email is already verified!", "success");
+                updateVerificationStatus();
+                return;
+            }
+            
             try {
-                await sendEmailVerification(auth.currentUser);
+                const actionCodeSettings = {
+                    url: window.location.href,
+                    handleCodeInApp: false
+                };
+                await sendEmailVerification(auth.currentUser, actionCodeSettings);
                 document.getElementById('verifyEmailAddress').innerText = auth.currentUser.email;
                 document.getElementById('emailVerifyModal').style.display = 'flex';
                 showToast("Verification email sent! Check your spam folder.", "success");
@@ -477,124 +530,58 @@
 
         window.sendEmailVerificationCode = async () => {
             try {
-                await sendEmailVerification(auth.currentUser);
+                const actionCodeSettings = {
+                    url: window.location.href,
+                    handleCodeInApp: false
+                };
+                await sendEmailVerification(auth.currentUser, actionCodeSettings);
                 showToast("Verification email resent! Check spam folder.", "success");
             } catch (e) {
                 showToast(e.message, "error");
             }
         };
 
-        // PHONE VERIFICATION
-        window.verifyPhone = async () => {
-            if (!auth.currentUser) return showToast("Please login first", "error");
-            
-            const countryCode = document.getElementById('eCountryCode')?.value || '+268';
-            const phoneNum = document.getElementById('ePhone')?.value;
-            
-            if (!phoneNum) {
-                showToast("Please add your phone number in profile first", "error");
-                return;
-            }
-            
-            currentPhoneNumber = `${countryCode}${phoneNum}`;
-            document.getElementById('verifyPhoneNumber').innerText = currentPhoneNumber;
-            document.getElementById('phoneVerifyModal').style.display = 'flex';
-            
-            // Setup reCAPTCHA
-            if (!window.recaptchaVerifier) {
-                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-                    'size': 'invisible',
-                    'callback': () => console.log("reCAPTCHA resolved")
-                });
-            }
-            
-            try {
-                const appVerifier = window.recaptchaVerifier;
-                const confirmationResult = await signInWithPhoneNumber(auth, currentPhoneNumber, appVerifier);
-                currentPhoneVerificationId = confirmationResult;
-                showToast("Verification code sent to your phone!", "success");
-                startPhoneTimer();
-            } catch (e) {
-                console.error("Phone verification error:", e);
-                if (e.code === 'auth/too-many-requests') {
-                    showToast("Too many requests. Please try again later.", "error");
-                } else if (e.code === 'auth/invalid-phone-number') {
-                    showToast("Invalid phone number format. Please include country code.", "error");
-                } else {
-                    showToast("Error: " + e.message, "error");
+        async function checkEmailVerification() {
+            if (auth.currentUser) {
+                await auth.currentUser.reload();
+                const isVerified = auth.currentUser.emailVerified;
+                if (isVerified) {
+                    await updateDoc(doc(db, "users", auth.currentUser.uid), { 
+                        emailVerified: true,
+                        emailVerifiedAt: serverTimestamp()
+                    }).catch(() => {});
                 }
-                document.getElementById('phoneVerifyModal').style.display = 'none';
-            }
-        };
-
-        window.confirmPhoneCode = async () => {
-            const inputs = document.querySelectorAll('#phoneVerifyModal .phone-code-input');
-            let code = '';
-            inputs.forEach(input => code += input.value);
-            
-            if (code.length !== 6) {
-                showToast("Please enter the 6-digit code", "error");
-                return;
-            }
-            
-            try {
-                const result = await currentPhoneVerificationId.confirm(code);
-                await updateDoc(doc(db, "users", auth.currentUser.uid), {
-                    phoneVerified: true,
-                    phoneVerifiedAt: serverTimestamp(),
-                    phone: currentPhoneNumber
-                });
-                document.getElementById('phoneVerifyModal').style.display = 'none';
                 updateVerificationStatus();
-                showToast("✅ Phone number verified successfully!", "success");
-                confetti({ particleCount: 100, spread: 70 });
-            } catch (e) {
-                showToast("Invalid verification code", "error");
+                return isVerified;
             }
-        };
-
-        window.resendPhoneCode = async () => {
-            if (phoneTimerSeconds > 0) {
-                showToast(`Please wait ${phoneTimerSeconds} seconds before resending`, "error");
-                return;
-            }
-            
-            try {
-                const appVerifier = window.recaptchaVerifier;
-                const confirmationResult = await signInWithPhoneNumber(auth, currentPhoneNumber, appVerifier);
-                currentPhoneVerificationId = confirmationResult;
-                showToast("New verification code sent!", "success");
-                startPhoneTimer();
-            } catch (e) {
-                showToast("Error: " + e.message, "error");
-            }
-        };
-
-        function updateVerificationStatus() {
-            if (!currentUserData || !auth.currentUser) return;
-            
-            const emailBadge = document.getElementById('emailVerifiedBadge');
-            const emailStatus = document.getElementById('emailStatusText');
-            const phoneBadge = document.getElementById('phoneVerifiedBadge');
-            const phoneStatus = document.getElementById('phoneStatusText');
-            
-            // Email verification from Firebase Auth
-            if (auth.currentUser.emailVerified) {
-                emailBadge.className = 'verification-badge verified';
-                emailStatus.innerText = 'Verified';
-                // Update Firestore
-                updateDoc(doc(db, "users", auth.currentUser.uid), { emailVerified: true }).catch(() => {});
-            } else {
-                emailBadge.className = 'verification-badge unverified';
-                emailStatus.innerText = 'Verify Email';
-            }
-            
-            if (currentUserData.phoneVerified) {
-                phoneBadge.className = 'verification-badge verified';
-                phoneStatus.innerText = 'Verified';
-            } else {
-                phoneBadge.className = 'verification-badge unverified';
-                phoneStatus.innerText = 'Verify Phone';
+            return false;
+        }
+        
+        async function handleEmailVerificationLink() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const mode = urlParams.get('mode');
+            if (mode === 'verifyEmail') {
+                showLoading();
+                try {
+                    await auth.currentUser?.reload();
+                    if (auth.currentUser?.emailVerified) {
+                        await updateDoc(doc(db, "users", auth.currentUser.uid), { 
+                            emailVerified: true,
+                            emailVerifiedAt: serverTimestamp()
+                        });
+                        showToast("✅ Email verified successfully!", "success");
+                        confetti({ particleCount: 150, spread: 100 });
+                        updateVerificationStatus();
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    } else {
+                        showToast("Verification pending. Please click the link in your email.", "info");
+                    }
+                } catch (error) {
+                    console.error("Verification error:", error);
+                    showToast("Verification failed: " + error.message, "error");
+                } finally {
+                    hideLoading();
+                }
             }
         }
 
@@ -619,16 +606,17 @@
                     await setDoc(doc(db, "users", res.user.uid), {
                         fullName: res.user.displayName,
                         email: res.user.email,
-                        photoURL: res.user.photoURL,
+                        photoURL: res.user.photoURL || "https://via.placeholder.com/150",
                         emailVerified: res.user.emailVerified,
-                        phoneVerified: false,
                         createdAt: serverTimestamp()
                     });
                 }
                 showToast("Signed in with Google!", "success");
-            } catch (e) { showToast(e.message, "error"); }
+            } catch (e) { 
+                showToast(e.message, "error"); 
+            }
         };
-
+        
         // Register
         window.handleRegister = async (e) => {
             e.preventDefault();
@@ -639,22 +627,24 @@
             const countryCode = document.getElementById('rCountryCode').value;
             const phoneNum = document.getElementById('rPhone').value;
             const fullPhone = `${countryCode}${phoneNum}`;
+            const photoUrl = document.getElementById('uploadedPhoto').value || "https://via.placeholder.com/150";
             
             if(pass !== confirm) return showToast("Passwords don't match", "error");
             
+            showLoading();
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                await updateProfile(cred.user, { displayName: name });
+                await updateProfile(cred.user, { displayName: name, photoURL: photoUrl });
                 await setDoc(doc(db, "users", cred.user.uid), {
                     fullName: name,
                     email: email,
                     phone: fullPhone,
+                    photoURL: photoUrl,
                     gender: document.getElementById('rGender').value,
                     branch: document.getElementById('rBranch').value,
                     ministry: document.getElementById('rMinistry').value,
                     referral: document.getElementById('rReferral').value,
                     emailVerified: false,
-                    phoneVerified: false,
                     prayerCount: 0,
                     walletBalance: 0,
                     quizLevel: 1,
@@ -663,23 +653,37 @@
                 await sendEmailVerification(cred.user);
                 showToast("Registration successful! Please verify your email. Check spam folder!", "success");
                 confetti({ particleCount: 150, spread: 70 });
-            } catch (e) { showToast(e.message, "error"); }
+            } catch (e) { 
+                showToast(e.message, "error"); 
+            } finally {
+                hideLoading();
+            }
         };
-
+        
         // Login
         window.handleLogin = async (e) => {
             e.preventDefault();
+            showLoading();
             try {
                 await signInWithEmailAndPassword(auth, document.getElementById('lEmail').value, document.getElementById('lPass').value);
                 showToast("Welcome back!", "success");
-            } catch (e) { showToast("Invalid Credentials", "error"); }
+            } catch (e) { 
+                showToast("Invalid Credentials", "error"); 
+            } finally {
+                hideLoading();
+            }
         };
 
-        // Save Profile
+        // Save Profile - FIXED
         window.saveProfile = async () => {
             const countryCode = document.getElementById('eCountryCode').value;
             const phoneNum = document.getElementById('ePhone').value;
             const fullPhone = `${countryCode}${phoneNum}`;
+            const ministries = Array.from(document.querySelectorAll('#ministryCheckboxes input:checked')).map(cb => cb.value);
+            
+            // Get the current photo URL from the image element or stored variable
+            const currentPhoto = document.getElementById('pPhoto').src;
+            const finalPhotoUrl = currentPhotoUrl || currentPhoto;
             
             const updates = {
                 fullName: document.getElementById('eName').value,
@@ -688,15 +692,32 @@
                 branch: document.getElementById('eBranch').value,
                 bio: document.getElementById('eBio').value,
                 interests: document.getElementById('eInterests').value,
+                ministries: ministries,
+                photoURL: finalPhotoUrl,
                 updatedAt: serverTimestamp()
             };
+            
+            showLoading();
             try {
+                // Update Firestore first
                 await updateDoc(doc(db, "users", auth.currentUser.uid), updates);
-                await updateProfile(auth.currentUser, { displayName: updates.fullName });
-                showToast("Profile updated!", "success");
+                
+                // Update Firebase Auth profile
+                await updateProfile(auth.currentUser, { 
+                    displayName: updates.fullName,
+                    photoURL: finalPhotoUrl
+                });
+                
+                showToast("Profile updated successfully!", "success");
                 toggleEdit(false);
                 await loadProfileData(auth.currentUser);
-            } catch (e) { showToast(e.message, "error"); }
+                confetti({ particleCount: 80, spread: 60 });
+            } catch (e) { 
+                console.error("Save error:", e);
+                showToast(e.message, "error"); 
+            } finally {
+                hideLoading();
+            }
         };
 
         // Load Profile Data
@@ -707,14 +728,27 @@
             if (userSnap.exists()) {
                 currentUserData = userSnap.data();
                 const data = currentUserData;
+                const photoUrl = data.photoURL || user.photoURL || "https://via.placeholder.com/150";
+                currentPhotoUrl = photoUrl;
+                
                 document.getElementById('pNameDisplay').innerText = data.fullName;
                 document.getElementById('pRoleDisplay').innerText = data.ministry?.toUpperCase() || "MEMBER";
-                document.getElementById('pPhoto').src = data.photoURL || "https://via.placeholder.com/150";
+                document.getElementById('pPhoto').src = photoUrl;
                 document.getElementById('pPrayers').innerText = data.prayerCount || 0;
                 document.getElementById('pWallet').innerText = "E" + (data.walletBalance || 0);
                 document.getElementById('pLevel').innerText = data.quizLevel || 1;
                 document.getElementById('pBioDisplay').innerHTML = data.bio || "No bio added yet.";
-                document.getElementById('pMinistriesDisplay').innerHTML = (data.ministries || []).length ? (data.ministries || []).map(m => `<span class="ministry-tag">${m}</span>`).join('') : "Not specified";
+                
+                // Calculate days active
+                if (data.createdAt?.toDate) {
+                    const days = Math.floor((Date.now() - data.createdAt.toDate().getTime()) / (1000 * 60 * 60 * 24));
+                    document.getElementById('pDaysActive').innerText = days;
+                } else {
+                    document.getElementById('pDaysActive').innerText = "0";
+                }
+                
+                const ministries = data.ministries || [];
+                document.getElementById('pMinistriesDisplay').innerHTML = ministries.length ? ministries.map(m => `<span class="ministry-tag">${m}</span>`).join('') : "Not specified";
                 
                 const prayers = data.prayerCount || 0;
                 let level = "Seeker", progress = 0;
@@ -725,7 +759,8 @@
                 document.getElementById('spiritualLevel').innerHTML = level;
                 document.getElementById('spiritualProgress').style.width = `${progress}%`;
                 
-                document.getElementById('eName').value = data.fullName;
+                // Populate edit form
+                document.getElementById('eName').value = data.fullName || "";
                 const phoneFull = data.phone || "";
                 let countryCode = "+268";
                 let phoneNumber = phoneFull;
@@ -740,39 +775,100 @@
                 document.getElementById('eBranch').value = data.branch || "Chama, Zambia";
                 document.getElementById('eBio').value = data.bio || "";
                 document.getElementById('eInterests').value = data.interests || "";
-                document.getElementById('editPhotoPreview').src = data.photoURL || "https://via.placeholder.com/80";
+                document.getElementById('editPhotoPreview').src = photoUrl;
+                
+                // Set ministry checkboxes
+                document.querySelectorAll('#ministryCheckboxes input').forEach(cb => {
+                    cb.checked = ministries.includes(cb.value);
+                });
                 
                 updateVerificationStatus();
             }
             document.getElementById('pIdDisplay').innerText = memberSnap.exists() ? memberSnap.data().membershipId : "Pending";
         }
 
-        // Photo Upload
+        function updateVerificationStatus() {
+            if (!auth.currentUser) return;
+            
+            const emailBadge = document.getElementById('emailVerifiedBadge');
+            const emailStatus = document.getElementById('emailStatusText');
+            
+            if (auth.currentUser.emailVerified) {
+                emailBadge.className = 'verification-badge verified';
+                emailStatus.innerText = 'Verified';
+                updateDoc(doc(db, "users", auth.currentUser.uid), { emailVerified: true }).catch(() => {});
+            } else {
+                emailBadge.className = 'verification-badge unverified';
+                emailStatus.innerText = 'Verify Email';
+            }
+        }
+
+        // Photo Upload with Cloudinary - FIXED
         window.uploadPhoto = async (context) => {
-            if (typeof cloudinary === 'undefined') return showToast("Cloudinary not loaded", "error");
-            cloudinary.createUploadWidget({
+            if (typeof cloudinary === 'undefined') {
+                showToast("Cloudinary not loaded. Please refresh the page.", "error");
+                return;
+            }
+            
+            const uploadWidget = cloudinary.createUploadWidget({
                 cloudName: 'prayerdome',
                 uploadPreset: 'profile_photos',
+                folder: context === 'register' ? 'profile_photos/temp' : `profile_photos/${auth.currentUser?.uid}`,
                 cropping: true,
-                croppingAspectRatio: 1
+                croppingAspectRatio: 1,
+                multiple: false,
+                maxFileSize: 5 * 1024 * 1024,
+                clientAllowedFormats: ['jpg', 'jpeg', 'png', 'webp']
             }, async (error, result) => {
-                if (!error && result?.event === "success") {
+                if (error) {
+                    console.error("Cloudinary error:", error);
+                    showToast("Upload failed. Please try again.", "error");
+                    return;
+                }
+                
+                if (result && result.event === "success") {
                     const url = result.info.secure_url;
+                    
                     if (context === 'register') {
                         document.getElementById('uploadedPhoto').value = url;
                         document.getElementById('regPreview').src = url;
-                    } else {
-                        await updateDoc(doc(db, "users", auth.currentUser.uid), { photoURL: url });
-                        await updateProfile(auth.currentUser, { photoURL: url });
-                        document.getElementById('pPhoto').src = url;
-                        document.getElementById('editPhotoPreview').src = url;
+                        showToast("Photo uploaded!", "success");
+                    } 
+                    else if (context === 'profile') {
+                        showLoading();
+                        try {
+                            // Update Firestore
+                            await updateDoc(doc(db, "users", auth.currentUser.uid), { 
+                                photoURL: url,
+                                updatedAt: serverTimestamp()
+                            });
+                            // Update Auth profile
+                            await updateProfile(auth.currentUser, { photoURL: url });
+                            // Update UI
+                            document.getElementById('pPhoto').src = url;
+                            document.getElementById('editPhotoPreview').src = url;
+                            currentPhotoUrl = url;
+                            showToast("Profile photo updated!", "success");
+                            confetti({ particleCount: 80, spread: 60 });
+                        } catch (err) {
+                            console.error("Save photo error:", err);
+                            showToast("Failed to save photo: " + err.message, "error");
+                        } finally {
+                            hideLoading();
+                        }
                     }
-                    showToast("Photo updated!", "success");
                 }
-            }).open();
+            });
+            uploadWidget.open();
         };
         
-        window.changeProfilePhoto = () => uploadPhoto('profile');
+        window.changeProfilePhoto = () => {
+            if (!auth.currentUser) {
+                showToast("Please login first", "error");
+                return;
+            }
+            uploadPhoto('profile');
+        };
         
         // Auth Observer
         onAuthStateChanged(auth, async (user) => {
@@ -782,6 +878,8 @@
                 document.getElementById('registerForm').style.display = 'none';
                 document.getElementById('profileSection').style.display = 'block';
                 await loadProfileData(user);
+                await checkEmailVerification();
+                await handleEmailVerificationLink();
             } else {
                 document.getElementById('authTabs').style.display = 'flex';
                 document.getElementById('profileSection').style.display = 'none';
@@ -798,6 +896,9 @@
         window.toggleEdit = (show) => {
             document.getElementById('profileView').style.display = show ? 'none' : 'block';
             document.getElementById('profileEdit').style.display = show ? 'block' : 'none';
+            if (show && currentPhotoUrl) {
+                document.getElementById('editPhotoPreview').src = currentPhotoUrl;
+            }
         };
         
         window.handleLogout = () => signOut(auth);
@@ -819,6 +920,8 @@
         document.querySelectorAll('.verify-modal').forEach(modal => {
             modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
         });
+        
+        handleEmailVerificationLink();
     </script>
 </body>
 </html>

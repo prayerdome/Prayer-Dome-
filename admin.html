@@ -585,9 +585,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { 
-            getFirestore, collection, getDocs, getDoc, doc, updateDoc, setDoc, deleteDoc, query, where, orderBy, serverTimestamp, increment, addDoc, limit
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, getDoc, doc, updateDoc, setDoc, deleteDoc, query, where, orderBy, serverTimestamp, increment, addDoc, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         const firebaseConfig = { apiKey: "AIzaSyCxvql0r_aeerphxTA0UUedRppdBxGf7wo", authDomain: "prayer-dome.firebaseapp.com", projectId: "prayer-dome", storageBucket: "prayer-dome.firebasestorage.app", messagingSenderId: "198295153196", appId: "1:198295153196:web:1222b31948d7974ba3bf89" };
@@ -963,43 +961,43 @@
         };
 
         window.uploadGalleryImage = function() {
-            cloudinary.createUploadWidget({
-                cloudName: 'prayerdome',
-                uploadPreset: 'gallery_uploads',
-                folder: 'official_gallery',
-                cropping: true,
-                croppingAspectRatio: 1,
-                multiple: false
-            }, async (error, result) => {
-                if (!error && result && result.event === "success") {
-                    const title = prompt("Enter image title:", "Church Event");
-                    const category = prompt("Enter category (pastors/worship/ministries/church):", "church");
-                    if (!title) return;
-                    
-                    showLoading();
-                    try {
-                        await addDoc(collection(db, "gallery"), {
-                            title: title,
-                            category: category || 'church',
-                            url: result.info.secure_url,
-                            userId: adminUser?.uid,
-                            userName: adminUser?.displayName || adminUser?.email,
-                            status: 'approved',
-                            createdAt: serverTimestamp(),
-                            approvedAt: serverTimestamp(),
-                            approvedBy: adminUser?.email || adminUser?.uid
-                        });
-                        toast("Image uploaded and approved!");
-                        loadGallery();
-                        loadDashboardStats();
-                    } catch (error) {
-                        toast(error.message, 'error');
-                    } finally {
-                        hideLoading();
-                    }
-                }
-            }).open();
-        };
+    cloudinary.createUploadWidget({
+        cloudName: 'prayerdome',
+        uploadPreset: 'gallery_uploads',
+        folder: 'official_gallery',
+        cropping: true,
+        croppingAspectRatio: 1,
+        multiple: false
+    }, async (error, result) => {
+        if (!error && result && result.event === "success") {
+            const title = prompt("Enter image title:", "Church Event");
+            const category = prompt("Enter category (pastors/worship/ministries/church):", "church");
+            if (!title) return;
+            
+            showLoading();
+            try {
+                await addDoc(collection(db, "gallery"), {
+                    title: title,
+                    category: category || 'church',
+                    url: result.info.secure_url,
+                    userId: adminUser?.uid,
+                    userName: adminUser?.displayName || adminUser?.email,
+                    status: 'approved',
+                    createdAt: serverTimestamp(),
+                    approvedAt: serverTimestamp(),
+                    approvedBy: adminUser?.email || adminUser?.uid
+                });
+                toast("Image uploaded and approved!");
+                loadGallery();
+                loadDashboardStats();
+            } catch (error) {
+                toast(error.message, 'error');
+            } finally {
+                hideLoading();
+            }
+        }
+    }).open();
+};
 
         window.filterGallery = function() {
             const searchTerm = document.getElementById('gallerySearch')?.value.toLowerCase();
@@ -1146,6 +1144,199 @@
         window.viewDoc = function(url,type){ const img=document.getElementById('docImagePreview'), pdf=document.getElementById('docPdfBtn'); if(url.toLowerCase().includes('.pdf')){ if(img) img.style.display='none'; if(pdf){ pdf.style.display='inline-flex'; pdf.href=url; } } else { if(img){ img.style.display='block'; img.src=url; } if(pdf) pdf.style.display='none'; } openModal('modalViewDoc'); };
         
         window.loadFinancialReports = async function(){ const tbody = document.getElementById('financialReportsList'); if(!tbody) return; tbody.innerHTML = '<td colspan="9" style="text-align: center;">Loading...<\/td>'; try { const branchFilter = document.getElementById('reportBranchFilter')?.value || 'all'; const statusFilter = document.getElementById('reportStatusFilter')?.value || 'all'; const dateFilter = document.getElementById('reportDateFilter')?.value || ''; let q = query(collection(db, "financialReports"), orderBy("date", "desc")); const snapshot = await getDocs(q); let reports = []; snapshot.forEach(doc => { reports.push({ id: doc.id, ...doc.data() }); }); let filtered = reports; if (branchFilter !== 'all') filtered = filtered.filter(r => r.branch === branchFilter); if (statusFilter !== 'all') filtered = filtered.filter(r => r.status === statusFilter); if (dateFilter) filtered = filtered.filter(r => r.date === dateFilter); const total = filtered.length; const pending = filtered.filter(r => r.status === 'submitted').length; const approved = filtered.filter(r => r.status === 'approved').length; const totalIncome = filtered.reduce((sum, r) => sum + (r.totalIncome || 0), 0); document.getElementById('totalReportsCount').innerText = total; document.getElementById('pendingReportsCount').innerText = pending; document.getElementById('approvedReportsCount').innerText = approved; document.getElementById('totalIncomeAll').innerText = `E${totalIncome.toFixed(2)}`; if (filtered.length === 0) { tbody.innerHTML = '<td colspan="9" style="text-align: center;">No reports found<\/td>'; return; } let html = ''; filtered.forEach(report => { const statusBadge = report.status === 'approved' ? '<span class="badge badge-success">Approved</span>' : (report.status === 'rejected' ? '<span class="badge badge-danger">Rejected</span>' : '<span class="badge badge-warning">Pending</span>'); const surplusColor = (report.surplus || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'; html += `<tr><td>${moment(report.date).format('MMM D, YYYY')}</td><td>${report.branch === 'eswatini' ? '🇸🇿 Eswatini' : report.branch === 'zambia' ? '🇿🇲 Zambia' : '🇮🇪 Ireland'}</td><td>${escapeHTML(report.userName || report.userEmail)}</td><td style="color: var(--accent-green); font-weight: bold;">E${(report.totalIncome || 0).toFixed(2)}</td><td style="color: var(--accent-red);">E${(report.totalExpense || 0).toFixed(2)}</td><td style="color: ${surplusColor}; font-weight: bold;">E${(report.surplus || 0).toFixed(2)}</td><td>${report.approvedBy ? escapeHTML(report.approvedBy) : '-'}</td><td>${statusBadge}</td><td><button class="btn btn-sm btn-primary" onclick="viewFullReport('${report.id}')"><i class="fas fa-eye"></i></button></td></tr>`; }); tbody.innerHTML = html; } catch (error) { console.error("Error loading reports:", error); tbody.innerHTML = '<td colspan="9" style="text-align: center; color: red;">Error loading reports<\/td>'; toast("Error loading financial reports", "error"); } };
+        
+        // Send notification to all users (push notification)
+window.sendPushNotificationToAll = async function(title, message, type = 'general') {
+    if (!adminUser) return;
+    
+    try {
+        // Get all user tokens
+        const tokensSnapshot = await getDocs(collection(db, "userTokens"));
+        const tokens = [];
+        tokensSnapshot.forEach(doc => {
+            if (doc.data().active !== false) {
+                tokens.push(doc.data().token);
+            }
+        });
+        
+        if (tokens.length === 0) {
+            toast("No active tokens found", "info");
+            return;
+        }
+        
+        // Send to FCM
+        const response = await fetch('https://fcm.googleapis.com/fcm/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'key=AAAA_Vd9FEE:APA91bGvZPp_hJKpH7cOqTSAs5Hm-uwE1FNRdKJMRddkpH_0iGJhJpIhUy1LIdfnygU4DQ4MgAtnqlFtrTvhZZGryk7gT8hY-aNcYI93Hj-t-gLhRgTqMlUYx9wWn1q2Mx7LbUvWYkWw'
+            },
+            body: JSON.stringify({
+                registration_ids: tokens.slice(0, 1000), // Max 1000 per request
+                notification: {
+                    title: title,
+                    body: message,
+                    icon: 'https://i.ibb.co/TB5Fx4tb/logo-0.png',
+                    badge: 'https://i.ibb.co/TB5Fx4tb/logo-0.png',
+                    vibrate: [200, 100, 200],
+                    sound: 'default',
+                    requireInteraction: true
+                },
+                data: {
+                    click_action: 'FLUTTER_NOTIFICATION_CLICK',
+                    screen: 'home'
+                }
+            })
+        });
+        
+        const result = await response.json();
+        console.log("Push notification sent:", result);
+        toast(`📢 Notification sent to ${tokens.length} devices`, "success");
+        
+        // Also save to Firestore for in-app notifications
+        await setDoc(doc(db, "notifications", "latest_alert"), {
+            title: title,
+            message: message,
+            type: type,
+            active: true,
+            createdAt: serverTimestamp(),
+            createdBy: adminUser?.email,
+            sentTo: tokens.length
+        }, { merge: true });
+        
+    } catch (error) {
+        console.error("Error sending push notification:", error);
+        toast("Error sending notification: " + error.message, "error");
+    }
+};
+
+// Enhanced sendNotification function
+window.sendNotification = async function() {
+    const title = document.getElementById('notifTitle').value;
+    const msg = document.getElementById('notifMessage').value;
+    const type = document.getElementById('notifType').value;
+    
+    if (!title || !msg) {
+        toast("Title and message required", "error");
+        return;
+    }
+    
+    if (!confirm(`Send notification to ALL users?\n\nTitle: ${title}\nMessage: ${msg}\n\nThis will send push notifications to all registered devices.`)) {
+        return;
+    }
+    
+    showLoading();
+    try {
+        // Send push notification
+        await sendPushNotificationToAll(title, msg, type);
+        
+        // Clear form
+        document.getElementById('notifTitle').value = '';
+        document.getElementById('notifMessage').value = '';
+        
+        toast("✅ Notification broadcasted successfully!", "success");
+        confetti({ particleCount: 150, spread: 100 });
+        
+    } catch (error) {
+        console.error("Error:", error);
+        toast("Error: " + error.message, "error");
+    } finally {
+        hideLoading();
+    }
+};
+
+// Show admin toast notification
+function showAdminNotification(title, message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type === 'error' ? 'error' : ''}`;
+    toast.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: var(--bg-panel);
+        border-left: 4px solid ${type === 'error' ? 'var(--accent-red)' : 'var(--accent-green)'};
+        z-index: 10000;
+        animation: slideLeft 0.3s ease;
+    `;
+    toast.innerHTML = `
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-bell'}" style="color: ${type === 'error' ? 'var(--accent-red)' : 'var(--accent-green)'}"></i>
+            <div>
+                <strong>${title}</strong>
+                <p style="margin: 0; font-size: 0.85rem;">${message}</p>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; font-size: 1rem; cursor: pointer;">&times;</button>
+        </div>
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 8000);
+}
+
+// Listen for real-time changes in the database that affect admin
+function setupAdminRealtimeListeners() {
+    // Listen for new membership applications
+    const membershipsQuery = query(collection(db, "memberships"), where("status", "==", "pending"));
+    onSnapshot(membershipsQuery, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+            if (change.type === "added") {
+                const data = change.doc.data();
+                showAdminNotification(
+                    "🆕 New Membership Application",
+                    `${data.fullName} applied for membership.`,
+                    "info"
+                );
+                // Play notification sound if needed
+                const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
+                audio.play().catch(() => {});
+            }
+        });
+    });
+    
+    // Listen for new support claims
+    const claimsQuery = query(collection(db, "supportClaims"), where("status", "==", "pending"));
+    onSnapshot(claimsQuery, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+            if (change.type === "added") {
+                const data = change.doc.data();
+                showAdminNotification(
+                    "📝 New Support Claim",
+                    `${data.userName || data.userEmail} filed a ${data.planType} claim for E${data.requestedAmount}`,
+                    "info"
+                );
+            }
+        });
+    });
+    
+    // Listen for new deposits
+    const depositsQuery = query(collection(db, "deposits"), where("status", "==", "pending"));
+    onSnapshot(depositsQuery, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+            if (change.type === "added") {
+                const data = change.doc.data();
+                showAdminNotification(
+                    "💰 New Deposit Pending",
+                    `${data.userName || data.userEmail} deposited E${data.amount}`,
+                    "info"
+                );
+            }
+        });
+    });
+    
+    // Listen for new gallery uploads
+    const galleryQuery = query(collection(db, "gallery"), where("status", "==", "pending"));
+    onSnapshot(galleryQuery, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+            if (change.type === "added") {
+                const data = change.doc.data();
+                showAdminNotification(
+                    "🖼️ New Gallery Upload",
+                    `${data.title} uploaded by ${data.userName || 'Anonymous'} awaiting approval`,
+                    "info"
+                );
+            }
+        });
+    });
+}
         
         window.viewFullReport = function(reportId) { toast("Report details feature - coming soon", "info"); };
         
