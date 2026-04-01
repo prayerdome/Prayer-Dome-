@@ -50,6 +50,20 @@
         /* Signature Pad */
         .sig-canvas { border: 2px dashed var(--border-color); border-radius: 15px; background: #fff; cursor: crosshair; touch-action: none; width: 100%; height: 150px; }
 
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 15px;
+        }
+        .status-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid #f59e0b; }
+        .status-approved { background: rgba(34, 197, 94, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
+        .status-rejected { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
+
         /* --- THE SHINING DIGITAL ID CARD --- */
         .digital-id-card {
             width: 350px; height: 550px; border-radius: 25px; margin: 0 auto;
@@ -63,6 +77,7 @@
             transform: rotate(45deg); animation: shine 5s infinite;
         }
         @keyframes shine { 0% { left: -100%; } 100% { left: 100%; } }
+        .digital-id-card.pending { filter: grayscale(0.3); opacity: 0.9; }
 
         .card-photo-circle {
             width: 150px; height: 150px; border-radius: 50%;
@@ -73,8 +88,8 @@
         }
         .card-photo-circle img { width: 100%; height: 100%; object-fit: cover; }
         
-        .card-name { font-size: 1.4rem; font-weight: 800; text-transform: uppercase; margin-top: 15px; letter-spacing: 1px; }
-        .card-id-num { color: var(--accent-gold); font-family: monospace; font-size: 18px; font-weight: 800; margin-bottom: 20px; }
+        .card-name { font-size: 1.4rem; font-weight: 800; text-transform: uppercase; margin-top: 15px; letter-spacing: 1px; text-align: center; }
+        .card-id-num { color: var(--accent-gold); font-family: monospace; font-size: 18px; font-weight: 800; margin-bottom: 20px; text-align: center; }
         
         .card-data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; background: rgba(255,255,255,0.1); padding: 12px; border-radius: 15px; text-align: left; }
         .data-box label { font-size: 7px; opacity: 0.7; text-transform: uppercase; display: block; font-weight: 800; }
@@ -88,6 +103,7 @@
 
         .btn { padding: 15px 25px; border-radius: 50px; border: none; cursor: pointer; font-weight: 800; transition: 0.3s; width: 100%; }
         .btn-primary { background: var(--accent-green); color: white; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 5000; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; }
         .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--accent-green); border-radius: 50%; animation: spin 1s linear infinite; }
@@ -100,7 +116,7 @@
 
 <div class="loading-overlay" id="loader">
     <div class="spinner"></div>
-    <p style="margin-top:15px;">Recording Membership...</p>
+    <p style="margin-top:15px;">Processing Membership Application...</p>
 </div>
 
 <div class="header">
@@ -118,20 +134,20 @@
     <!-- FORM SECTION -->
     <div id="section-apply" class="card">
         <h2 class="form-title">Membership Form</h2>
-        <p class="form-subtitle">Filling this form means you will fulfill all the church duties according to the vision of Prayer Dome Ministry.</p>
+        <p class="form-subtitle">Fill this form to apply for membership. Your application will be reviewed by admin.</p>
         
         <form id="mForm">
             <div class="section-h">Personal Details</div>
             <div class="form-grid">
-                <div class="form-group"><label>First & Last Name</label><input type="text" id="fullName" required></div>
-                <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required></div>
+                <div class="form-group"><label>First & Last Name *</label><input type="text" id="fullName" required></div>
+                <div class="form-group"><label>Date of Birth *</label><input type="date" id="dob" required></div>
                 <div class="form-group">
                     <label>Gender</label>
                     <select id="gender"><option value="Male">Male</option><option value="Female">Female</option></select>
                 </div>
-                <div class="form-group"><label>Identity No (NID/Passport)</label><input type="text" id="idNo" required></div>
-                <div class="form-group"><label>Cell Phone</label><input type="tel" id="phone" required></div>
-                <div class="form-group"><label>Email Address</label><input type="email" id="email" required></div>
+                <div class="form-group"><label>Identity No (NID/Passport) *</label><input type="text" id="idNo" required></div>
+                <div class="form-group"><label>Cell Phone *</label><input type="tel" id="phone" required></div>
+                <div class="form-group"><label>Email Address *</label><input type="email" id="email" required></div>
             </div>
 
             <div class="section-h">Status & Occupation</div>
@@ -206,7 +222,10 @@
             <button type="button" onclick="clearSig()" style="font-size: 10px; background:none; border:none; color:red; cursor:pointer;">Clear Signature</button>
 
             <div style="margin-top: 30px;">
-                <button type="button" class="btn btn-primary" onclick="processRegistration()">SUBMIT & ACTIVATE ID</button>
+                <button type="button" class="btn btn-primary" id="submitBtn" onclick="processRegistration()">SUBMIT APPLICATION</button>
+                <p style="font-size: 0.7rem; text-align: center; margin-top: 10px; color: var(--text-sub);">
+                    <i class="fas fa-clock"></i> Your application will be reviewed by admin
+                </p>
             </div>
         </form>
     </div>
@@ -223,7 +242,7 @@
     <!-- CARD SECTION -->
     <div id="section-card" style="display: none;">
         <div id="captureArea">
-            <div class="digital-id-card">
+            <div class="digital-id-card" id="digitalCard">
                 <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; z-index: 2;">
                     <div style="text-align: left;">
                         <div style="font-weight: 900; font-size: 1rem;">PRAYER DOME</div>
@@ -235,32 +254,37 @@
                 </div>
 
                 <div class="card-photo-circle">
-                    <img id="idPhoto" src="">
+                    <img id="idPhoto" src="https://via.placeholder.com/150">
                 </div>
 
                 <div class="card-name" id="idName">MEMBER NAME</div>
-                <div class="card-id-num" id="idNumber">PG20260000</div>
+                <div class="card-id-num" id="idNumber">Pending Approval</div>
 
                 <div class="card-data-grid">
                     <div class="data-box"><label>Branch</label><span id="idBranch">---</span></div>
                     <div class="data-box"><label>Position</label><span id="idRole">MEMBER</span></div>
                     <div class="data-box"><label>Marital</label><span id="idMarital">---</span></div>
-                    <div class="data-box"><label>Joined</label><span id="idDate">30/03/2026</span></div>
+                    <div class="data-box"><label>Applied</label><span id="idDate">--/--/----</span></div>
                 </div>
 
                 <div class="card-barcode-wrap">
                     <svg id="barcodeImg"></svg>
                 </div>
+                
+                <div id="statusBadge" class="status-badge status-pending" style="margin-top: 15px;">⏳ PENDING APPROVAL</div>
             </div>
         </div>
         <button class="btn" style="background: var(--accent-gold); color: black; margin-top:20px;" onclick="downloadID()">SAVE ID TO GALLERY</button>
+        <p style="text-align: center; font-size: 0.7rem; margin-top: 10px; color: var(--text-sub);">
+            <i class="fas fa-info-circle"></i> Your membership card will be activated after admin approval
+        </p>
     </div>
 
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, getDocs, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = { apiKey: "AIzaSyCxvql0r_aeerphxTA0UUedRppdBxGf7wo", authDomain: "prayer-dome.firebaseapp.com", projectId: "prayer-dome", storageBucket: "prayer-dome.firebasestorage.app", messagingSenderId: "198295153196", appId: "1:198295153196:web:1222b31948d7974ba3bf89" };
@@ -274,7 +298,7 @@
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             currentUid = user.uid;
-            checkMembership();
+            await checkMembership();
             initSigPad();
         } else {
             window.location.href = 'account.html';
@@ -282,230 +306,219 @@
     });
 
     async function checkMembership() {
-    const snap = await getDoc(doc(db, "memberships", currentUid));
-    if(snap.exists()) {
-        renderCard(snap.data());
-        // Pre-fill form with existing data if needed
-        prefillForm(snap.data());
-        switchTab('card');
+        const snap = await getDoc(doc(db, "memberships", currentUid));
+        if(snap.exists()) {
+            const data = snap.data();
+            renderCard(data);
+            prefillForm(data);
+            switchTab('card');
+        } else {
+            // No membership, show form
+            switchTab('apply');
+        }
     }
-}
 
-// Add this function to pre-fill the form for existing members (optional)
-function prefillForm(data) {
-    if(document.getElementById('fullName')) document.getElementById('fullName').value = data.fullName || '';
-    if(document.getElementById('dob')) document.getElementById('dob').value = data.dateOfBirth || '';
-    if(document.getElementById('gender')) document.getElementById('gender').value = data.gender || 'Male';
-    if(document.getElementById('idNo')) document.getElementById('idNo').value = data.identityNumber || '';
-    if(document.getElementById('phone')) document.getElementById('phone').value = data.phone || '';
-    if(document.getElementById('email')) document.getElementById('email').value = data.email || '';
-    if(document.getElementById('mType')) document.getElementById('mType').value = data.membershipType || 'New Member';
-    if(document.getElementById('marital')) document.getElementById('marital').value = data.maritalStatus || 'Single';
-    if(document.getElementById('branch')) document.getElementById('branch').value = data.branch || 'Eswatini - Manzini';
-}
+    function prefillForm(data) {
+        if(document.getElementById('fullName')) document.getElementById('fullName').value = data.fullName || '';
+        if(document.getElementById('dob')) document.getElementById('dob').value = data.dateOfBirth || '';
+        if(document.getElementById('gender')) document.getElementById('gender').value = data.gender || 'Male';
+        if(document.getElementById('idNo')) document.getElementById('idNo').value = data.identityNumber || '';
+        if(document.getElementById('phone')) document.getElementById('phone').value = data.phone || '';
+        if(document.getElementById('email')) document.getElementById('email').value = data.email || '';
+        if(document.getElementById('mType')) document.getElementById('mType').value = data.membershipType || 'New Member';
+        if(document.getElementById('marital')) document.getElementById('marital').value = data.maritalStatus || 'Single';
+        if(document.getElementById('branch')) document.getElementById('branch').value = data.branch || 'Zambia - Chama';
+    }
 
     // Signature Logic
     function initSigPad() {
         canvas = document.getElementById('sig-pad');
+        if (!canvas) return;
         ctx = canvas.getContext('2d');
         canvas.width = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
         
         const getPos = (e) => {
             const rect = canvas.getBoundingClientRect();
-            return { x: (e.clientX || e.touches[0].clientX) - rect.left, y: (e.clientY || e.touches[0].clientY) - rect.top };
+            const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+            const clientY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+            return { x: clientX - rect.left, y: clientY - rect.top };
         };
 
-        const start = (e) => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); };
-        const draw = (e) => { if(!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
+        const start = (e) => { 
+            e.preventDefault();
+            drawing = true; 
+            const p = getPos(e); 
+            ctx.beginPath(); 
+            ctx.moveTo(p.x, p.y); 
+        };
+        const draw = (e) => { 
+            if(!drawing) return; 
+            e.preventDefault();
+            const p = getPos(e); 
+            ctx.lineTo(p.x, p.y); 
+            ctx.stroke(); 
+        };
         const stop = () => drawing = false;
 
-        canvas.onmousedown = start; canvas.onmousemove = draw; canvas.onmouseup = stop;
-        canvas.ontouchstart = start; canvas.ontouchmove = draw; canvas.ontouchend = stop;
+        canvas.addEventListener('mousedown', start);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stop);
+        canvas.addEventListener('touchstart', start);
+        canvas.addEventListener('touchmove', draw);
+        canvas.addEventListener('touchend', stop);
     }
 
-    window.clearSig = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
+    window.clearSig = () => {
+        if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+    };
 
     window.processRegistration = async () => {
-    if(!document.getElementById('titheCommit').checked) return alert("Please commit to church duties.");
-    
-    // Validate required fields
-    const requiredFields = ['fullName', 'dob', 'idNo', 'phone', 'email'];
-    for(let field of requiredFields) {
-        if(!document.getElementById(field).value) {
-            alert(`Please fill in ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
-            return;
-        }
-    }
-    
-    document.getElementById('loader').style.display = 'flex';
-    
-    try {
-        // Generate sequential ID in format PD20260001, PD20260002, etc.
-        const membersRef = collection(db, "memberships");
-        const q = query(membersRef, orderBy("membershipId", "desc"), limit(1));
-        const lastSnap = await getDocs(q);
+        if(!document.getElementById('titheCommit').checked) return alert("Please commit to church duties.");
         
-        let nextNumber = 1;
-        let year = new Date().getFullYear(); // 2026
-        
-        if(!lastSnap.empty) {
-            const lastId = lastSnap.docs[0].data().membershipId;
-            console.log("Last membership ID:", lastId);
-            
-            // Extract the numeric part - handle different formats
-            let lastNum = 0;
-            
-            // Try to match pattern PD20260005
-            const match = lastId.match(/PD(\d{8})/);
-            if(match) {
-                // Full 8-digit number after PD (year + sequence)
-                const fullNumber = parseInt(match[1]);
-                lastNum = fullNumber % 10000; // Get last 4 digits
-                const lastYear = Math.floor(fullNumber / 10000);
-                
-                if(lastYear === year) {
-                    nextNumber = lastNum + 1;
-                } else {
-                    nextNumber = 1;
-                }
-            } else {
-                // Fallback: try to extract any numbers at the end
-                const numMatch = lastId.match(/\d+$/);
-                if(numMatch) {
-                    nextNumber = parseInt(numMatch[0]) + 1;
-                }
+        // Validate required fields
+        const requiredFields = ['fullName', 'dob', 'idNo', 'phone', 'email'];
+        for(let field of requiredFields) {
+            if(!document.getElementById(field).value) {
+                alert(`Please fill in ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+                return;
             }
         }
         
-        // Format: PD20260001 (PD + year + 4-digit number)
-        const membershipId = `PD${year}${String(nextNumber).padStart(4, '0')}`;
-        console.log("Generated new ID:", membershipId);
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+        document.getElementById('loader').style.display = 'flex';
         
-        // Get user data from auth
-        const userAcc = await getDoc(doc(db, "users", currentUid));
-        const photo = userAcc.exists() ? userAcc.data().photoURL : "https://via.placeholder.com/150";
-        
-        // Collect all form data
-        const memberData = {
-            membershipId: membershipId,
-            fullName: document.getElementById('fullName').value,
-            dateOfBirth: document.getElementById('dob').value,
-            gender: document.getElementById('gender').value,
-            identityNumber: document.getElementById('idNo').value,
-            phone: document.getElementById('phone').value,
-            email: document.getElementById('email').value,
-            membershipType: document.getElementById('mType').value,
-            maritalStatus: document.getElementById('marital').value,
-            dependants: parseInt(document.getElementById('dependants').value) || 0,
-            occupation: document.getElementById('job').value,
-            previousChurch: document.getElementById('prevChurch').value,
-            branch: document.getElementById('branch').value,
-            bornAgain: document.getElementById('bornAgain').value,
-            bornAgainDate: document.getElementById('bornDate').value || null,
-            waterBaptism: document.getElementById('waterBapt').value,
-            baptismDate: document.getElementById('baptDate').value || null,
-            holySpiritBaptism: document.getElementById('holySpirit').checked,
-            speaksTongues: document.getElementById('tongues').checked,
-            spiritualGifts: document.getElementById('gifts').checked,
-            giftNames: document.getElementById('giftNames').value,
-            ministries: Array.from(document.querySelectorAll('input[name="min"]:checked')).map(cb => cb.value),
-            titheCommitment: true,
-            status: 'approved',
-            role: 'member',
-            photoUrl: photo,
-            uid: currentUid,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp()
-        };
-        
-        // Save to Firestore
-        await setDoc(doc(db, "memberships", currentUid), memberData);
-        
-        // Trigger success animation
-        confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
-        
-        // Render the card and switch to card view
-        renderCard(memberData);
-        switchTab('card');
-        
-        alert(`✅ Membership Approved!\n\nYour Membership ID: ${membershipId}\n\nWelcome to Prayer Dome Family!`);
-        
-    } catch (e) { 
-        console.error("Registration error:", e);
-        alert("Error: " + e.message); 
-    }
-    finally { 
-        document.getElementById('loader').style.display = 'none'; 
-    }
-};
+        try {
+            // Check if membership already exists
+            const existingSnap = await getDoc(doc(db, "memberships", currentUid));
+            if (existingSnap.exists()) {
+                alert("You have already submitted a membership application. Please wait for admin approval.");
+                switchTab('card');
+                return;
+            }
+            
+            // Get signature from canvas
+            const signatureData = canvas.toDataURL();
+            
+            // Get user data from auth
+            const userAcc = await getDoc(doc(db, "users", currentUid));
+            const photo = userAcc.exists() ? userAcc.data().photoURL : "https://via.placeholder.com/150";
+            
+            // Collect all form data
+            const memberData = {
+                membershipId: null, // Will be assigned by admin when approved
+                fullName: document.getElementById('fullName').value,
+                dateOfBirth: document.getElementById('dob').value,
+                gender: document.getElementById('gender').value,
+                identityNumber: document.getElementById('idNo').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                membershipType: document.getElementById('mType').value,
+                maritalStatus: document.getElementById('marital').value,
+                dependants: parseInt(document.getElementById('dependants').value) || 0,
+                occupation: document.getElementById('job').value,
+                previousChurch: document.getElementById('prevChurch').value,
+                branch: document.getElementById('branch').value,
+                bornAgain: document.getElementById('bornAgain').value,
+                bornAgainDate: document.getElementById('bornDate').value || null,
+                waterBaptism: document.getElementById('waterBapt').value,
+                baptismDate: document.getElementById('baptDate').value || null,
+                holySpiritBaptism: document.getElementById('holySpirit').checked,
+                speaksTongues: document.getElementById('tongues').checked,
+                spiritualGifts: document.getElementById('gifts').checked,
+                giftNames: document.getElementById('giftNames').value,
+                ministries: Array.from(document.querySelectorAll('input[name="min"]:checked')).map(cb => cb.value),
+                titheCommitment: true,
+                signature: signatureData,
+                status: 'pending', // PENDING APPROVAL
+                role: 'member',
+                photoUrl: photo,
+                uid: currentUid,
+                appliedAt: serverTimestamp(),
+                createdAt: serverTimestamp()
+            };
+            
+            // Save to Firestore
+            await setDoc(doc(db, "memberships", currentUid), memberData);
+            
+            // Trigger success animation
+            confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+            
+            // Render the pending card and switch to card view
+            renderCard(memberData);
+            switchTab('card');
+            
+            alert(`✅ Membership Application Submitted!\n\nYour application is pending admin approval. You will be notified once approved.\n\nThank you for joining Prayer Dome!`);
+            
+        } catch (e) { 
+            console.error("Registration error:", e);
+            alert("Error: " + e.message); 
+        }
+        finally { 
+            document.getElementById('loader').style.display = 'none';
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'SUBMIT APPLICATION';
+        }
+    };
 
     function renderCard(data) {
-    const photoEl = document.getElementById('idPhoto');
-    photoEl.src = data.photoUrl || "https://via.placeholder.com/150";
-    
-    document.getElementById('idName').innerText = data.fullName || "MEMBER NAME";
-    document.getElementById('idNumber').innerText = data.membershipId || "PD20260001";
-    document.getElementById('idBranch').innerText = data.branch || "Global";
-    document.getElementById('idRole').innerText = data.role ? data.role.toUpperCase() : "MEMBER";
-    document.getElementById('idMarital').innerText = data.maritalStatus || data.marital || "SINGLE";
-    
-    // FIXED: Safe date formatting
-    let date = new Date();
-    if (data.createdAt) {
-        if (typeof data.createdAt.toDate === 'function') {
-            date = data.createdAt.toDate();
-        } else if (data.createdAt.seconds) {
-            date = new Date(data.createdAt.seconds * 1000);
-        } else if (data.createdAt instanceof Date) {
-            date = data.createdAt;
-        } else if (typeof data.createdAt === 'string') {
-            date = new Date(data.createdAt);
+        const photoEl = document.getElementById('idPhoto');
+        photoEl.src = data.photoUrl || "https://via.placeholder.com/150";
+        
+        document.getElementById('idName').innerText = data.fullName || "MEMBER NAME";
+        
+        // Show pending message if not approved
+        if (data.status === 'approved' && data.membershipId) {
+            document.getElementById('idNumber').innerText = data.membershipId;
+            document.getElementById('statusBadge').innerHTML = '✓ ACTIVE MEMBER';
+            document.getElementById('statusBadge').className = 'status-badge status-approved';
+            document.getElementById('digitalCard').classList.remove('pending');
+            
+            // Generate barcode only for approved members
+            try {
+                JsBarcode("#barcodeImg", data.membershipId, { 
+                    format: "CODE128", 
+                    lineColor: "#000", 
+                    width: 2, 
+                    height: 40, 
+                    displayValue: false 
+                });
+            } catch(e) {
+                console.error("Barcode error:", e);
+            }
+        } else if (data.status === 'rejected') {
+            document.getElementById('idNumber').innerText = 'Application Rejected';
+            document.getElementById('statusBadge').innerHTML = '✗ REJECTED';
+            document.getElementById('statusBadge').className = 'status-badge status-rejected';
+        } else {
+            document.getElementById('idNumber').innerText = 'Pending Approval';
+            document.getElementById('statusBadge').innerHTML = '⏳ PENDING APPROVAL';
+            document.getElementById('statusBadge').className = 'status-badge status-pending';
+            document.getElementById('digitalCard').classList.add('pending');
+            // Show placeholder in barcode
+            const barcodeContainer = document.getElementById('barcodeImg');
+            if (barcodeContainer) {
+                barcodeContainer.innerHTML = '<text x="10" y="25" fill="black" font-family="monospace" font-size="10">PENDING</text>';
+            }
         }
-    }
-    document.getElementById('idDate').innerText = moment(date).format('DD/MM/YYYY');
-    
-    // Generate barcode - FIXED: Add error handling
-    try {
-        JsBarcode("#barcodeImg", data.membershipId || "PD00000000", { 
-            format: "CODE128", 
-            lineColor: "#000", 
-            width: 2, 
-            height: 40, 
-            displayValue: false 
-        });
-    } catch(e) {
-        console.error("Barcode error:", e);
-        // Fallback - create a simple text barcode
-        const barcodeContainer = document.getElementById('barcodeImg');
-        if (barcodeContainer) {
-            barcodeContainer.innerHTML = `<text x="10" y="25" font-family="monospace" font-size="12">${data.membershipId || "PD00000000"}</text>`;
+        
+        document.getElementById('idBranch').innerText = data.branch || "Global";
+        document.getElementById('idRole').innerText = data.role ? data.role.toUpperCase() : "MEMBER";
+        document.getElementById('idMarital').innerText = data.maritalStatus || data.marital || "SINGLE";
+        
+        // Format date safely
+        let date = new Date();
+        if (data.appliedAt) {
+            if (typeof data.appliedAt.toDate === 'function') {
+                date = data.appliedAt.toDate();
+            } else if (data.appliedAt.seconds) {
+                date = new Date(data.appliedAt.seconds * 1000);
+            }
         }
+        document.getElementById('idDate').innerText = moment(date).format('DD/MM/YYYY');
     }
-}
-
-// Helper function to safely format Firestore timestamps
-function formatFirestoreDate(timestamp) {
-    if (!timestamp) return new Date();
-    
-    // Check if it's a Firestore Timestamp object
-    if (typeof timestamp.toDate === 'function') {
-        return timestamp.toDate();
-    }
-    // Check if it has seconds property (Firestore Timestamp)
-    if (timestamp.seconds) {
-        return new Date(timestamp.seconds * 1000);
-    }
-    // If it's already a Date object
-    if (timestamp instanceof Date) {
-        return timestamp;
-    }
-    // If it's a string
-    if (typeof timestamp === 'string') {
-        return new Date(timestamp);
-    }
-    return new Date();
-}
 
     window.switchTab = (t) => {
         document.getElementById('section-apply').style.display = t === 'apply' ? 'block' : 'none';
@@ -518,10 +531,55 @@ function formatFirestoreDate(timestamp) {
         html2canvas(document.getElementById('captureArea'), { useCORS: true, scale: 3 }).then(canvas => {
             const a = document.createElement('a');
             a.href = canvas.toDataURL("image/png");
-            a.download = `PrayerDome-ID.png`;
+            a.download = `PrayerDome-ID-${moment().format('YYYYMMDD')}.png`;
             a.click();
         });
     };
+    
+    // Auto-check for membership status updates
+    let statusCheckInterval = null;
+    
+    async function checkMembershipStatus() {
+        if (!currentUid) return;
+        const snap = await getDoc(doc(db, "memberships", currentUid));
+        if (snap.exists()) {
+            const data = snap.data();
+            // If status changed, update the card
+            const currentDisplayStatus = document.getElementById('statusBadge').innerText;
+            if (data.status === 'approved' && currentDisplayStatus !== '✓ ACTIVE MEMBER') {
+                renderCard(data);
+                showToast("🎉 Your membership has been approved! Your ID card is now active.");
+                confetti({ particleCount: 200, spread: 100 });
+            } else if (data.status === 'rejected' && currentDisplayStatus !== '✗ REJECTED') {
+                renderCard(data);
+                showToast("Your membership application was not approved. Please contact admin for details.");
+            }
+        }
+    }
+    
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-green);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            z-index: 10000;
+            font-weight: 600;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        `;
+        toast.innerHTML = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 5000);
+    }
+    
+    // Check status every 30 seconds
+    setInterval(checkMembershipStatus, 30000);
 </script>
 </body>
 </html>
