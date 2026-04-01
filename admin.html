@@ -267,11 +267,11 @@
                         <div class="kpi-icon green"><i class="fas fa-images"></i></div>
                         <div class="kpi-details"><h3 id="statGalleryItems">0</h3><p>Gallery Items</p></div>
                     </div>
-                    <div class="kpi-card" onclick="switchView('support', document.querySelectorAll('.nav-item')[3])">
+                    <div class="kpi-card" onclick="switchView('support', document.querySelectorAll('.nav-item')[4])">
                         <div class="kpi-icon red"><i class="fas fa-file-invoice"></i></div>
                         <div class="kpi-details"><h3 id="statPendingClaims">0</h3><p>Support Claims</p></div>
                     </div>
-                    <div class="kpi-card" onclick="switchView('content', document.querySelectorAll('.nav-item')[7])">
+                    <div class="kpi-card" onclick="switchView('content', document.querySelectorAll('.nav-item')[8])">
                         <div class="kpi-icon green"><i class="fas fa-pray"></i></div>
                         <div class="kpi-details"><h3 id="statActivePrayers">0</h3><p>Active Prayers</p></div>
                     </div>
@@ -295,7 +295,7 @@
                 </div>
             </div>
 
-            <!-- ================= VIEW: MEMBERS CRM (Enhanced) ================= -->
+            <!-- ================= VIEW: MEMBERS CRM ================= -->
             <div id="view-members" class="section-view">
                 <div class="page-title">Members Management</div>
                 
@@ -324,16 +324,7 @@
                     <div class="table-responsive">
                         <table id="membersTable">
                             <thead>
-                                <tr>
-                                    <th>Member</th>
-                                    <th>ID</th>
-                                    <th>Contact</th>
-                                    <th>Plan</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
-                                    <th>Joined</th>
-                                    <th>Actions</th>
-                                </tr>
+                                <tr><th>Member</th><th>ID</th><th>Contact</th><th>Plan</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr>
                             </thead>
                             <tbody id="listMembers">
                                 <tr><td colspan="8" style="text-align: center;">Loading...</td></tr>
@@ -343,7 +334,7 @@
                 </div>
             </div>
 
-            <!-- ================= VIEW: GALLERY MANAGEMENT (Enhanced) ================= -->
+            <!-- ================= VIEW: GALLERY MANAGEMENT ================= -->
             <div id="view-gallery" class="section-view">
                 <div class="page-title">
                     <span>Gallery Management</span>
@@ -464,8 +455,8 @@
                     </div>
                     <div class="table-responsive">
                         <table id="financialReportsTable">
-                            <thead><tr><th>Date</th><th>Branch</th><th>Submitted By</th><th>Total Income</th><th>Total Expense</th><th>Surplus</th><th>Approved By</th><th>Status</th><th>Actions</th></tr></thead>
-                            <tbody id="financialReportsList"><tr><td colspan="9" style="text-align: center;">Loading reports...</td></tr></tbody>
+                            <thead> Bon<th>Date</th><th>Branch</th><th>Submitted By</th><th>Total Income</th><th>Total Expense</th><th>Surplus</th><th>Approved By</th><th>Status</th><th>Actions</th> </thead>
+                            <tbody id="financialReportsList"> <tr><td colspan="9" style="text-align: center;">Loading reports...</td></tr> </tbody>
                         </table>
                     </div>
                 </div>
@@ -479,8 +470,8 @@
                 </div>
                 <div class="panel-card">
                     <div class="table-responsive">
-                         <table>
-                            <thead> <tr><th>Date & Time</th><th>Event Title</th><th>Location</th><th>Category</th><th>Actions</th></tr> </thead>
+                        <table>
+                            <thead> <tr><th>Date & Time</th><th>Event Title</th><th>Location</th><th>Category</th><th>Actions</th> </tr> </thead>
                             <tbody id="listEvents"> <tr><td colspan="5" style="text-align: center;">Loading...</td></tr> </tbody>
                         </table>
                     </div>
@@ -511,7 +502,7 @@
                     </div>
                     <div class="table-responsive">
                         <table>
-                            <thead> <tr><th>Date</th><th>Author</th><th>Content Text</th><th>Actions</th></tr> </thead>
+                            <thead> <tr><th>Date</th><th>Author</th><th>Content Text</th><th>Actions</th> </tr> </thead>
                             <tbody id="listContent"> <tr><td colspan="4" style="text-align: center;">Loading...</td></tr> </tbody>
                         </table>
                     </div>
@@ -566,12 +557,31 @@
                         <div class="form-group"><label>Marital Status</label><select id="fullMemberMarital" class="form-control"><option>Single</option><option>Married</option><option>Divorced</option><option>Widowed</option></select></div>
                     </div>
                     <div>
-                      
-                      <!-- View Document Modal -->
+                        <div class="form-group"><label>Branch</label><select id="fullMemberBranch" class="form-control"><option>Zambia - Chama</option><option>Eswatini - Manzini</option><option>Ireland - Cork</option><option>Online Global</option></select></div>
+                        <div class="form-group"><label>Role</label><select id="fullMemberRole" class="form-control"><option value="member">Member</option><option value="finance">Finance</option><option value="admin">Admin</option><option value="pastor">Pastor</option><option value="worship">Worship</option><option value="usher">Usher</option></select></div>
+                        <div class="form-group"><label>Status</label><select id="fullMemberStatus" class="form-control"><option value="pending">Pending</option><option value="approved">Active</option><option value="suspended">Suspended</option><option value="rejected">Rejected</option></select></div>
+                        <div class="form-group"><label>Wallet Balance</label><input type="text" id="fullMemberWallet" class="form-control" readonly></div>
+                        <div class="form-group"><label>Member Since</label><input type="text" id="fullMemberJoined" class="form-control" readonly></div>
+                        <div class="form-group"><label>Spiritual Gifts</label><input type="text" id="fullMemberGifts" placeholder="Teaching, Prophetic..."></div>
+                        <div class="form-group"><label>Ministries</label><input type="text" id="fullMemberMinistries" placeholder="Worship, Usher..."></div>
+                        <div class="form-group"><label>Bio</label><textarea id="fullMemberBio" rows="3" class="form-control"></textarea></div>
+                        <div class="form-group"><label>Admin Notes</label><textarea id="fullMemberAdminNotes" rows="3" class="form-control"></textarea></div>
+                        <div class="form-group"><label>Signature</label><div id="signatureDisplay">No signature</div><button class="btn btn-sm btn-outline" onclick="uploadSignature()">Upload Signature</button></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-danger" id="suspendFullBtn">Suspend</button><button class="btn btn-outline" onclick="closeModal('modalFullMemberDetails')">Cancel</button><button class="btn btn-primary" onclick="saveFullMemberDetails()">Save Changes</button></div>
+        </div>
+    </div>
+
+    <!-- View Document Modal -->
     <div id="modalViewDoc" class="modal-overlay"><div class="modal-card" style="max-width: 700px;"><div class="modal-header"><h2>Document Viewer</h2><button class="modal-close" onclick="closeModal('modalViewDoc')"><i class="fas fa-times"></i></button></div><div class="modal-body"><img id="docImagePreview" style="max-width:100%; display:none;"><a id="docPdfBtn" href="#" target="_blank" class="btn btn-primary" style="display:none;">Open PDF</a></div></div></div>
 
     <!-- Event Modal -->
     <div id="modalEvent" class="modal-overlay"><div class="modal-card"><div class="modal-header"><h2>Create Event</h2><button class="modal-close" onclick="closeModal('modalEvent')"><i class="fas fa-times"></i></button></div><div class="modal-body"><div class="form-group"><label>Title</label><input type="text" id="evTitle" class="form-control"></div><div class="form-group"><label>Date & Time</label><input type="datetime-local" id="evDate" class="form-control"></div><div class="form-group"><label>Location</label><input type="text" id="evLocation" class="form-control"></div><div class="form-group"><label>Category</label><select id="evCategory" class="form-control"><option>Service</option><option>Prayer</option><option>Conference</option></select></div><div class="form-group"><label>Description</label><textarea id="evDesc" class="form-control" rows="3"></textarea></div></div><div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('modalEvent')">Cancel</button><button class="btn btn-primary" onclick="saveEvent()">Publish</button></div></div></div>
+
+    <!-- Hidden input for member editing -->
+    <input type="hidden" id="editMemberId">
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -609,23 +619,24 @@
 
         // ==================== MEMBERS MANAGEMENT ====================
         window.loadDashboardStats = async function() {
-            const membersSnap = await getDocs(query(collection(db, "memberships"), orderBy("createdAt", "desc")));
-            let total=0,pending=0; allMembersCache=[]; let pendingHtml='';
-            membersSnap.forEach(d => { const data=d.data(); data.id=d.id; allMembersCache.push(data); if(data.status==='approved') total++; if(data.status==='pending'){ pending++; if(pending<=5){ pendingHtml+=`<tr><td><div class="user-cell"><img src="${data.photoUrl||'https://via.placeholder.com/40'}" class="user-img"><div><h4>${escapeHTML(data.fullName||'N/A')}</h4><p>${escapeHTML(data.email||'')}</p></div></div></td><td>${escapeHTML(data.branch||'Global')}</td><td>${data.createdAt?moment(data.createdAt.toDate()).format('MMM D'):'N/A'}</td><td><span class="badge badge-warning">Pending</span></td><td><button class="btn btn-sm btn-primary" onclick="approveMember('${d.id}')">Approve</button></td></tr>`; } } });
-            document.getElementById('statTotalMembers').innerText = total;
-            document.getElementById('statPendingMembers').innerText = pending;
-            document.getElementById('dashPendingMembers').innerHTML = pendingHtml || '<tr><td colspan="5">No pending applications</td></tr>';
-            
-            const depSnap = await getDocs(query(collection(db,"deposits"),where("status","==","pending")));
-            document.getElementById('statPendingDeposits').innerText = depSnap.size;
-            const claimSnap = await getDocs(query(collection(db,"supportClaims"),where("status","==","pending")));
-            document.getElementById('statPendingClaims').innerText = claimSnap.size;
-            const praySnap = await getDocs(query(collection(db,"prayers"),where("answered","==",false)));
-            document.getElementById('statActivePrayers').innerText = praySnap.size;
-            
-            // Load gallery stats
-            const gallerySnap = await getDocs(collection(db, "gallery"));
-            document.getElementById('statGalleryItems').innerText = gallerySnap.size;
+            try {
+                const membersSnap = await getDocs(query(collection(db, "memberships"), orderBy("createdAt", "desc")));
+                let total=0,pending=0; allMembersCache=[]; let pendingHtml='';
+                membersSnap.forEach(d => { const data=d.data(); data.id=d.id; allMembersCache.push(data); if(data.status==='approved') total++; if(data.status==='pending'){ pending++; if(pending<=5){ pendingHtml+=`<tr><td><div class="user-cell"><img src="${data.photoUrl||'https://via.placeholder.com/40'}" class="user-img"><div><h4>${escapeHTML(data.fullName||'N/A')}</h4><p>${escapeHTML(data.email||'')}</p></div></div></td><td>${escapeHTML(data.branch||'Global')}</td><td>${data.createdAt?moment(data.createdAt.toDate()).format('MMM D'):'N/A'}</td><td><span class="badge badge-warning">Pending</span></td><td><button class="btn btn-sm btn-primary" onclick="approveMember('${d.id}')">Approve</button></td></tr>`; } } });
+                document.getElementById('statTotalMembers').innerText = total;
+                document.getElementById('statPendingMembers').innerText = pending;
+                document.getElementById('dashPendingMembers').innerHTML = pendingHtml || '<tr><td colspan="5">No pending applications</td></tr>';
+                
+                const depSnap = await getDocs(query(collection(db,"deposits"),where("status","==","pending")));
+                document.getElementById('statPendingDeposits').innerText = depSnap.size;
+                const claimSnap = await getDocs(query(collection(db,"supportClaims"),where("status","==","pending")));
+                document.getElementById('statPendingClaims').innerText = claimSnap.size;
+                const praySnap = await getDocs(query(collection(db,"prayers"),where("answered","==",false)));
+                document.getElementById('statActivePrayers').innerText = praySnap.size;
+                
+                const gallerySnap = await getDocs(collection(db, "gallery"));
+                document.getElementById('statGalleryItems').innerText = gallerySnap.size;
+            } catch(e) { console.error("Dashboard stats error:", e); }
         };
 
         window.filterMembers = function() {
@@ -668,7 +679,7 @@
                     status:'approved',
                     membershipId:newId,
                     approvedAt:serverTimestamp(),
-                    approvedBy:adminUser.email || adminUser.uid
+                    approvedBy:adminUser?.email || adminUser?.uid
                 }); 
                 const wRef=doc(db,"wallets",uid); 
                 if(!(await getDoc(wRef)).exists()) 
@@ -1054,17 +1065,22 @@
         onAuthStateChanged(auth, async (user) => {
             showLoading();
             if (user) {
-                const snap = await getDoc(doc(db, "memberships", user.uid));
-                if (snap.exists() && snap.data().role === 'admin') {
-                    adminUser = user;
-                    document.getElementById('topbarName').innerText = snap.data().fullName || 'Admin';
-                    document.getElementById('topbarAvatar').innerText = (snap.data().fullName || 'A')[0];
-                    document.getElementById('loginModal').style.display = 'none';
-                    await loadDashboardStats();
-                } else { 
-                    await signOut(auth); 
-                    document.getElementById('loginModal').style.display = 'flex'; 
-                    toast('Access Denied', 'error'); 
+                try {
+                    const snap = await getDoc(doc(db, "memberships", user.uid));
+                    if (snap.exists() && snap.data().role === 'admin') {
+                        adminUser = user;
+                        document.getElementById('topbarName').innerText = snap.data().fullName || 'Admin';
+                        document.getElementById('topbarAvatar').innerText = (snap.data().fullName || 'A')[0];
+                        document.getElementById('loginModal').style.display = 'none';
+                        await loadDashboardStats();
+                    } else { 
+                        await signOut(auth); 
+                        document.getElementById('loginModal').style.display = 'flex'; 
+                        toast('Access Denied - Admin privileges required', 'error'); 
+                    }
+                } catch(e) {
+                    console.error("Auth check error:", e);
+                    document.getElementById('loginModal').style.display = 'flex';
                 }
             } else { 
                 document.getElementById('loginModal').style.display = 'flex'; 
@@ -1091,49 +1107,56 @@
             window.location.href = 'index.html'; 
         };
 
-        // ==================== PLACEHOLDER FUNCTIONS ====================
+        // ==================== FINANCE FUNCTIONS ====================
         window.loadFinances = async function() { 
             const dBody=document.getElementById('listDeposits'), wBody=document.getElementById('listWithdrawals');
-            dBody.innerHTML='<td colspan="6">Loading...</td>';
-            wBody.innerHTML='<td colspan="6">Loading...</td>';
+            if(dBody) dBody.innerHTML='<td colspan="6">Loading...<\/td>';
+            if(wBody) wBody.innerHTML='<td colspan="6">Loading...<\/td>';
             try {
                 const dSnap=await getDocs(query(collection(db,"deposits"),orderBy("createdAt","desc"),limit(30)));
-                let dHtml=''; dSnap.forEach(d=>{ const data=d.data(); const badge=data.status==='approved'?'<span class="badge badge-success">Approved</span>':data.status==='rejected'?'<span class="badge badge-danger">Rejected</span>':'<span class="badge badge-warning">Pending</span>'; dHtml+=`<tr><td>${data.createdAt?moment(data.createdAt.toDate()).format('MMM D, YYYY'):'N/A'}</td><td>${escapeHTML(data.userName||data.userEmail)}</td><td>E${data.amount.toFixed(2)}</td><td>${data.proofUrl?`<button class="btn btn-sm btn-outline" onclick="viewDoc('${data.proofUrl}','image')">View</button>`:'No Proof'}</td><td>${badge}</td><td>${data.status==='pending'?`<button class="btn btn-sm btn-primary" onclick="approveFinance('deposits','${d.id}','${data.userId}',${data.amount})">Approve</button><button class="btn btn-sm btn-danger" onclick="rejectFinance('deposits','${d.id}')">Reject</button>`:'-'}</td></tr>`; }); dBody.innerHTML=dHtml||'<td colspan="6">No deposits</td>';
+                let dHtml=''; dSnap.forEach(d=>{ const data=d.data(); const badge=data.status==='approved'?'<span class="badge badge-success">Approved</span>':data.status==='rejected'?'<span class="badge badge-danger">Rejected</span>':'<span class="badge badge-warning">Pending</span>'; dHtml+=`<tr><td>${data.createdAt?moment(data.createdAt.toDate()).format('MMM D, YYYY'):'N/A'}</td><td>${escapeHTML(data.userName||data.userEmail)}</td><td>E${data.amount.toFixed(2)}</td><td>${data.proofUrl?`<button class="btn btn-sm btn-outline" onclick="viewDoc('${data.proofUrl}','image')">View</button>`:'No Proof'}</td><td>${badge}</td><td>${data.status==='pending'?`<button class="btn btn-sm btn-primary" onclick="approveFinance('deposits','${d.id}','${data.userId}',${data.amount})">Approve</button><button class="btn btn-sm btn-danger" onclick="rejectFinance('deposits','${d.id}')">Reject</button>`:'-'}</td></tr>`; }); if(dBody) dBody.innerHTML=dHtml||'<td colspan="6">No deposits<\/td>';
                 
                 const wSnap=await getDocs(query(collection(db,"withdrawals"),orderBy("createdAt","desc"),limit(30)));
-                let wHtml=''; wSnap.forEach(w=>{ const data=w.data(); const badge=data.status==='approved'?'<span class="badge badge-success">Processed</span>':data.status==='rejected'?'<span class="badge badge-danger">Rejected</span>':'<span class="badge badge-warning">Pending</span>'; wHtml+=`<tr><td>${data.createdAt?moment(data.createdAt.toDate()).format('MMM D, YYYY'):'N/A'}</td><td>${escapeHTML(data.userName||data.userEmail)}</td><td style="color:var(--accent-red);">E${data.amount.toFixed(2)}</td><td>${escapeHTML(data.receivePhone||'N/A')}</td><td>${badge}</td><td>${data.status==='pending'?`<button class="btn btn-sm btn-primary" onclick="approveFinance('withdrawals','${w.id}','${data.userId}',${data.amount})">Approve</button><button class="btn btn-sm btn-danger" onclick="rejectFinance('withdrawals','${w.id}')">Reject</button>`:'-'}</td></tr>`; }); wBody.innerHTML=wHtml||'<td colspan="6">No withdrawals</td>';
+                let wHtml=''; wSnap.forEach(w=>{ const data=w.data(); const badge=data.status==='approved'?'<span class="badge badge-success">Processed</span>':data.status==='rejected'?'<span class="badge badge-danger">Rejected</span>':'<span class="badge badge-warning">Pending</span>'; wHtml+=`<tr><td>${data.createdAt?moment(data.createdAt.toDate()).format('MMM D, YYYY'):'N/A'}</td><td>${escapeHTML(data.userName||data.userEmail)}</td><td style="color:var(--accent-red);">E${data.amount.toFixed(2)}</td><td>${escapeHTML(data.receivePhone||'N/A')}</td><td>${badge}</td><td>${data.status==='pending'?`<button class="btn btn-sm btn-primary" onclick="approveFinance('withdrawals','${w.id}','${data.userId}',${data.amount})">Approve</button><button class="btn btn-sm btn-danger" onclick="rejectFinance('withdrawals','${w.id}')">Reject</button>`:'-'}</td></tr>`; }); if(wBody) wBody.innerHTML=wHtml||'<td colspan="6">No withdrawals<\/td>';
             } catch(e){ console.error(e); }
         };
 
-        window.approveFinance = async function(type,docId,userId,amount){ if(!confirm("Approve?")) return; try{ if(type==='deposits'){ await updateDoc(doc(db,"deposits",docId),{status:'approved',approvedAt:serverTimestamp(),approvedBy:adminUser.uid}); await updateDoc(doc(db,"wallets",userId),{balance:increment(amount)}); toast("Deposit approved!"); } else { const wRef=doc(db,"wallets",userId); const wSnap=await getDoc(wRef); if(wSnap.data().balance<amount) return toast("Insufficient funds","error"); await updateDoc(wRef,{balance:increment(-amount)}); await updateDoc(doc(db,"withdrawals",docId),{status:'approved',approvedAt:serverTimestamp(),approvedBy:adminUser.uid}); toast("Withdrawal approved!"); } await loadFinances(); await loadDashboardStats(); } catch(e){ toast(e.message,'error'); } };
+        window.approveFinance = async function(type,docId,userId,amount){ if(!confirm("Approve?")) return; try{ if(type==='deposits'){ await updateDoc(doc(db,"deposits",docId),{status:'approved',approvedAt:serverTimestamp(),approvedBy:adminUser?.uid}); await updateDoc(doc(db,"wallets",userId),{balance:increment(amount)}); toast("Deposit approved!"); } else { const wRef=doc(db,"wallets",userId); const wSnap=await getDoc(wRef); if(wSnap.data().balance<amount) return toast("Insufficient funds","error"); await updateDoc(wRef,{balance:increment(-amount)}); await updateDoc(doc(db,"withdrawals",docId),{status:'approved',approvedAt:serverTimestamp(),approvedBy:adminUser?.uid}); toast("Withdrawal approved!"); } await loadFinances(); await loadDashboardStats(); } catch(e){ toast(e.message,'error'); } };
         
-        window.rejectFinance = async function(type,docId){ const reason=prompt("Reason:"); if(!reason) return; await updateDoc(doc(db,type,docId),{status:'rejected',rejectReason:reason,rejectedAt:serverTimestamp(),rejectedBy:adminUser.uid}); toast("Rejected"); await loadFinances(); await loadDashboardStats(); };
+        window.rejectFinance = async function(type,docId){ const reason=prompt("Reason:"); if(!reason) return; await updateDoc(doc(db,type,docId),{status:'rejected',rejectReason:reason,rejectedAt:serverTimestamp(),rejectedBy:adminUser?.uid}); toast("Rejected"); await loadFinances(); await loadDashboardStats(); };
         
-        window.loadSupport = async function(){ const tbody=document.getElementById('listSupportClaims'); tbody.innerHTML='<td colspan="7">Loading...</td>'; try{ const snap=await getDocs(query(collection(db,"supportClaims"),orderBy("createdAt","desc"),limit(30))); let html=''; snap.forEach(d=>{ const data=d.data(); const badge=data.status==='approved'?'<span class="badge badge-success">Approved</span>':data.status==='rejected'?'<span class="badge badge-danger">Rejected</span>':'<span class="badge badge-warning">Pending</span>'; let docs=''; if(data.documents){ for(const[key,url] of Object.entries(data.documents)) docs+=`<button class="btn btn-sm btn-outline" onclick="viewDoc('${url}','auto')">${key}</button>`; } html+=`<tr><td>${data.createdAt?moment(data.createdAt.toDate()).format('MMM D, YYYY'):'N/A'}</td><td>${escapeHTML(data.userName||data.userEmail)}</td><td>${data.planType}</td><td>E${data.requestedAmount}</td><td>${docs||'None'}</td><td>${badge}</td><td>${data.status==='pending'?`<button class="btn btn-sm btn-primary" onclick="approveClaim('${d.id}')">Approve</button><button class="btn btn-sm btn-danger" onclick="rejectClaim('${d.id}')">Reject</button>`:'-'}</td></tr>`; }); tbody.innerHTML=html||'<td colspan="7">No claims</td>'; } catch(e){ console.error(e); } };
+        window.loadSupport = async function(){ const tbody=document.getElementById('listSupportClaims'); if(tbody) tbody.innerHTML='<td colspan="7">Loading...<\/td>'; try{ const snap=await getDocs(query(collection(db,"supportClaims"),orderBy("createdAt","desc"),limit(30))); let html=''; snap.forEach(d=>{ const data=d.data(); const badge=data.status==='approved'?'<span class="badge badge-success">Approved</span>':data.status==='rejected'?'<span class="badge badge-danger">Rejected</span>':'<span class="badge badge-warning">Pending</span>'; let docs=''; if(data.documents){ for(const[key,url] of Object.entries(data.documents)) docs+=`<button class="btn btn-sm btn-outline" onclick="viewDoc('${url}','auto')">${key}</button>`; } html+=`<tr><td>${data.createdAt?moment(data.createdAt.toDate()).format('MMM D, YYYY'):'N/A'}</td><td>${escapeHTML(data.userName||data.userEmail)}</td><td>${data.planType}</td><td>E${data.requestedAmount}</td><td>${docs||'None'}</td><td>${badge}</td><td>${data.status==='pending'?`<button class="btn btn-sm btn-primary" onclick="approveClaim('${d.id}')">Approve</button><button class="btn btn-sm btn-danger" onclick="rejectClaim('${d.id}')">Reject</button>`:'-'}</td></tr>`; }); if(tbody) tbody.innerHTML=html||'<td colspan="7">No claims<\/td>'; } catch(e){ console.error(e); } };
         
-        window.approveClaim = async function(id){ if(!confirm("Approve claim?")) return; await updateDoc(doc(db,"supportClaims",id),{status:'approved',approvedBy:adminUser.uid,approvedAt:serverTimestamp()}); toast("Claim approved!"); await loadSupport(); await loadDashboardStats(); };
+        window.approveClaim = async function(id){ if(!confirm("Approve claim?")) return; await updateDoc(doc(db,"supportClaims",id),{status:'approved',approvedBy:adminUser?.uid,approvedAt:serverTimestamp()}); toast("Claim approved!"); await loadSupport(); await loadDashboardStats(); };
         
-        window.rejectClaim = async function(id){ const reason=prompt("Reason:"); if(!reason) return; await updateDoc(doc(db,"supportClaims",id),{status:'rejected',rejectReason:reason,rejectedAt:serverTimestamp(),rejectedBy:adminUser.uid}); toast("Claim rejected!"); await loadSupport(); await loadDashboardStats(); };
+        window.rejectClaim = async function(id){ const reason=prompt("Reason:"); if(!reason) return; await updateDoc(doc(db,"supportClaims",id),{status:'rejected',rejectReason:reason,rejectedAt:serverTimestamp(),rejectedBy:adminUser?.uid}); toast("Claim rejected!"); await loadSupport(); await loadDashboardStats(); };
         
-        window.loadEvents = async function(){ const tbody=document.getElementById('listEvents'); tbody.innerHTML='<td colspan="5">Loading...</td>'; try{ const snap=await getDocs(query(collection(db,"events"),orderBy("date","desc"))); let html=''; snap.forEach(d=>{ const data=d.data(); html+=`<tr><td>${data.date?moment(data.date.toDate()).format('MMM D, YYYY HH:mm'):'N/A'}</td><td><strong>${escapeHTML(data.title)}</strong></td><td>${escapeHTML(data.location)}</td><td>${data.category}</td><td><button class="btn btn-sm btn-danger" onclick="deleteRecord('events','${d.id}')">Delete</button></td></tr>`; }); tbody.innerHTML=html||'<td colspan="5">No events</td>'; } catch(e){ console.error(e); } };
+        window.loadEvents = async function(){ const tbody=document.getElementById('listEvents'); if(tbody) tbody.innerHTML='<td colspan="5">Loading...<\/td>'; try{ const snap=await getDocs(query(collection(db,"events"),orderBy("date","desc"))); let html=''; snap.forEach(d=>{ const data=d.data(); html+=`<tr><td>${data.date?moment(data.date.toDate()).format('MMM D, YYYY HH:mm'):'N/A'}</td><td><strong>${escapeHTML(data.title)}</strong></td><td>${escapeHTML(data.location)}</td><td>${data.category}</td><td><button class="btn btn-sm btn-danger" onclick="deleteRecord('events','${d.id}')">Delete</button></td></tr>`; }); if(tbody) tbody.innerHTML=html||'<td colspan="5">No events<\/td>'; } catch(e){ console.error(e); } };
         
-        window.saveEvent = async function(){ const title=document.getElementById('evTitle').value, date=document.getElementById('evDate').value; if(!title||!date) return toast("Title and date required","error"); showLoading(); try{ await addDoc(collection(db,"events"),{title:title,date:new Date(date),location:document.getElementById('evLocation').value,category:document.getElementById('evCategory').value,description:document.getElementById('evDesc').value,attendeeCount:0,createdAt:serverTimestamp(),createdBy:adminUser.uid}); closeModal('modalEvent'); toast("Event published!"); await loadEvents(); } catch(e){ toast(e.message,'error'); } finally { hideLoading(); } };
+        window.saveEvent = async function(){ const title=document.getElementById('evTitle').value, date=document.getElementById('evDate').value; if(!title||!date) return toast("Title and date required","error"); showLoading(); try{ await addDoc(collection(db,"events"),{title:title,date:new Date(date),location:document.getElementById('evLocation').value,category:document.getElementById('evCategory').value,description:document.getElementById('evDesc').value,attendeeCount:0,createdAt:serverTimestamp(),createdBy:adminUser?.uid}); closeModal('modalEvent'); toast("Event published!"); await loadEvents(); } catch(e){ toast(e.message,'error'); } finally { hideLoading(); } };
         
-        window.uploadMedia = function(){ cloudinary.createUploadWidget({cloudName:'prayerdome',uploadPreset:'gallery_uploads',folder:'official_gallery'},async(e,r)=>{ if(!e&&r&&r.event==="success"){ const title=prompt("Image title:","Church Event"); await addDoc(collection(db,"gallery"),{title:title||'Untitled',url:r.info.secure_url,category:'general',status:'pending',createdAt:serverTimestamp(),userId:adminUser.uid,userName:adminUser?.displayName}); toast("Image uploaded and pending approval!"); await loadGallery(); await loadDashboardStats(); } }).open(); };
+        window.uploadMedia = function(){ cloudinary.createUploadWidget({cloudName:'prayerdome',uploadPreset:'gallery_uploads',folder:'official_gallery'},async(e,r)=>{ if(!e&&r&&r.event==="success"){ const title=prompt("Image title:","Church Event"); await addDoc(collection(db,"gallery"),{title:title||'Untitled',url:r.info.secure_url,category:'general',status:'pending',createdAt:serverTimestamp(),userId:adminUser?.uid,userName:adminUser?.displayName}); toast("Image uploaded and pending approval!"); await loadGallery(); await loadDashboardStats(); } }).open(); };
         
-        window.loadContent = async function(){ const col=document.getElementById('contentFilter').value, tbody=document.getElementById('listContent'); tbody.innerHTML='<td colspan="4">Loading...</td>'; try{ const snap=await getDocs(query(collection(db,col),orderBy("timestamp","desc"),limit(30))); if(snap.empty){ tbody.innerHTML=`<td colspan="4">No ${col}</td>`; return; } let html=''; snap.forEach(d=>{ const data=d.data(); const text=data.text||data.content||''; html+=`<tr><td>${data.timestamp?moment(data.timestamp.toDate()).format('MMM D, YYYY'):'N/A'}</td><td><strong>${escapeHTML(data.name||data.author||'Anonymous')}</strong></td><td title="${escapeHTML(text)}">${escapeHTML(text).substring(0,50)}...</td><td><button class="btn btn-sm btn-danger" onclick="deleteRecord('${col}','${d.id}')">Delete</button></td></tr>`; }); tbody.innerHTML=html; } catch(e){ console.error(e); } };
+        window.loadContent = async function(){ const col=document.getElementById('contentFilter').value, tbody=document.getElementById('listContent'); if(tbody) tbody.innerHTML='<td colspan="4">Loading...<\/td>'; try{ const snap=await getDocs(query(collection(db,col),orderBy("timestamp","desc"),limit(30))); if(snap.empty){ if(tbody) tbody.innerHTML=`<td colspan="4">No ${col}<\/td>`; return; } let html=''; snap.forEach(d=>{ const data=d.data(); const text=data.text||data.content||''; html+=`<tr><td>${data.timestamp?moment(data.timestamp.toDate()).format('MMM D, YYYY'):'N/A'}</td><td><strong>${escapeHTML(data.name||data.author||'Anonymous')}</strong></td><td title="${escapeHTML(text)}">${escapeHTML(text).substring(0,50)}...</td><td><button class="btn btn-sm btn-danger" onclick="deleteRecord('${col}','${d.id}')">Delete</button></td></tr>`; }); if(tbody) tbody.innerHTML=html; } catch(e){ console.error(e); } };
         
-        window.sendNotification = async function(){ const title=document.getElementById('notifTitle').value, msg=document.getElementById('notifMessage').value; if(!title||!msg) return toast("Title and message required","error"); if(!confirm("Broadcast?")) return; showLoading(); try{ await setDoc(doc(db,"notifications","latest_alert"),{title:title,message:msg,type:document.getElementById('notifType').value,active:true,createdAt:serverTimestamp(),createdBy:adminUser.uid}); document.getElementById('notifTitle').value=''; document.getElementById('notifMessage').value=''; toast("Notification broadcasted!"); confetti(); } catch(e){ toast(e.message,'error'); } finally { hideLoading(); } };
+        window.sendNotification = async function(){ const title=document.getElementById('notifTitle').value, msg=document.getElementById('notifMessage').value; if(!title||!msg) return toast("Title and message required","error"); if(!confirm("Broadcast to all users?")) return; showLoading(); try{ await setDoc(doc(db,"notifications","latest_alert"),{title:title,message:msg,type:document.getElementById('notifType').value,active:true,createdAt:serverTimestamp(),createdBy:adminUser?.uid}); document.getElementById('notifTitle').value=''; document.getElementById('notifMessage').value=''; toast("Notification broadcasted!"); confetti(); } catch(e){ toast(e.message,'error'); } finally { hideLoading(); } };
         
         window.deleteRecord = async function(col,id){ if(!confirm("Delete permanently?")) return; showLoading(); try{ await deleteDoc(doc(db,col,id)); toast("Deleted"); if(col==='events') await loadEvents(); if(col==='gallery') await loadGallery(); if(col==='prayers'||col==='testimonies') await loadContent(); } catch(e){ toast(e.message,'error'); } finally { hideLoading(); } };
         
-        window.viewDoc = function(url,type){ const img=document.getElementById('docImagePreview'), pdf=document.getElementById('docPdfBtn'); if(url.toLowerCase().includes('.pdf')){ img.style.display='none'; pdf.style.display='inline-flex'; pdf.href=url; } else { img.style.display='block'; pdf.style.display='none'; img.src=url; } openModal('modalViewDoc'); };
+        window.viewDoc = function(url,type){ const img=document.getElementById('docImagePreview'), pdf=document.getElementById('docPdfBtn'); if(url.toLowerCase().includes('.pdf')){ if(img) img.style.display='none'; if(pdf){ pdf.style.display='inline-flex'; pdf.href=url; } } else { if(img){ img.style.display='block'; img.src=url; } if(pdf) pdf.style.display='none'; } openModal('modalViewDoc'); };
         
-        window.loadFinancialReports = async function(){ const tbody = document.getElementById('financialReportsList'); if(!tbody) return; tbody.innerHTML = '<td colspan="9" style="text-align: center;">Loading...</td>'; try { const branchFilter = document.getElementById('reportBranchFilter')?.value || 'all'; const statusFilter = document.getElementById('reportStatusFilter')?.value || 'all'; const dateFilter = document.getElementById('reportDateFilter')?.value || ''; let q = query(collection(db, "financialReports"), orderBy("date", "desc")); const snapshot = await getDocs(q); let reports = []; snapshot.forEach(doc => { reports.push({ id: doc.id, ...doc.data() }); }); let filtered = reports; if (branchFilter !== 'all') filtered = filtered.filter(r => r.branch === branchFilter); if (statusFilter !== 'all') filtered = filtered.filter(r => r.status === statusFilter); if (dateFilter) filtered = filtered.filter(r => r.date === dateFilter); const total = filtered.length; const pending = filtered.filter(r => r.status === 'submitted').length; const approved = filtered.filter(r => r.status === 'approved').length; const totalIncome = filtered.reduce((sum, r) => sum + (r.totalIncome || 0), 0); document.getElementById('totalReportsCount').innerText = total; document.getElementById('pendingReportsCount').innerText = pending; document.getElementById('approvedReportsCount').innerText = approved; document.getElementById('totalIncomeAll').innerText = `E${totalIncome.toFixed(2)}`; if (filtered.length === 0) { tbody.innerHTML = '<td colspan="9" style="text-align: center;">No reports found</td>'; return; } let html = ''; filtered.forEach(report => { const statusBadge = report.status === 'approved' ? '<span class="badge badge-success">Approved</span>' : (report.status === 'rejected' ? '<span class="badge badge-danger">Rejected</span>' : '<span class="badge badge-warning">Pending</span>'); const surplusColor = (report.surplus || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'; html += `<tr><td>${moment(report.date).format('MMM D, YYYY')}</td><td>${report.branch === 'eswatini' ? '🇸🇿 Eswatini' : report.branch === 'zambia' ? '🇿🇲 Zambia' : '🇮🇪 Ireland'}</td><td>${escapeHTML(report.userName || report.userEmail)}</td><td style="color: var(--accent-green); font-weight: bold;">E${(report.totalIncome || 0).toFixed(2)}</td><td style="color: var(--accent-red);">E${(report.totalExpense || 0).toFixed(2)}</td><td style="color: ${surplusColor}; font-weight: bold;">E${(report.surplus || 0).toFixed(2)}</td><td>${report.approvedBy ? escapeHTML(report.approvedBy) : '-'}</td><td>${statusBadge}</td><td><button class="btn btn-sm btn-primary" onclick="viewFullReport('${report.id}')"><i class="fas fa-eye"></i></button></td></tr>`; }); tbody.innerHTML = html; } catch (error) { console.error("Error loading reports:", error); tbody.innerHTML = '<td colspan="9" style="text-align: center; color: red;">Error loading reports</td>'; toast("Error loading financial reports", "error"); } };
+        window.loadFinancialReports = async function(){ const tbody = document.getElementById('financialReportsList'); if(!tbody) return; tbody.innerHTML = '<td colspan="9" style="text-align: center;">Loading...<\/td>'; try { const branchFilter = document.getElementById('reportBranchFilter')?.value || 'all'; const statusFilter = document.getElementById('reportStatusFilter')?.value || 'all'; const dateFilter = document.getElementById('reportDateFilter')?.value || ''; let q = query(collection(db, "financialReports"), orderBy("date", "desc")); const snapshot = await getDocs(q); let reports = []; snapshot.forEach(doc => { reports.push({ id: doc.id, ...doc.data() }); }); let filtered = reports; if (branchFilter !== 'all') filtered = filtered.filter(r => r.branch === branchFilter); if (statusFilter !== 'all') filtered = filtered.filter(r => r.status === statusFilter); if (dateFilter) filtered = filtered.filter(r => r.date === dateFilter); const total = filtered.length; const pending = filtered.filter(r => r.status === 'submitted').length; const approved = filtered.filter(r => r.status === 'approved').length; const totalIncome = filtered.reduce((sum, r) => sum + (r.totalIncome || 0), 0); document.getElementById('totalReportsCount').innerText = total; document.getElementById('pendingReportsCount').innerText = pending; document.getElementById('approvedReportsCount').innerText = approved; document.getElementById('totalIncomeAll').innerText = `E${totalIncome.toFixed(2)}`; if (filtered.length === 0) { tbody.innerHTML = '<td colspan="9" style="text-align: center;">No reports found<\/td>'; return; } let html = ''; filtered.forEach(report => { const statusBadge = report.status === 'approved' ? '<span class="badge badge-success">Approved</span>' : (report.status === 'rejected' ? '<span class="badge badge-danger">Rejected</span>' : '<span class="badge badge-warning">Pending</span>'); const surplusColor = (report.surplus || 0) >= 0 ? 'var(--accent-green)' : 'var(--accent-red)'; html += `<tr><td>${moment(report.date).format('MMM D, YYYY')}</td><td>${report.branch === 'eswatini' ? '🇸🇿 Eswatini' : report.branch === 'zambia' ? '🇿🇲 Zambia' : '🇮🇪 Ireland'}</td><td>${escapeHTML(report.userName || report.userEmail)}</td><td style="color: var(--accent-green); font-weight: bold;">E${(report.totalIncome || 0).toFixed(2)}</td><td style="color: var(--accent-red);">E${(report.totalExpense || 0).toFixed(2)}</td><td style="color: ${surplusColor}; font-weight: bold;">E${(report.surplus || 0).toFixed(2)}</td><td>${report.approvedBy ? escapeHTML(report.approvedBy) : '-'}</td><td>${statusBadge}</td><td><button class="btn btn-sm btn-primary" onclick="viewFullReport('${report.id}')"><i class="fas fa-eye"></i></button></td></tr>`; }); tbody.innerHTML = html; } catch (error) { console.error("Error loading reports:", error); tbody.innerHTML = '<td colspan="9" style="text-align: center; color: red;">Error loading reports<\/td>'; toast("Error loading financial reports", "error"); } };
         
         window.viewFullReport = function(reportId) { toast("Report details feature - coming soon", "info"); };
         
         window.exportFinancialReports = function() { toast("Export feature - CSV export ready", "info"); };
+        
+        // Initialize
+        setTimeout(() => {
+            if(!adminUser) {
+                document.getElementById('globalLoader').style.display = 'none';
+            }
+        }, 5000);
     </script>
 </body>
 </html>
