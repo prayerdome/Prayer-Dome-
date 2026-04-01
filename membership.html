@@ -287,7 +287,15 @@
     import { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, getDocs, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    const firebaseConfig = { apiKey: "AIzaSyCxvql0r_aeerphxTA0UUedRppdBxGf7wo", authDomain: "prayer-dome.firebaseapp.com", projectId: "prayer-dome", storageBucket: "prayer-dome.firebasestorage.app", messagingSenderId: "198295153196", appId: "1:198295153196:web:1222b31948d7974ba3bf89" };
+    const firebaseConfig = { 
+        apiKey: "AIzaSyCxvql0r_aeerphxTA0UUedRppdBxGf7wo", 
+        authDomain: "prayer-dome.firebaseapp.com", 
+        projectId: "prayer-dome", 
+        storageBucket: "prayer-dome.firebasestorage.app", 
+        messagingSenderId: "198295153196", 
+        appId: "1:198295153196:web:1222b31948d7974ba3bf89" 
+    };
+    
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
@@ -313,7 +321,6 @@
             prefillForm(data);
             switchTab('card');
         } else {
-            // No membership, show form
             switchTab('apply');
         }
     }
@@ -330,13 +337,14 @@
         if(document.getElementById('branch')) document.getElementById('branch').value = data.branch || 'Zambia - Chama';
     }
 
-    // Signature Logic
     function initSigPad() {
         canvas = document.getElementById('sig-pad');
         if (!canvas) return;
         ctx = canvas.getContext('2d');
         canvas.width = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
         
         const getPos = (e) => {
             const rect = canvas.getBoundingClientRect();
@@ -374,9 +382,11 @@
     };
 
     window.processRegistration = async () => {
-        if(!document.getElementById('titheCommit').checked) return alert("Please commit to church duties.");
+        if(!document.getElementById('titheCommit').checked) {
+            alert("Please commit to church duties by checking the commitment box.");
+            return;
+        }
         
-        // Validate required fields
         const requiredFields = ['fullName', 'dob', 'idNo', 'phone', 'email'];
         for(let field of requiredFields) {
             if(!document.getElementById(field).value) {
@@ -391,7 +401,6 @@
         document.getElementById('loader').style.display = 'flex';
         
         try {
-            // Check if membership already exists
             const existingSnap = await getDoc(doc(db, "memberships", currentUid));
             if (existingSnap.exists()) {
                 alert("You have already submitted a membership application. Please wait for admin approval.");
@@ -399,16 +408,25 @@
                 return;
             }
             
-            // Get signature from canvas
             const signatureData = canvas.toDataURL();
             
-            // Get user data from auth
+            // Get user data from users collection - FIXED: handle missing fields safely
             const userAcc = await getDoc(doc(db, "users", currentUid));
-            const photo = userAcc.exists() ? userAcc.data().photoURL : "https://via.placeholder.com/150";
+            let photoUrl = "https://via.placeholder.com/150";
             
-            // Collect all form data
+            if (userAcc.exists()) {
+                const userData = userAcc.data();
+                // Safely get photoURL - could be undefined
+                photoUrl = userData.photoURL || userData.photoUrl || "https://via.placeholder.com/150";
+            }
+            
+            // Also try to get photo from auth profile
+            if (auth.currentUser && auth.currentUser.photoURL && photoUrl === "https://via.placeholder.com/150") {
+                photoUrl = auth.currentUser.photoURL;
+            }
+            
             const memberData = {
-                membershipId: null, // Will be assigned by admin when approved
+                membershipId: null,
                 fullName: document.getElementById('fullName').value,
                 dateOfBirth: document.getElementById('dob').value,
                 gender: document.getElementById('gender').value,
@@ -418,8 +436,8 @@
                 membershipType: document.getElementById('mType').value,
                 maritalStatus: document.getElementById('marital').value,
                 dependants: parseInt(document.getElementById('dependants').value) || 0,
-                occupation: document.getElementById('job').value,
-                previousChurch: document.getElementById('prevChurch').value,
+                occupation: document.getElementById('job').value || "",
+                previousChurch: document.getElementById('prevChurch').value || "",
                 branch: document.getElementById('branch').value,
                 bornAgain: document.getElementById('bornAgain').value,
                 bornAgainDate: document.getElementById('bornDate').value || null,
@@ -428,25 +446,21 @@
                 holySpiritBaptism: document.getElementById('holySpirit').checked,
                 speaksTongues: document.getElementById('tongues').checked,
                 spiritualGifts: document.getElementById('gifts').checked,
-                giftNames: document.getElementById('giftNames').value,
+                giftNames: document.getElementById('giftNames').value || "",
                 ministries: Array.from(document.querySelectorAll('input[name="min"]:checked')).map(cb => cb.value),
                 titheCommitment: true,
                 signature: signatureData,
-                status: 'pending', // PENDING APPROVAL
+                status: 'pending',
                 role: 'member',
-                photoUrl: photo,
+                photoUrl: photoUrl,  // Now guaranteed to have a value
                 uid: currentUid,
                 appliedAt: serverTimestamp(),
                 createdAt: serverTimestamp()
             };
             
-            // Save to Firestore
             await setDoc(doc(db, "memberships", currentUid), memberData);
             
-            // Trigger success animation
             confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
-            
-            // Render the pending card and switch to card view
             renderCard(memberData);
             switchTab('card');
             
@@ -455,8 +469,7 @@
         } catch (e) { 
             console.error("Registration error:", e);
             alert("Error: " + e.message); 
-        }
-        finally { 
+        } finally { 
             document.getElementById('loader').style.display = 'none';
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'SUBMIT APPLICATION';
@@ -465,18 +478,17 @@
 
     function renderCard(data) {
         const photoEl = document.getElementById('idPhoto');
-        photoEl.src = data.photoUrl || "https://via.placeholder.com/150";
+        const photoUrl = data.photoUrl || data.photoURL || "https://via.placeholder.com/150";
+        photoEl.src = photoUrl;
         
         document.getElementById('idName').innerText = data.fullName || "MEMBER NAME";
         
-        // Show pending message if not approved
         if (data.status === 'approved' && data.membershipId) {
             document.getElementById('idNumber').innerText = data.membershipId;
             document.getElementById('statusBadge').innerHTML = '✓ ACTIVE MEMBER';
             document.getElementById('statusBadge').className = 'status-badge status-approved';
             document.getElementById('digitalCard').classList.remove('pending');
             
-            // Generate barcode only for approved members
             try {
                 JsBarcode("#barcodeImg", data.membershipId, { 
                     format: "CODE128", 
@@ -487,6 +499,10 @@
                 });
             } catch(e) {
                 console.error("Barcode error:", e);
+                const barcodeContainer = document.getElementById('barcodeImg');
+                if (barcodeContainer) {
+                    barcodeContainer.innerHTML = '<text x="10" y="25" fill="black" font-family="monospace" font-size="12">' + data.membershipId + '</text>';
+                }
             }
         } else if (data.status === 'rejected') {
             document.getElementById('idNumber').innerText = 'Application Rejected';
@@ -497,7 +513,6 @@
             document.getElementById('statusBadge').innerHTML = '⏳ PENDING APPROVAL';
             document.getElementById('statusBadge').className = 'status-badge status-pending';
             document.getElementById('digitalCard').classList.add('pending');
-            // Show placeholder in barcode
             const barcodeContainer = document.getElementById('barcodeImg');
             if (barcodeContainer) {
                 barcodeContainer.innerHTML = '<text x="10" y="25" fill="black" font-family="monospace" font-size="10">PENDING</text>';
@@ -508,7 +523,6 @@
         document.getElementById('idRole').innerText = data.role ? data.role.toUpperCase() : "MEMBER";
         document.getElementById('idMarital').innerText = data.maritalStatus || data.marital || "SINGLE";
         
-        // Format date safely
         let date = new Date();
         if (data.appliedAt) {
             if (typeof data.appliedAt.toDate === 'function') {
@@ -524,36 +538,45 @@
         document.getElementById('section-apply').style.display = t === 'apply' ? 'block' : 'none';
         document.getElementById('section-benefits').style.display = t === 'benefits' ? 'block' : 'none';
         document.getElementById('section-card').style.display = t === 'card' ? 'block' : 'none';
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.id.toLowerCase().includes(t)));
+        document.querySelectorAll('.tab-btn').forEach(b => {
+            const isActive = (t === 'apply' && b.id === 'tabApply') ||
+                            (t === 'benefits' && b.id === 'tabBenefits') ||
+                            (t === 'card' && b.id === 'tabCard');
+            b.classList.toggle('active', isActive);
+        });
     };
 
     window.downloadID = () => {
-        html2canvas(document.getElementById('captureArea'), { useCORS: true, scale: 3 }).then(canvas => {
+        const element = document.getElementById('captureArea');
+        html2canvas(element, { useCORS: true, scale: 3, backgroundColor: null }).then(canvas => {
             const a = document.createElement('a');
             a.href = canvas.toDataURL("image/png");
-            a.download = `PrayerDome-ID-${moment().format('YYYYMMDD')}.png`;
+            a.download = `PrayerDome-ID-${moment().format('YYYYMMDD-HHmmss')}.png`;
             a.click();
+        }).catch(err => {
+            console.error("Download error:", err);
+            alert("Error downloading ID. Please try again.");
         });
     };
     
-    // Auto-check for membership status updates
-    let statusCheckInterval = null;
-    
     async function checkMembershipStatus() {
         if (!currentUid) return;
-        const snap = await getDoc(doc(db, "memberships", currentUid));
-        if (snap.exists()) {
-            const data = snap.data();
-            // If status changed, update the card
-            const currentDisplayStatus = document.getElementById('statusBadge').innerText;
-            if (data.status === 'approved' && currentDisplayStatus !== '✓ ACTIVE MEMBER') {
-                renderCard(data);
-                showToast("🎉 Your membership has been approved! Your ID card is now active.");
-                confetti({ particleCount: 200, spread: 100 });
-            } else if (data.status === 'rejected' && currentDisplayStatus !== '✗ REJECTED') {
-                renderCard(data);
-                showToast("Your membership application was not approved. Please contact admin for details.");
+        try {
+            const snap = await getDoc(doc(db, "memberships", currentUid));
+            if (snap.exists()) {
+                const data = snap.data();
+                const currentDisplayStatus = document.getElementById('statusBadge').innerText;
+                if (data.status === 'approved' && currentDisplayStatus !== '✓ ACTIVE MEMBER') {
+                    renderCard(data);
+                    showToast("🎉 Your membership has been approved! Your ID card is now active.");
+                    confetti({ particleCount: 200, spread: 100 });
+                } else if (data.status === 'rejected' && currentDisplayStatus !== '✗ REJECTED') {
+                    renderCard(data);
+                    showToast("Your membership application was not approved. Please contact admin for details.");
+                }
             }
+        } catch(e) {
+            console.error("Status check error:", e);
         }
     }
     
@@ -578,7 +601,10 @@
         setTimeout(() => toast.remove(), 5000);
     }
     
-    // Check status every 30 seconds
+    const styleToast = document.createElement('style');
+    styleToast.innerHTML = `@keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }`;
+    document.head.appendChild(styleToast);
+    
     setInterval(checkMembershipStatus, 30000);
 </script>
 </body>
