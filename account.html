@@ -34,7 +34,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: var(--bg-primary); color: var(--text-main); transition: 0.3s; padding-bottom: 50px; }
 
-        /* Header */
         .auth-header { background: var(--bg-card); padding: 15px 25px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .logo-ring { width: 45px; height: 45px; background: linear-gradient(135deg, var(--accent-green), var(--accent-gold)); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; }
 
@@ -45,53 +44,133 @@
         .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; border-radius: 50px; font-weight: 700; transition: 0.3s; color: var(--text-main); opacity: 0.5; }
         .tab.active { background: var(--bg-card); box-shadow: 0 4px 10px rgba(0,0,0,0.1); opacity: 1; color: var(--accent-green); }
 
-        /* Forms */
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .form-group { margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; position: relative; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 0.85rem; }
         input, select, textarea { width: 100%; padding: 14px 18px; border-radius: 16px; border: 2px solid var(--border); background: var(--bg-primary); color: var(--text-main); outline: none; font-size: 0.95rem; }
         input:focus { border-color: var(--accent-green); }
         .full-width { grid-column: span 2; }
 
+        .password-wrapper { position: relative; }
+        .password-wrapper input { padding-right: 50px; }
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-sub);
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+        }
+
+        .phone-wrapper { display: flex; gap: 10px; }
+        .country-code { width: 100px; flex-shrink: 0; }
+        .phone-number { flex: 1; }
+
         .btn { padding: 14px 28px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; justify-content: center; width: 100%; }
         .btn-primary { background: linear-gradient(135deg, var(--accent-green), var(--accent-green-light)); color: white; }
         .btn-google { background: white; border: 2px solid var(--border); color: var(--text-main); }
         .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-main); }
-        .btn-danger { background: #ef4444; color: white; }
+        .btn-sm { padding: 8px 16px; font-size: 0.8rem; width: auto; }
 
-        /* Profile */
-        .profile-hero { text-align: center; margin-bottom: 30px; position: relative; }
-        .avatar-frame { width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--accent-gold); padding: 4px; margin: 0 auto 15px; position: relative; cursor: pointer; transition: 0.3s; }
-        .avatar-frame:hover { transform: scale(1.02); border-color: var(--accent-green); }
+        .verification-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .verification-badge.verified { background: rgba(34,197,94,0.2); color: var(--accent-green); }
+        .verification-badge.unverified { background: rgba(239,68,68,0.1); color: #ef4444; }
+        .verification-badge.unverified:hover { background: rgba(239,68,68,0.2); transform: scale(1.02); }
+
+        .verify-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .verify-modal-content {
+            background: var(--bg-card);
+            border-radius: 32px;
+            padding: 35px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            animation: modalPop 0.3s ease;
+        }
+        @keyframes modalPop {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .verify-code-inputs {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 25px 0;
+        }
+        .verify-code-inputs input {
+            width: 55px;
+            height: 55px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 0;
+        }
+        .spam-tip {
+            background: rgba(212,175,55,0.1);
+            border-left: 4px solid var(--accent-gold);
+            padding: 12px 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-size: 0.8rem;
+            text-align: left;
+        }
+        .resend-timer { color: var(--text-sub); font-size: 0.8rem; margin-top: 15px; }
+        .resend-link { color: var(--accent-green); cursor: pointer; text-decoration: underline; }
+        .resend-link.disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .profile-hero { text-align: center; margin-bottom: 30px; }
+        .avatar-frame { width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--accent-gold); margin: 0 auto 15px; position: relative; cursor: pointer; }
         .avatar-frame img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         .camera-overlay { position: absolute; bottom: 10px; right: 10px; background: var(--accent-green); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; }
         
-        .membership-badge { background: linear-gradient(135deg, var(--accent-green), #064e3b); color: white; padding: 12px 24px; border-radius: 30px; margin: 15px auto; font-weight: 800; display: inline-block; font-family: monospace; letter-spacing: 1px; font-size: 0.9rem; }
-
+        .membership-badge { background: linear-gradient(135deg, var(--accent-green), #064e3b); color: white; padding: 12px 24px; border-radius: 30px; margin: 15px auto; font-weight: 800; display: inline-block; }
         .profile-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 25px 0; }
-        .stat-item { background: var(--bg-primary); padding: 15px 10px; border-radius: 20px; text-align: center; border: 1px solid var(--border); transition: 0.3s; }
-        .stat-item:hover { transform: translateY(-2px); border-color: var(--accent-green); }
+        .stat-item { background: var(--bg-primary); padding: 15px 10px; border-radius: 20px; text-align: center; border: 1px solid var(--border); }
         .stat-number { font-size: 1.5rem; font-weight: 800; color: var(--accent-green); }
         .stat-label { font-size: 0.7rem; color: var(--text-sub); margin-top: 4px; }
-
-        /* Spiritual Growth */
         .spiritual-card { background: var(--bg-primary); border-radius: 24px; padding: 20px; margin: 20px 0; border: 1px solid var(--border); }
-        .spiritual-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .progress-bar { height: 8px; background: var(--border); border-radius: 10px; overflow: hidden; margin: 10px 0; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-green), var(--accent-gold)); border-radius: 10px; transition: width 0.5s ease; }
-
         .ministry-tag { display: inline-block; background: rgba(34,197,94,0.1); color: var(--accent-green); padding: 6px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; margin: 4px; }
-
         .toast-box { position: fixed; top: 20px; right: 20px; z-index: 2000; }
-        .toast { background: var(--bg-card); padding: 15px 25px; border-radius: 40px; margin-bottom: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-left: 5px solid var(--accent-green); animation: slideIn 0.3s ease; display: flex; align-items: center; gap: 12px; font-weight: 600; }
+        .toast { background: var(--bg-card); padding: 15px 25px; border-radius: 40px; margin-bottom: 10px; border-left: 5px solid var(--accent-green); animation: slideIn 0.3s ease; display: flex; align-items: center; gap: 12px; font-weight: 600; }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
-
         .age-warning { color: #ef4444; font-size: 0.75rem; font-weight: bold; display: none; }
+        .recaptcha-container { margin: 15px 0; }
 
         @media (max-width: 600px) {
             .form-grid { grid-template-columns: 1fr; }
             .full-width { grid-column: span 1; }
             .profile-stat-grid { grid-template-columns: repeat(2, 1fr); }
+            .verify-code-inputs input { width: 45px; height: 45px; font-size: 1.2rem; }
+            .phone-wrapper { flex-direction: column; }
+            .country-code { width: 100%; }
         }
     </style>
 </head>
@@ -108,7 +187,6 @@
     </header>
 
     <div class="container">
-        
         <div id="authTabs" class="tabs">
             <div class="tab active" onclick="switchTab('login')">SIGN IN</div>
             <div class="tab" onclick="switchTab('register')">REGISTER</div>
@@ -118,29 +196,27 @@
         <div id="loginForm" class="auth-card">
             <h2 style="margin-bottom: 30px; text-align: center;">Welcome Back</h2>
             <form onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" id="lEmail" placeholder="your@email.com" required>
-                </div>
-                <div class="form-group">
+                <div class="form-group"><label>Email Address</label><input type="email" id="lEmail" required></div>
+                <div class="form-group password-wrapper">
                     <label>Password</label>
-                    <input type="password" id="lPass" placeholder="••••••••" required>
+                    <input type="password" id="lPass" required>
+                    <button type="button" class="toggle-password" onclick="togglePassword('lPass', this)"><i class="fas fa-eye"></i></button>
                 </div>
                 <button type="submit" class="btn btn-primary">Sign In <i class="fas fa-arrow-right"></i></button>
             </form>
-            <div style="text-align: center; margin: 25px 0; color: var(--text-sub); font-size: 0.8rem; font-weight: 700;">OR CONTINUE WITH</div>
-            <button class="btn btn-google" onclick="handleGoogle()">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="20"> Google Account
-            </button>
+            <div style="text-align: center; margin: 20px 0;">
+                <a href="#" onclick="resetPassword()" style="color: var(--accent-green); font-size: 0.85rem;">Forgot Password?</a>
+            </div>
+            <div style="text-align: center; margin: 25px 0; color: var(--text-sub); font-size: 0.8rem;">OR CONTINUE WITH</div>
+            <button class="btn btn-google" onclick="handleGoogle()"><i class="fab fa-google"></i> Sign in with Google</button>
         </div>
 
         <!-- REGISTRATION SCREEN -->
         <div id="registerForm" class="auth-card" style="display: none;">
             <h2 style="margin-bottom: 25px; text-align: center;">Join the Family</h2>
-            
             <div style="text-align: center; margin-bottom: 20px;">
                 <div class="avatar-frame"><img id="regPreview" src="https://via.placeholder.com/150"></div>
-                <button onclick="uploadPhoto('register')" class="btn btn-outline" style="width: auto; padding: 8px 20px; margin-top: 10px;">Upload Photo</button>
+                <button onclick="uploadPhoto('register')" class="btn btn-outline" style="width: auto; padding: 8px 20px;">Upload Photo</button>
                 <input type="hidden" id="uploadedPhoto">
             </div>
 
@@ -148,206 +224,167 @@
                 <div class="form-grid">
                     <div class="form-group full-width"><label>Full Name *</label><input type="text" id="rName" required></div>
                     <div class="form-group"><label>Email Address *</label><input type="email" id="rEmail" required></div>
-                    <div class="form-group"><label>Phone Number *</label><input type="tel" id="rPhone" required></div>
-                    
                     <div class="form-group">
-                        <label>Date of Birth *</label>
-                        <input type="date" id="rDob" onchange="checkAge(this.value)" required>
-                        <p id="ageWarn" class="age-warning">⚠️ Must be 13+ years old to register.</p>
+                        <label>Phone Number *</label>
+                        <div class="phone-wrapper">
+                            <select id="rCountryCode" class="country-code">
+                                <option value="+1">+1 (USA)</option>
+                                <option value="+44">+44 (UK)</option>
+                                <option value="+27">+27 (South Africa)</option>
+                                <option value="+260">+260 (Zambia)</option>
+                                <option value="+268" selected>+268 (Eswatini)</option>
+                                <option value="+353">+353 (Ireland)</option>
+                                <option value="+254">+254 (Kenya)</option>
+                                <option value="+234">+234 (Nigeria)</option>
+                                <option value="+233">+233 (Ghana)</option>
+                                <option value="+263">+263 (Zimbabwe)</option>
+                                <option value="+61">+61 (Australia)</option>
+                                <option value="+91">+91 (India)</option>
+                            </select>
+                            <input type="tel" id="rPhone" class="phone-number" placeholder="71234567" required>
+                        </div>
                     </div>
-
-                    <div class="form-group">
-                        <label>Gender</label>
-                        <select id="rGender">
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Prefer not to say">Prefer not to say</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Your Branch</label>
-                        <select id="rBranch">
-                            <option value="Chama, Zambia">🇿🇲 Zambia - Chama (HQ)</option>
-                            <option value="Manzini, Eswatini">🇸🇿 Eswatini - Manzini</option>
-                            <option value="Cork, Ireland">🇮🇪 Ireland - Cork</option>
-                            <option value="Online Global">🌐 Online Global</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Ministry Interest</label>
-                        <select id="rMinistry">
-                            <option value="Worship">🎵 Worship Team</option>
-                            <option value="Intercessor">🙏 Intercessor</option>
-                            <option value="Usher">🚪 Usher</option>
-                            <option value="Outreach">🤝 Outreach</option>
-                            <option value="Children">👶 Children's Ministry</option>
-                            <option value="Technical">📹 Technical/Media</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group"><label>Password *</label><input type="password" id="rPass" minlength="6" required></div>
-                    <div class="form-group"><label>Confirm Password *</label><input type="password" id="rConfirm" required></div>
+                    <div class="form-group"><label>Date of Birth *</label><input type="date" id="rDob" onchange="checkAge(this.value)" required><p id="ageWarn" class="age-warning">⚠️ Must be 13+ years old</p></div>
+                    <div class="form-group"><label>Gender</label><select id="rGender"><option>Male</option><option>Female</option><option>Prefer not to say</option></select></div>
+                    <div class="form-group"><label>Your Branch</label><select id="rBranch"><option>Chama, Zambia</option><option>Manzini, Eswatini</option><option>Cork, Ireland</option><option>Online Global</option></select></div>
+                    <div class="form-group"><label>Ministry Interest</label><select id="rMinistry"><option>Worship</option><option>Intercessor</option><option>Usher</option><option>Outreach</option><option>Children</option><option>Technical</option></select></div>
+                    <div class="form-group password-wrapper"><label>Password *</label><input type="password" id="rPass" minlength="6" required><button type="button" class="toggle-password" onclick="togglePassword('rPass', this)"><i class="fas fa-eye"></i></button></div>
+                    <div class="form-group password-wrapper"><label>Confirm Password *</label><input type="password" id="rConfirm" required><button type="button" class="toggle-password" onclick="togglePassword('rConfirm', this)"><i class="fas fa-eye"></i></button></div>
                 </div>
-                
-                <div class="form-group full-width">
-                    <label>How did you hear about us?</label>
-                    <select id="rReferral">
-                        <option value="Social Media">Social Media</option>
-                        <option value="Friend/Family">Friend/Family</option>
-                        <option value="Radio/TV">Radio/TV</option>
-                        <option value="Event">Church Event</option>
-                        <option value="Online Search">Online Search</option>
-                    </select>
-                </div>
-
+                <div class="form-group full-width"><label>How did you hear about us?</label><select id="rReferral"><option>Social Media</option><option>Friend/Family</option><option>Radio/TV</option><option>Church Event</option><option>Online Search</option></select></div>
                 <button type="submit" id="regBtn" class="btn btn-primary">Register Membership <i class="fas fa-user-plus"></i></button>
             </form>
+            <div style="text-align: center; margin: 25px 0; color: var(--text-sub);">OR REGISTER WITH</div>
+            <button class="btn btn-google" onclick="handleGoogle()"><i class="fab fa-google"></i> Continue with Google</button>
         </div>
 
-        <!-- PROFILE MANAGEMENT SCREEN (Enhanced) -->
+        <!-- PROFILE SECTION -->
         <div id="profileSection" class="auth-card" style="display: none;">
-            
-            <!-- VIEW MODE -->
             <div id="profileView">
                 <div class="profile-hero">
                     <div class="avatar-frame" onclick="changeProfilePhoto()">
                         <img id="pPhoto" src="https://via.placeholder.com/150">
-                        <div class="camera-overlay"><i class="fas fa-camera" style="font-size: 14px;"></i></div>
+                        <div class="camera-overlay"><i class="fas fa-camera"></i></div>
                     </div>
-                    <h2 id="pNameDisplay" style="font-size: 1.5rem;">User Name</h2>
-                    <p id="pRoleDisplay" style="color: var(--accent-gold); font-weight: 800; font-size: 0.85rem; margin-top: 5px;"></p>
-                    
-                    <div class="membership-badge">
-                        <i class="fas fa-id-card"></i> <span id="pIdDisplay">Not Assigned</span>
+                    <h2 id="pNameDisplay">User Name</h2>
+                    <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                        <p id="pRoleDisplay" style="color: var(--accent-gold); font-weight: 800;"></p>
+                        <span id="emailVerifiedBadge" class="verification-badge unverified" onclick="verifyEmail()"><i class="fas fa-envelope"></i> <span id="emailStatusText">Verify Email</span></span>
+                        <span id="phoneVerifiedBadge" class="verification-badge unverified" onclick="verifyPhone()"><i class="fas fa-phone"></i> <span id="phoneStatusText">Verify Phone</span></span>
                     </div>
+                    <div class="membership-badge"><i class="fas fa-id-card"></i> <span id="pIdDisplay">Not Assigned</span></div>
                 </div>
-
-                <!-- Stats Grid -->
                 <div class="profile-stat-grid">
                     <div class="stat-item"><div class="stat-number" id="pPrayers">0</div><div class="stat-label">PRAYERS</div></div>
                     <div class="stat-item"><div class="stat-number" id="pDaysActive">0</div><div class="stat-label">DAYS ACTIVE</div></div>
                     <div class="stat-item"><div class="stat-number" id="pWallet">E0</div><div class="stat-label">WALLET</div></div>
                     <div class="stat-item"><div class="stat-number" id="pLevel">1</div><div class="stat-label">QUIZ LEVEL</div></div>
                 </div>
-
-                <!-- Spiritual Growth -->
                 <div class="spiritual-card">
-                    <div class="spiritual-header">
-                        <strong><i class="fas fa-seedling" style="color: var(--accent-green);"></i> Spiritual Growth</strong>
-                        <span id="spiritualLevel">Seeker</span>
-                    </div>
+                    <div class="spiritual-header"><strong><i class="fas fa-seedling"></i> Spiritual Growth</strong><span id="spiritualLevel">Seeker</span></div>
                     <div class="progress-bar"><div class="progress-fill" id="spiritualProgress" style="width: 0%"></div></div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-sub); margin-top: 8px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.7rem; margin-top: 8px;">
                         <span>🌱 Seeker</span><span>📖 Disciple</span><span>🔥 Warrior</span><span>👑 Leader</span>
                     </div>
                 </div>
-
-                <!-- Bio & Ministry -->
-                <div style="background: var(--bg-primary); border-radius: 20px; padding: 20px; margin: 15px 0;">
-                    <p style="font-size: 0.7rem; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin-bottom: 8px;"><i class="fas fa-quote-left"></i> SPIRITUAL BIO</p>
-                    <p id="pBioDisplay" style="font-size: 0.9rem; line-height: 1.6;">No bio added yet. Click edit to share your faith journey.</p>
-                </div>
-
-                <div style="background: var(--bg-primary); border-radius: 20px; padding: 20px; margin: 15px 0;">
-                    <p style="font-size: 0.7rem; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin-bottom: 8px;"><i class="fas fa-hands-helping"></i> MINISTRIES / GIFTS</p>
-                    <div id="pMinistriesDisplay">Not specified</div>
-                </div>
-
-                <div style="background: var(--bg-primary); border-radius: 20px; padding: 20px; margin: 15px 0;">
-                    <p style="font-size: 0.7rem; font-weight: 800; color: var(--text-sub); text-transform: uppercase; margin-bottom: 8px;"><i class="fas fa-heart"></i> INTERESTS & PASSIONS</p>
-                    <p id="pInterestsDisplay">No interests added yet.</p>
-                </div>
-
-                <div style="display: flex; gap: 12px; margin-top: 20px;">
-                    <button onclick="toggleEdit(true)" class="btn btn-primary" style="flex: 2;"><i class="fas fa-pen"></i> Edit Profile</button>
-                    <button onclick="handleLogout()" class="btn btn-outline" style="flex: 1; color: #ef4444;"><i class="fas fa-sign-out-alt"></i></button>
+                <div style="background: var(--bg-primary); border-radius: 20px; padding: 20px; margin: 15px 0;"><p id="pBioDisplay">No bio added yet.</p></div>
+                <div style="background: var(--bg-primary); border-radius: 20px; padding: 20px; margin: 15px 0;"><div id="pMinistriesDisplay">Not specified</div></div>
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="toggleEdit(true)" class="btn btn-primary" style="flex: 2;">Edit Profile</button>
+                    <button onclick="handleLogout()" class="btn btn-outline" style="flex: 1; color: #ef4444;">Logout</button>
                 </div>
             </div>
-
-            <!-- EDIT MODE (Enhanced) -->
             <div id="profileEdit" style="display: none;">
-                <h3 style="margin-bottom: 20px; color: var(--accent-green);"><i class="fas fa-user-edit"></i> Edit Your Profile</h3>
-                
+                <h3 style="margin-bottom: 20px;">Edit Profile</h3>
                 <div class="form-group">
                     <label>Profile Photo</label>
-                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                        <img id="editPhotoPreview" src="https://via.placeholder.com/80" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-gold);">
-                        <button onclick="changeProfilePhoto()" class="btn btn-outline" style="width: auto; padding: 8px 20px;"><i class="fas fa-camera"></i> Change Photo</button>
+                    <div style="display: flex; gap: 15px;">
+                        <img id="editPhotoPreview" src="https://via.placeholder.com/80" style="width: 80px; height: 80px; border-radius: 50%;">
+                        <button onclick="changeProfilePhoto()" class="btn btn-outline" style="width: auto;">Change Photo</button>
                     </div>
                 </div>
-
                 <div class="form-grid">
                     <div class="form-group"><label>Full Name</label><input type="text" id="eName"></div>
-                    <div class="form-group"><label>Phone Number</label><input type="tel" id="ePhone"></div>
-                    <div class="form-group"><label>Gender</label>
-                        <select id="eGender">
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Prefer not to say">Prefer not to say</option>
-                        </select>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <div class="phone-wrapper">
+                            <select id="eCountryCode" class="country-code">
+                                <option value="+1">+1 (USA)</option>
+                                <option value="+44">+44 (UK)</option>
+                                <option value="+27">+27 (South Africa)</option>
+                                <option value="+260">+260 (Zambia)</option>
+                                <option value="+268">+268 (Eswatini)</option>
+                                <option value="+353">+353 (Ireland)</option>
+                            </select>
+                            <input type="tel" id="ePhone" class="phone-number" placeholder="71234567">
+                        </div>
                     </div>
-                    <div class="form-group"><label>Your Branch</label>
-                        <select id="eBranch">
-                            <option value="Chama, Zambia">🇿🇲 Zambia - Chama (HQ)</option>
-                            <option value="Manzini, Eswatini">🇸🇿 Eswatini - Manzini</option>
-                            <option value="Cork, Ireland">🇮🇪 Ireland - Cork</option>
-                            <option value="Online Global">🌐 Online Global</option>
-                        </select>
-                    </div>
+                    <div class="form-group"><label>Gender</label><select id="eGender"><option>Male</option><option>Female</option></select></div>
+                    <div class="form-group"><label>Branch</label><select id="eBranch"><option>Chama, Zambia</option><option>Manzini, Eswatini</option><option>Cork, Ireland</option><option>Online Global</option></select></div>
                 </div>
-
-                <div class="form-group">
-                    <label>Spiritual Bio / Testimony</label>
-                    <textarea id="eBio" rows="3" placeholder="Share your faith journey, when you gave your life to Christ, etc..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Ministry Involvement (Select all that apply)</label>
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px;" id="ministryCheckboxes">
-                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Worship"> 🎵 Worship</label>
-                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Intercessor"> 🙏 Intercessor</label>
-                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Usher"> 🚪 Usher</label>
-                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Outreach"> 🤝 Outreach</label>
-                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Children"> 👶 Children's Ministry</label>
-                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Technical"> 📹 Technical/Media</label>
-                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Prayer Team"> 📢 Prayer Team</label>
-                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Counseling"> 💬 Counseling</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Spiritual Gifts</label>
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px;" id="giftsCheckboxes">
-                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Teaching"> 📖 Teaching</label>
-                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Prophetic"> 🔥 Prophetic</label>
-                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Healing"> 🩺 Healing</label>
-                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Leadership"> 👑 Leadership</label>
-                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Mercy"> 🤗 Mercy</label>
-                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Evangelism"> 📢 Evangelism</label>
-                        <label style="display: flex; align-items: center; gap: 6px;"><input type="checkbox" value="Administration"> 📊 Administration</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Interests / Passions</label>
-                    <input type="text" id="eInterests" placeholder="e.g., Worship, Bible Study, Outreach, Music">
-                </div>
-
-                <div style="display: flex; gap: 12px; margin-top: 25px;">
-                    <button onclick="saveProfile()" class="btn btn-primary" style="flex: 2;"><i class="fas fa-save"></i> Save Changes</button>
+                <div class="form-group"><label>Spiritual Bio</label><textarea id="eBio" rows="3" placeholder="Share your faith journey..."></textarea></div>
+                <div class="form-group"><label>Interests</label><input type="text" id="eInterests" placeholder="Worship, Bible Study, Outreach..."></div>
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="saveProfile()" class="btn btn-primary" style="flex: 2;">Save Changes</button>
                     <button onclick="toggleEdit(false)" class="btn btn-outline" style="flex: 1;">Cancel</button>
                 </div>
             </div>
-
         </div>
-
     </div>
+
+    <!-- Email Verification Modal -->
+    <div id="emailVerifyModal" class="verify-modal">
+        <div class="verify-modal-content">
+            <i class="fas fa-envelope" style="font-size: 3rem; color: var(--accent-green);"></i>
+            <h2>Verify Your Email</h2>
+            <p>We've sent a verification email to <strong id="verifyEmailAddress"></strong></p>
+            <div class="spam-tip">
+                <i class="fas fa-envelope-open-text"></i>
+                <strong>📧 Didn't receive the email?</strong><br>
+                • Check your <strong>Spam/Junk folder</strong><br>
+                • Add <strong>noreply@prayerdome.net</strong> to your contacts<br>
+                • Wait a few minutes and check again
+            </div>
+            <button class="btn btn-primary" onclick="sendEmailVerificationCode()">Resend Verification Email</button>
+        </div>
+    </div>
+
+    <!-- Phone Verification Modal -->
+    <div id="phoneVerifyModal" class="verify-modal">
+        <div class="verify-modal-content">
+            <i class="fas fa-phone-alt" style="font-size: 3rem; color: var(--accent-green);"></i>
+            <h2>Verify Your Phone Number</h2>
+            <p>Enter the 6-digit code sent to <strong id="verifyPhoneNumber"></strong></p>
+            <div class="spam-tip">
+                <i class="fas fa-comment-dots"></i>
+                <strong>📱 Didn't receive the SMS?</strong><br>
+                • Check your network signal<br>
+                • Ensure the number is correct<br>
+                • Wait a minute and try again<br>
+                • Click "Resend Code" below
+            </div>
+            <div class="verify-code-inputs">
+                <input type="text" maxlength="1" class="phone-code-input" data-index="0" onkeyup="moveToNextPhone(this, 0)">
+                <input type="text" maxlength="1" class="phone-code-input" data-index="1" onkeyup="moveToNextPhone(this, 1)">
+                <input type="text" maxlength="1" class="phone-code-input" data-index="2" onkeyup="moveToNextPhone(this, 2)">
+                <input type="text" maxlength="1" class="phone-code-input" data-index="3" onkeyup="moveToNextPhone(this, 3)">
+                <input type="text" maxlength="1" class="phone-code-input" data-index="4" onkeyup="moveToNextPhone(this, 4)">
+                <input type="text" maxlength="1" class="phone-code-input" data-index="5" onkeyup="moveToNextPhone(this, 5)">
+            </div>
+            <button class="btn btn-primary" onclick="confirmPhoneCode()">Verify</button>
+            <div class="resend-timer">
+                <span id="phoneResendTimer"></span>
+                <span id="phoneResendLink" class="resend-link" onclick="resendPhoneCode()">Resend Code</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden reCAPTCHA container -->
+    <div id="recaptcha-container" style="display: none;"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup, sendEmailVerification, sendPasswordResetEmail, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -364,9 +401,380 @@
         const db = getFirestore(app);
         const googleProvider = new GoogleAuthProvider();
 
-        let currentPhotoUrl = "";
+        let currentUserData = null;
+        let currentPhoneVerificationId = null;
+        let currentPhoneNumber = null;
+        let phoneTimerSeconds = 0;
+        let phoneResendTimer = null;
 
-        // --- AUTH OBSERVER ---
+        // Helper Functions
+        window.showToast = (msg, type) => {
+            const container = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = `toast`;
+            if(type === 'error') t.style.borderLeftColor = '#ef4444';
+            t.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${msg}`;
+            container.appendChild(t);
+            setTimeout(() => t.remove(), 4000);
+        };
+
+        window.togglePassword = (inputId, button) => {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                button.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                input.type = "password";
+                button.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        };
+
+        window.moveToNextPhone = (input, index) => {
+            if (input.value.length === 1) {
+                const next = document.querySelector(`#phoneVerifyModal .phone-code-input[data-index="${index + 1}"]`);
+                if (next) next.focus();
+            }
+        };
+
+        function startPhoneTimer() {
+            phoneTimerSeconds = 60;
+            const timerSpan = document.getElementById('phoneResendTimer');
+            const resendLink = document.getElementById('phoneResendLink');
+            
+            if (phoneResendTimer) clearInterval(phoneResendTimer);
+            
+            phoneResendTimer = setInterval(() => {
+                if (phoneTimerSeconds <= 0) {
+                    clearInterval(phoneResendTimer);
+                    if (timerSpan) timerSpan.innerHTML = '';
+                    if (resendLink) {
+                        resendLink.classList.remove('disabled');
+                        resendLink.style.pointerEvents = 'auto';
+                    }
+                } else {
+                    phoneTimerSeconds--;
+                    if (timerSpan) timerSpan.innerHTML = `Resend in ${phoneTimerSeconds}s `;
+                    if (resendLink) {
+                        resendLink.classList.add('disabled');
+                        resendLink.style.pointerEvents = 'none';
+                    }
+                }
+            }, 1000);
+        }
+        
+        // EMAIL VERIFICATION
+        window.verifyEmail = async () => {
+            if (!auth.currentUser) return showToast("Please login first", "error");
+            try {
+                await sendEmailVerification(auth.currentUser);
+                document.getElementById('verifyEmailAddress').innerText = auth.currentUser.email;
+                document.getElementById('emailVerifyModal').style.display = 'flex';
+                showToast("Verification email sent! Check your spam folder.", "success");
+            } catch (e) {
+                showToast(e.message, "error");
+            }
+        };
+
+        window.sendEmailVerificationCode = async () => {
+            try {
+                await sendEmailVerification(auth.currentUser);
+                showToast("Verification email resent! Check spam folder.", "success");
+            } catch (e) {
+                showToast(e.message, "error");
+            }
+        };
+
+        // PHONE VERIFICATION
+        window.verifyPhone = async () => {
+            if (!auth.currentUser) return showToast("Please login first", "error");
+            
+            const countryCode = document.getElementById('eCountryCode')?.value || '+268';
+            const phoneNum = document.getElementById('ePhone')?.value;
+            
+            if (!phoneNum) {
+                showToast("Please add your phone number in profile first", "error");
+                return;
+            }
+            
+            currentPhoneNumber = `${countryCode}${phoneNum}`;
+            document.getElementById('verifyPhoneNumber').innerText = currentPhoneNumber;
+            document.getElementById('phoneVerifyModal').style.display = 'flex';
+            
+            // Setup reCAPTCHA
+            if (!window.recaptchaVerifier) {
+                window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+                    'size': 'invisible',
+                    'callback': () => console.log("reCAPTCHA resolved")
+                });
+            }
+            
+            try {
+                const appVerifier = window.recaptchaVerifier;
+                const confirmationResult = await signInWithPhoneNumber(auth, currentPhoneNumber, appVerifier);
+                currentPhoneVerificationId = confirmationResult;
+                showToast("Verification code sent to your phone!", "success");
+                startPhoneTimer();
+            } catch (e) {
+                console.error("Phone verification error:", e);
+                if (e.code === 'auth/too-many-requests') {
+                    showToast("Too many requests. Please try again later.", "error");
+                } else if (e.code === 'auth/invalid-phone-number') {
+                    showToast("Invalid phone number format. Please include country code.", "error");
+                } else {
+                    showToast("Error: " + e.message, "error");
+                }
+                document.getElementById('phoneVerifyModal').style.display = 'none';
+            }
+        };
+
+        window.confirmPhoneCode = async () => {
+            const inputs = document.querySelectorAll('#phoneVerifyModal .phone-code-input');
+            let code = '';
+            inputs.forEach(input => code += input.value);
+            
+            if (code.length !== 6) {
+                showToast("Please enter the 6-digit code", "error");
+                return;
+            }
+            
+            try {
+                const result = await currentPhoneVerificationId.confirm(code);
+                await updateDoc(doc(db, "users", auth.currentUser.uid), {
+                    phoneVerified: true,
+                    phoneVerifiedAt: serverTimestamp(),
+                    phone: currentPhoneNumber
+                });
+                document.getElementById('phoneVerifyModal').style.display = 'none';
+                updateVerificationStatus();
+                showToast("✅ Phone number verified successfully!", "success");
+                confetti({ particleCount: 100, spread: 70 });
+            } catch (e) {
+                showToast("Invalid verification code", "error");
+            }
+        };
+
+        window.resendPhoneCode = async () => {
+            if (phoneTimerSeconds > 0) {
+                showToast(`Please wait ${phoneTimerSeconds} seconds before resending`, "error");
+                return;
+            }
+            
+            try {
+                const appVerifier = window.recaptchaVerifier;
+                const confirmationResult = await signInWithPhoneNumber(auth, currentPhoneNumber, appVerifier);
+                currentPhoneVerificationId = confirmationResult;
+                showToast("New verification code sent!", "success");
+                startPhoneTimer();
+            } catch (e) {
+                showToast("Error: " + e.message, "error");
+            }
+        };
+
+        function updateVerificationStatus() {
+            if (!currentUserData || !auth.currentUser) return;
+            
+            const emailBadge = document.getElementById('emailVerifiedBadge');
+            const emailStatus = document.getElementById('emailStatusText');
+            const phoneBadge = document.getElementById('phoneVerifiedBadge');
+            const phoneStatus = document.getElementById('phoneStatusText');
+            
+            // Email verification from Firebase Auth
+            if (auth.currentUser.emailVerified) {
+                emailBadge.className = 'verification-badge verified';
+                emailStatus.innerText = 'Verified';
+                // Update Firestore
+                updateDoc(doc(db, "users", auth.currentUser.uid), { emailVerified: true }).catch(() => {});
+            } else {
+                emailBadge.className = 'verification-badge unverified';
+                emailStatus.innerText = 'Verify Email';
+            }
+            
+            if (currentUserData.phoneVerified) {
+                phoneBadge.className = 'verification-badge verified';
+                phoneStatus.innerText = 'Verified';
+            } else {
+                phoneBadge.className = 'verification-badge unverified';
+                phoneStatus.innerText = 'Verify Phone';
+            }
+        }
+
+        // Password Reset
+        window.resetPassword = async () => {
+            const email = prompt("Enter your email address to reset password:");
+            if (!email) return;
+            try {
+                await sendPasswordResetEmail(auth, email);
+                showToast("Password reset email sent! Check your spam folder.", "success");
+            } catch (e) {
+                showToast(e.message, "error");
+            }
+        };
+
+        // Google Login
+        window.handleGoogle = async () => {
+            try {
+                const res = await signInWithPopup(auth, googleProvider);
+                const userDoc = await getDoc(doc(db, "users", res.user.uid));
+                if (!userDoc.exists()) {
+                    await setDoc(doc(db, "users", res.user.uid), {
+                        fullName: res.user.displayName,
+                        email: res.user.email,
+                        photoURL: res.user.photoURL,
+                        emailVerified: res.user.emailVerified,
+                        phoneVerified: false,
+                        createdAt: serverTimestamp()
+                    });
+                }
+                showToast("Signed in with Google!", "success");
+            } catch (e) { showToast(e.message, "error"); }
+        };
+
+        // Register
+        window.handleRegister = async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('rName').value;
+            const email = document.getElementById('rEmail').value;
+            const pass = document.getElementById('rPass').value;
+            const confirm = document.getElementById('rConfirm').value;
+            const countryCode = document.getElementById('rCountryCode').value;
+            const phoneNum = document.getElementById('rPhone').value;
+            const fullPhone = `${countryCode}${phoneNum}`;
+            
+            if(pass !== confirm) return showToast("Passwords don't match", "error");
+            
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                await updateProfile(cred.user, { displayName: name });
+                await setDoc(doc(db, "users", cred.user.uid), {
+                    fullName: name,
+                    email: email,
+                    phone: fullPhone,
+                    gender: document.getElementById('rGender').value,
+                    branch: document.getElementById('rBranch').value,
+                    ministry: document.getElementById('rMinistry').value,
+                    referral: document.getElementById('rReferral').value,
+                    emailVerified: false,
+                    phoneVerified: false,
+                    prayerCount: 0,
+                    walletBalance: 0,
+                    quizLevel: 1,
+                    createdAt: serverTimestamp()
+                });
+                await sendEmailVerification(cred.user);
+                showToast("Registration successful! Please verify your email. Check spam folder!", "success");
+                confetti({ particleCount: 150, spread: 70 });
+            } catch (e) { showToast(e.message, "error"); }
+        };
+
+        // Login
+        window.handleLogin = async (e) => {
+            e.preventDefault();
+            try {
+                await signInWithEmailAndPassword(auth, document.getElementById('lEmail').value, document.getElementById('lPass').value);
+                showToast("Welcome back!", "success");
+            } catch (e) { showToast("Invalid Credentials", "error"); }
+        };
+
+        // Save Profile
+        window.saveProfile = async () => {
+            const countryCode = document.getElementById('eCountryCode').value;
+            const phoneNum = document.getElementById('ePhone').value;
+            const fullPhone = `${countryCode}${phoneNum}`;
+            
+            const updates = {
+                fullName: document.getElementById('eName').value,
+                phone: fullPhone,
+                gender: document.getElementById('eGender').value,
+                branch: document.getElementById('eBranch').value,
+                bio: document.getElementById('eBio').value,
+                interests: document.getElementById('eInterests').value,
+                updatedAt: serverTimestamp()
+            };
+            try {
+                await updateDoc(doc(db, "users", auth.currentUser.uid), updates);
+                await updateProfile(auth.currentUser, { displayName: updates.fullName });
+                showToast("Profile updated!", "success");
+                toggleEdit(false);
+                await loadProfileData(auth.currentUser);
+            } catch (e) { showToast(e.message, "error"); }
+        };
+
+        // Load Profile Data
+        async function loadProfileData(user) {
+            const userSnap = await getDoc(doc(db, "users", user.uid));
+            const memberSnap = await getDoc(doc(db, "memberships", user.uid));
+
+            if (userSnap.exists()) {
+                currentUserData = userSnap.data();
+                const data = currentUserData;
+                document.getElementById('pNameDisplay').innerText = data.fullName;
+                document.getElementById('pRoleDisplay').innerText = data.ministry?.toUpperCase() || "MEMBER";
+                document.getElementById('pPhoto').src = data.photoURL || "https://via.placeholder.com/150";
+                document.getElementById('pPrayers').innerText = data.prayerCount || 0;
+                document.getElementById('pWallet').innerText = "E" + (data.walletBalance || 0);
+                document.getElementById('pLevel').innerText = data.quizLevel || 1;
+                document.getElementById('pBioDisplay').innerHTML = data.bio || "No bio added yet.";
+                document.getElementById('pMinistriesDisplay').innerHTML = (data.ministries || []).length ? (data.ministries || []).map(m => `<span class="ministry-tag">${m}</span>`).join('') : "Not specified";
+                
+                const prayers = data.prayerCount || 0;
+                let level = "Seeker", progress = 0;
+                if (prayers < 10) { level = "🌱 Seeker"; progress = (prayers / 10) * 25; }
+                else if (prayers < 50) { level = "📖 Disciple"; progress = 25 + ((prayers - 10) / 40) * 25; }
+                else if (prayers < 200) { level = "🔥 Warrior"; progress = 50 + ((prayers - 50) / 150) * 25; }
+                else { level = "👑 Leader"; progress = 75 + Math.min((prayers - 200) / 300, 1) * 25; }
+                document.getElementById('spiritualLevel').innerHTML = level;
+                document.getElementById('spiritualProgress').style.width = `${progress}%`;
+                
+                document.getElementById('eName').value = data.fullName;
+                const phoneFull = data.phone || "";
+                let countryCode = "+268";
+                let phoneNumber = phoneFull;
+                const codeMatch = phoneFull.match(/^(\+\d+)/);
+                if (codeMatch) {
+                    countryCode = codeMatch[1];
+                    phoneNumber = phoneFull.substring(countryCode.length);
+                }
+                document.getElementById('eCountryCode').value = countryCode;
+                document.getElementById('ePhone').value = phoneNumber;
+                document.getElementById('eGender').value = data.gender || "Male";
+                document.getElementById('eBranch').value = data.branch || "Chama, Zambia";
+                document.getElementById('eBio').value = data.bio || "";
+                document.getElementById('eInterests').value = data.interests || "";
+                document.getElementById('editPhotoPreview').src = data.photoURL || "https://via.placeholder.com/80";
+                
+                updateVerificationStatus();
+            }
+            document.getElementById('pIdDisplay').innerText = memberSnap.exists() ? memberSnap.data().membershipId : "Pending";
+        }
+
+        // Photo Upload
+        window.uploadPhoto = async (context) => {
+            if (typeof cloudinary === 'undefined') return showToast("Cloudinary not loaded", "error");
+            cloudinary.createUploadWidget({
+                cloudName: 'prayerdome',
+                uploadPreset: 'profile_photos',
+                cropping: true,
+                croppingAspectRatio: 1
+            }, async (error, result) => {
+                if (!error && result?.event === "success") {
+                    const url = result.info.secure_url;
+                    if (context === 'register') {
+                        document.getElementById('uploadedPhoto').value = url;
+                        document.getElementById('regPreview').src = url;
+                    } else {
+                        await updateDoc(doc(db, "users", auth.currentUser.uid), { photoURL: url });
+                        await updateProfile(auth.currentUser, { photoURL: url });
+                        document.getElementById('pPhoto').src = url;
+                        document.getElementById('editPhotoPreview').src = url;
+                    }
+                    showToast("Photo updated!", "success");
+                }
+            }).open();
+        };
+        
+        window.changeProfilePhoto = () => uploadPhoto('profile');
+        
+        // Auth Observer
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 document.getElementById('authTabs').style.display = 'none';
@@ -381,241 +789,36 @@
             }
         });
 
-        // --- REGISTER ---
-        window.handleRegister = async (e) => {
-            e.preventDefault();
-            const dob = document.getElementById('rDob').value;
-            if(calculateAge(dob) < 13) return;
-
-            const name = document.getElementById('rName').value;
-            const email = document.getElementById('rEmail').value;
-            const pass = document.getElementById('rPass').value;
-            const confirm = document.getElementById('rConfirm').value;
-            
-            if(pass !== confirm) return showToast("Passwords don't match", "error");
-
-            const photo = document.getElementById('uploadedPhoto').value;
-
-            try {
-                const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                await updateProfile(cred.user, { displayName: name, photoURL: photo || "https://via.placeholder.com/150" });
-
-                await setDoc(doc(db, "users", cred.user.uid), {
-                    fullName: name,
-                    email: email,
-                    phone: document.getElementById('rPhone').value,
-                    dob: dob,
-                    gender: document.getElementById('rGender').value,
-                    branch: document.getElementById('rBranch').value,
-                    ministry: document.getElementById('rMinistry').value,
-                    referral: document.getElementById('rReferral').value,
-                    photoURL: photo || "https://via.placeholder.com/150",
-                    bio: "",
-                    interests: "",
-                    spiritualGifts: [],
-                    ministries: [],
-                    prayerCount: 0,
-                    walletBalance: 0,
-                    quizLevel: 1,
-                    createdAt: serverTimestamp()
-                });
-
-                confetti({ particleCount: 150, spread: 70 });
-                showToast("Welcome to Prayer Dome Family!", "success");
-                window.location.reload();
-
-            } catch (e) { showToast(e.message, "error"); }
-        };
-
-        // --- LOGIN ---
-        window.handleLogin = async (e) => {
-            e.preventDefault();
-            try {
-                await signInWithEmailAndPassword(auth, document.getElementById('lEmail').value, document.getElementById('lPass').value);
-                showToast("Welcome back!", "success");
-            } catch (e) { showToast("Invalid Credentials", "error"); }
-        };
-
-        // --- GOOGLE LOGIN ---
-        window.handleGoogle = async () => {
-            try {
-                const res = await signInWithPopup(auth, googleProvider);
-                const userDoc = await getDoc(doc(db, "users", res.user.uid));
-                if (!userDoc.exists()) {
-                    await setDoc(doc(db, "users", res.user.uid), {
-                        fullName: res.user.displayName,
-                        email: res.user.email,
-                        photoURL: res.user.photoURL,
-                        branch: "Global",
-                        walletBalance: 0,
-                        prayerCount: 0,
-                        createdAt: serverTimestamp()
-                    });
-                }
-            } catch (e) { showToast(e.message, "error"); }
-        };
-
-        // --- LOAD PROFILE DATA ---
-        async function loadProfileData(user) {
-            const userSnap = await getDoc(doc(db, "users", user.uid));
-            const memberSnap = await getDoc(doc(db, "memberships", user.uid));
-
-            if (userSnap.exists()) {
-                const data = userSnap.data();
-                document.getElementById('pNameDisplay').innerText = data.fullName;
-                document.getElementById('pRoleDisplay').innerText = data.ministry?.toUpperCase() || "MEMBER";
-                document.getElementById('pBioDisplay').innerText = data.bio || "No spiritual bio added yet. Click Edit to share your testimony.";
-                document.getElementById('pPhoto').src = data.photoURL || "https://via.placeholder.com/150";
-                document.getElementById('pPrayers').innerText = data.prayerCount || 0;
-                document.getElementById('pWallet').innerText = "E" + (data.walletBalance || 0);
-                document.getElementById('pLevel').innerText = data.quizLevel || 1;
-                
-                // Days active
-                const joinedDate = data.createdAt?.toDate() || new Date();
-                const daysActive = Math.floor((new Date() - joinedDate) / (1000 * 60 * 60 * 24));
-                document.getElementById('pDaysActive').innerText = daysActive || 1;
-                
-                // Ministries display
-                const ministries = data.ministries || [];
-                document.getElementById('pMinistriesDisplay').innerHTML = ministries.length ? ministries.map(m => `<span class="ministry-tag">${m}</span>`).join('') : "Not specified";
-                
-                // Interests display
-                document.getElementById('pInterestsDisplay').innerText = data.interests || "No interests added yet.";
-                
-                // Spiritual Growth Level
-                const prayers = data.prayerCount || 0;
-                let level = "Seeker", progress = 0;
-                if (prayers < 10) { level = "🌱 Seeker"; progress = (prayers / 10) * 25; }
-                else if (prayers < 50) { level = "📖 Disciple"; progress = 25 + ((prayers - 10) / 40) * 25; }
-                else if (prayers < 200) { level = "🔥 Warrior"; progress = 50 + ((prayers - 50) / 150) * 25; }
-                else { level = "👑 Leader"; progress = 75 + Math.min((prayers - 200) / 300, 1) * 25; }
-                document.getElementById('spiritualLevel').innerHTML = level;
-                document.getElementById('spiritualProgress').style.width = `${progress}%`;
-                
-                // Edit form pre-fill
-                document.getElementById('eName').value = data.fullName;
-                document.getElementById('ePhone').value = data.phone || "";
-                document.getElementById('eGender').value = data.gender || "Male";
-                document.getElementById('eBranch').value = data.branch || "Chama, Zambia";
-                document.getElementById('eBio').value = data.bio || "";
-                document.getElementById('eInterests').value = data.interests || "";
-                document.getElementById('editPhotoPreview').src = data.photoURL || "https://via.placeholder.com/80";
-                
-                // Checkboxes for ministries
-                const savedMinistries = data.ministries || [];
-                document.querySelectorAll('#ministryCheckboxes input').forEach(cb => {
-                    cb.checked = savedMinistries.includes(cb.value);
-                });
-                
-                // Checkboxes for gifts
-                const savedGifts = data.spiritualGifts || [];
-                document.querySelectorAll('#giftsCheckboxes input').forEach(cb => {
-                    cb.checked = savedGifts.includes(cb.value);
-                });
-                
-                currentPhotoUrl = data.photoURL || "";
-            }
-
-            document.getElementById('pIdDisplay').innerText = memberSnap.exists() ? memberSnap.data().membershipId : "Pending";
-        }
-
-        // --- SAVE PROFILE ---
-        window.saveProfile = async () => {
-            const ministries = Array.from(document.querySelectorAll('#ministryCheckboxes input:checked')).map(cb => cb.value);
-            const gifts = Array.from(document.querySelectorAll('#giftsCheckboxes input:checked')).map(cb => cb.value);
-            
-            const updates = {
-                fullName: document.getElementById('eName').value,
-                phone: document.getElementById('ePhone').value,
-                gender: document.getElementById('eGender').value,
-                branch: document.getElementById('eBranch').value,
-                bio: document.getElementById('eBio').value,
-                interests: document.getElementById('eInterests').value,
-                ministries: ministries,
-                spiritualGifts: gifts,
-                photoURL: currentPhotoUrl,
-                updatedAt: serverTimestamp()
-            };
-            
-            try {
-                await updateDoc(doc(db, "users", auth.currentUser.uid), updates);
-                await updateProfile(auth.currentUser, { displayName: updates.fullName, photoURL: currentPhotoUrl });
-                showToast("Profile Updated Successfully!", "success");
-                toggleEdit(false);
-                await loadProfileData(auth.currentUser);
-            } catch (e) { showToast(e.message, "error"); }
-        };
-
-        // --- PHOTO UPLOAD ---
-        window.uploadPhoto = (context) => {
-            cloudinary.createUploadWidget({
-                cloudName: 'prayerdome',
-                uploadPreset: 'profile_photos',
-                cropping: true,
-                folder: 'profile_photos'
-            }, (err, res) => {
-                if (!err && res.event === "success") {
-                    const url = res.info.secure_url;
-                    if (context === 'register') {
-                        document.getElementById('uploadedPhoto').value = url;
-                        document.getElementById('regPreview').src = url;
-                    } else {
-                        currentPhotoUrl = url;
-                        document.getElementById('editPhotoPreview').src = url;
-                    }
-                    showToast("Photo uploaded!", "success");
-                }
-            }).open();
-        };
-
-        window.changeProfilePhoto = () => {
-            if (!auth.currentUser) return showToast("Please login first", "error");
-            uploadPhoto('profile');
-        };
-
-        // --- UTILITIES ---
-        window.checkAge = (val) => {
-            const age = calculateAge(val);
-            const btn = document.getElementById('regBtn');
-            const warn = document.getElementById('ageWarn');
-            if (age < 13) {
-                btn.disabled = true;
-                btn.style.opacity = "0.5";
-                warn.style.display = "block";
-            } else {
-                btn.disabled = false;
-                btn.style.opacity = "1";
-                warn.style.display = "none";
-            }
-        };
-
-        function calculateAge(birthday) {
-            const ageDifMs = Date.now() - new Date(birthday).getTime();
-            const ageDate = new Date(ageDifMs);
-            return Math.abs(ageDate.getUTCFullYear() - 1970);
-        }
-
         window.switchTab = (type) => {
             document.getElementById('loginForm').style.display = type === 'login' ? 'block' : 'none';
             document.getElementById('registerForm').style.display = type === 'register' ? 'block' : 'none';
             document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', (type === 'login' && i === 0) || (type === 'register' && i === 1)));
         };
-
+        
         window.toggleEdit = (show) => {
             document.getElementById('profileView').style.display = show ? 'none' : 'block';
             document.getElementById('profileEdit').style.display = show ? 'block' : 'none';
         };
-
-        window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
+        
         window.handleLogout = () => signOut(auth);
-        window.showToast = (msg, type) => {
-            const t = document.createElement('div');
-            t.className = `toast`;
-            if(type === 'error') t.style.borderLeftColor = '#ef4444';
-            t.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${msg}`;
-            document.getElementById('toastContainer').appendChild(t);
-            setTimeout(() => t.remove(), 4000);
+        window.toggleDarkMode = () => document.body.classList.toggle('dark-mode');
+        
+        window.checkAge = (val) => {
+            const age = Math.floor((Date.now() - new Date(val).getTime()) / (1000 * 60 * 60 * 24 * 365));
+            const btn = document.getElementById('regBtn');
+            if (age < 13) {
+                btn.disabled = true;
+                document.getElementById('ageWarn').style.display = 'block';
+            } else {
+                btn.disabled = false;
+                document.getElementById('ageWarn').style.display = 'none';
+            }
         };
+        
+        // Close modals on outside click
+        document.querySelectorAll('.verify-modal').forEach(modal => {
+            modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+        });
     </script>
 </body>
 </html>
