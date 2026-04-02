@@ -759,71 +759,88 @@
             }
         }
 
-        // Request notification permission and save token - CALL THIS AFTER LOGIN
-        async function requestNotificationPermission() {
-            if (!currentUser) {
-                console.log("User not logged in, cannot request notifications");
-                return false;
-            }
+        // Request notification permission and save token - IMPROVED VERSION
+async function requestNotificationPermission() {
+    if (!currentUser) {
+        console.log("User not logged in, cannot request notifications");
+        return false;
+    }
 
-            if (typeof Notification === 'undefined') {
-                console.log("Notifications not supported in this browser");
-                showToast("Notifications not supported in this browser", "info");
-                return false;
-            }
+    // Check if browser supports notifications
+    if (!window.Notification) {
+        console.log("This browser does not support desktop notifications");
+        showToast("Your browser doesn't support push notifications. Try Chrome or Edge.", "info");
+        return false;
+    }
 
+    // Check if service workers are supported (required for push)
+    if (!('serviceWorker' in navigator)) {
+        console.log("Service workers not supported");
+        showToast("Your browser doesn't support push notifications.", "info");
+        return false;
+    }
+
+    try {
+        let permission = Notification.permission;
+        
+        // If permission is not yet determined, ask for it
+        if (permission === 'default') {
+            permission = await Notification.requestPermission();
+        }
+        
+        if (permission === 'granted') {
+            console.log("Notification permission granted");
+            
             try {
-                let permission = Notification.permission;
+                const token = await getToken(messaging, { vapidKey: VAPID_KEY });
                 
-                if (permission === 'default') {
-                    permission = await Notification.requestPermission();
-                }
-                
-                if (permission === 'granted') {
-                    console.log("Notification permission granted");
+                if (token) {
+                    await saveTokenToFirestore(token);
+                    const banner = document.getElementById('notifPermissionBanner');
+                    if (banner) banner.style.display = 'none';
                     
-                    try {
-                        const token = await getToken(messaging, { vapidKey: VAPID_KEY });
-                        
-                        if (token) {
-                            await saveTokenToFirestore(token);
-                            const banner = document.getElementById('notifPermissionBanner');
-                            if (banner) banner.style.display = 'none';
-                            
-                            const hasShown = localStorage.getItem('notif_permission_shown');
-                            if (!hasShown) {
-                                showToast("✅ Notifications enabled! You'll receive daily Bible verses.", "success");
-                                localStorage.setItem('notif_permission_shown', 'true');
-                            }
-                            return true;
-                        } else {
-                            console.log("No registration token available");
-                            return false;
-                        }
-                    } catch (tokenError) {
-                        console.error("Error getting token:", tokenError);
-                        if (tokenError.message && tokenError.message.includes('messaging/permission')) {
-                            showToast("Please enable notifications in browser settings", "info");
-                        }
-                        return false;
+                    const hasShown = localStorage.getItem('notif_permission_shown');
+                    if (!hasShown) {
+                        showToast("✅ Notifications enabled! You'll receive daily Bible verses.", "success");
+                        localStorage.setItem('notif_permission_shown', 'true');
                     }
-                } else if (permission === 'denied') {
-                    const hasShownDenied = localStorage.getItem('notif_denied_shown');
-                    if (!hasShownDenied) {
-                        showToast("🔔 Please enable notifications in browser settings to receive daily verses", "info");
-                        localStorage.setItem('notif_denied_shown', 'true');
-                    }
+                    return true;
+                } else {
+                    console.log("No registration token available");
+                    showToast("Unable to get notification token. Please check your connection.", "info");
                     return false;
                 }
-                return false;
-            } catch (error) {
-                console.error("Error requesting permission:", error);
-                if (error.message && error.message.includes('insecure')) {
-                    showToast("Notifications require HTTPS. Please use HTTPS connection.", "info");
+            } catch (tokenError) {
+                console.error("Error getting token:", tokenError);
+                // Check for specific FCM errors
+                if (tokenError.code === 'messaging/unsupported-browser') {
+                    showToast("Push notifications not supported in this browser. Try Chrome or Firefox.", "info");
+                } else if (tokenError.code === 'messaging/permission-blocked') {
+                    showToast("Notification permission blocked. Please check browser settings.", "info");
+                } else {
+                    showToast("Failed to register notifications. Please try again.", "info");
                 }
                 return false;
             }
+        } else if (permission === 'denied') {
+            const hasShownDenied = localStorage.getItem('notif_denied_shown');
+            if (!hasShownDenied) {
+                showToast("🔔 Notifications are blocked. Enable them in browser settings to receive daily verses.", "info");
+                localStorage.setItem('notif_denied_shown', 'true');
+            }
+            return false;
         }
+        return false;
+    } catch (error) {
+        console.error("Error requesting permission:", error);
+        if (error.message && error.message.includes('insecure')) {
+            showToast("🔒 Notifications require HTTPS. Please use a secure connection (HTTPS).", "info");
+        } else {
+            showToast("Could not enable notifications. Please try again later.", "info");
+        }
+        return false;
+    }
+}
 
         // Handle foreground messages
         function handleForegroundMessages() {
