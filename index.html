@@ -618,7 +618,7 @@
                 <img src="https://i.ibb.co/TB5Fx4tb/logo-0.png" alt="PD">
                 <span>PRAYER DOME</span>
             </div>
-            <p class="copyright">© 2026 PRAYER DOME MINISTRY. ALL RIGHTS RESERVED.</p>
+            <p class="copyright">© 2018 PRAYER DOME MINISTRY. ALL RIGHTS RESERVED.</p>
             
             <div class="social-links">
                 <a href="https://www.facebook.com/profile.php?id=847255098474902" target="_blank" class="social-link facebook"><i class="fab fa-facebook-f"></i><span>Facebook</span></a>
@@ -803,6 +803,9 @@ async function requestNotificationPermission() {
                     if (!hasShown) {
                         showToast("✅ Notifications enabled! You'll receive daily Bible verses.", "success");
                         localStorage.setItem('notif_permission_shown', 'true');
+                        
+                        // START HOURLY NOTIFICATIONS
+            scheduleHourlyVerseNotifications()
                     }
                     return true;
                 } else {
@@ -990,6 +993,87 @@ async function requestNotificationPermission() {
             updateNotificationBadge();
             renderNotifications();
         }
+        
+        // ==================== HOURLY BIBLE VERSE NOTIFICATIONS ====================
+// This creates a local timer that sends a notification every hour
+
+let hourlyNotificationInterval = null;
+
+function scheduleHourlyVerseNotifications() {
+    // Clear existing interval if any
+    if (hourlyNotificationInterval) {
+        clearInterval(hourlyNotificationInterval);
+    }
+    
+    // Check if notifications are enabled
+    if (Notification.permission !== 'granted') {
+        console.log("Notifications not granted, cannot schedule hourly verses");
+        return;
+    }
+    
+    // Calculate milliseconds until next hour
+    const now = new Date();
+    const nextHour = new Date(now);
+    nextHour.setHours(now.getHours() + 1, 0, 0, 0);
+    const delay = nextHour - now;
+    
+    console.log(`First hourly verse notification in ${Math.round(delay / 60000)} minutes`);
+    
+    // Schedule first notification at next hour
+    setTimeout(() => {
+        sendHourlyVerseNotification();
+        
+        // Then schedule every hour
+        hourlyNotificationInterval = setInterval(() => {
+            sendHourlyVerseNotification();
+        }, 60 * 60 * 1000); // 1 hour
+    }, delay);
+}
+
+async function sendHourlyVerseNotification() {
+    // Check if user is still logged in and notifications are enabled
+    if (!currentUser || Notification.permission !== 'granted') {
+        return;
+    }
+    
+    const hour = new Date().getHours();
+    const hourNames = ['🕛', '🕐', '🕑', '🕒', '🕓', '🕔', '🕕', '🕖', '🕗', '🕘', '🕙', '🕚'];
+    const hourEmoji = hourNames[hour % 12] || '🕛';
+    
+    // Get daily verse based on day of year
+    const dayOfYear = moment().dayOfYear();
+    const verseIndex = (dayOfYear - 1) % yearlyVerses.length;
+    const verse = yearlyVerses[verseIndex];
+    
+    // Also add to notification panel
+    const newNotif = {
+        id: Date.now().toString(),
+        title: `${hourEmoji} Hour ${hour}:00 - Daily Verse`,
+        message: `"${verse.verse.substring(0, 150)}" — ${verse.ref}`,
+        time: moment().format('MMM D, YYYY h:mm A'),
+        read: false
+    };
+    
+    const savedNotifs = localStorage.getItem('prayer_dome_notifications');
+    let existingNotifs = savedNotifs ? JSON.parse(savedNotifs) : [];
+    existingNotifs.unshift(newNotif);
+    if (existingNotifs.length > 50) existingNotifs.pop();
+    localStorage.setItem('prayer_dome_notifications', JSON.stringify(existingNotifs));
+    
+    notifications = existingNotifs;
+    unreadCount = notifications.filter(n => !n.read).length;
+    updateNotificationBadge();
+    renderNotifications();
+    
+    // Also show in-app notification
+    showInAppNotification(`${hourEmoji} Hour ${hour}:00`, `"${verse.verse.substring(0, 100)}" — ${verse.ref}`);
+    
+    console.log(`Hourly verse notification sent at ${hour}:00`);
+}
+
+// Call this after notifications are enabled
+// Add this inside the requestNotificationPermission function after successful grant:
+// scheduleHourlyVerseNotifications();
 
         // --- LOCATION TRACKING ---
         const branches = {
