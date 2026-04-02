@@ -46,7 +46,6 @@
             display: none;
             align-items: center;
             justify-content: space-between;
-            cursor: pointer;
             animation: slideDown 0.5s ease;
             position: relative;
             z-index: 90;
@@ -75,6 +74,23 @@
             border-radius: 30px;
             font-weight: 700;
             cursor: pointer;
+        }
+
+        /* Enable Notifications Button in Profile */
+        .enable-notif-btn {
+            background: linear-gradient(135deg, var(--accent-green), #064e3b);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            width: 100%;
+            justify-content: center;
         }
 
         /* --- NOTIFICATION BELL ICON --- */
@@ -366,8 +382,6 @@
 
         .live-promo { background: linear-gradient(135deg, #0f172a, #1e293b); margin: 40px 20px; border-radius: 30px; padding: 30px; color: white; display: flex; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 15px 30px rgba(0,0,0,0.2); border: 1px solid #334155; transition: 0.3s;}
         .live-promo:hover { transform: scale(1.02); }
-        .live-promo { background: linear-gradient(135deg, #0f172a, #1e293b); margin: 40px 20px; border-radius: 30px; padding: 30px; color: white; display: flex; justify-content: space-between; align-items: center; cursor: pointer; box-shadow: 0 15px 30px rgba(0,0,0,0.2); border: 1px solid #334155; transition: 0.3s;}
-        .live-promo:hover { transform: scale(1.02); }
         .live-promo h3 { font-size: 1.5rem; font-weight: 900; margin-bottom: 5px;}
         .pulse-red { display: inline-block; width: 10px; height: 10px; background: var(--accent-red); border-radius: 50%; margin-right: 8px; animation: pulseRed 1s infinite alternate; }
         @keyframes pulseRed { from { box-shadow: 0 0 5px var(--accent-red); } to { box-shadow: 0 0 15px var(--accent-red); } }
@@ -411,10 +425,30 @@
         .loading-spinner { width: 30px; height: 30px; border: 3px solid var(--border-color); border-top-color: var(--accent-green); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* Toast Container */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+        }
+        .toast {
+            background: var(--bg-card);
+            padding: 12px 24px;
+            border-radius: 40px;
+            margin-bottom: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-left: 4px solid var(--accent-green);
+            animation: slideIn 0.3s ease;
+            font-weight: 600;
+        }
+        .toast.error { border-left-color: var(--accent-red); }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
         @media (max-width: 600px) {
-            .ls-time { font-size: 3.5rem; }
-            .ls-verse-text { font-size: 1rem; }
-            .ls-verse-card { padding: 20px; margin: 30px auto; }
             .portal-grid { grid-template-columns: repeat(4, 1fr); gap: 10px;}
             .portal-icon { width: 55px; height: 55px; font-size: 1.2rem; }
             .hero h1 { font-size: 2rem; }
@@ -628,7 +662,7 @@
     <!-- FIREBASE & LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, query, where, orderBy, limit, getDocs, Timestamp, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, query, where, orderBy, limit, getDocs, Timestamp, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js";
 
@@ -650,51 +684,19 @@
         let unreadCount = 0;
         let currentUser = null;
 
-        // --- VAPID KEY (Get this from Firebase Console > Project Settings > Cloud Messaging) ---
-        const VAPID_KEY = "BCeo-ulgho1GqTrh4CCK8iMtRtvsgaFZa508b5wbTOXL2SyxIhxMiRbbn6xC2xvRBI3-J3CqsqBDN6gjG5Hd-R4"; // You need to add your VAPID key here
+        // VAPID Key for web push notifications
+        const VAPID_KEY = "BDEF0lujMwx9VdPiL7V45cxQImstI88pfNkoEWw51696aX8k3WmtxcflHrxXvXxqrsfZVYAuv_HJUIpFElegOEU";
 
         // --- 365 Days of Bible Verses (Complete Year) ---
         const yearlyVerses = [
-            // January
             { verse: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.", ref: "Jeremiah 29:11", commentary: "God has a purpose for your life. Even when circumstances seem uncertain, His plans are good. Trust that He is working behind the scenes.", prayer: "Lord, I trust Your plans for my life. Help me to walk in faith, knowing that You are leading me to a future filled with hope. Amen." },
             { verse: "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.", ref: "Joshua 1:9", commentary: "Fear is a natural response to the unknown, but God commands us to be strong. He promises His presence in every situation, so you never face challenges alone.", prayer: "Father, when fear rises, remind me of Your presence. Give me courage to face today with boldness. Amen." },
             { verse: "I can do all things through Christ who strengthens me.", ref: "Philippians 4:13", commentary: "Your limitations are not God's limitations. Through Christ, you have supernatural strength to accomplish what seems impossible.", prayer: "Jesus, I draw strength from You today. Help me to do what I cannot do alone. Amen." },
             { verse: "Trust in the Lord with all your heart and lean not on your own understanding.", ref: "Proverbs 3:5", commentary: "Human understanding is limited. When you trust God completely, He guides your steps in ways you couldn't have planned yourself.", prayer: "Lord, I choose to trust You even when I don't understand. Guide my steps today. Amen." },
             { verse: "The Lord is my shepherd; I shall not want.", ref: "Psalm 23:1", commentary: "God provides everything you need. Like a shepherd caring for sheep, He ensures you lack nothing essential for your journey.", prayer: "Good Shepherd, thank You for providing for me. Help me to rest in Your care. Amen." },
-            { verse: "This is the day that the Lord has made; let us rejoice and be glad in it.", ref: "Psalm 118:24", commentary: "Each day is a gift from God. Choose joy regardless of circumstances because the Creator of the universe gave you this day.", prayer: "Lord, I receive this day as a gift. Fill my heart with joy and gratitude. Amen." },
-            { verse: "Cast all your anxiety on him because he cares for you.", ref: "1 Peter 5:7", commentary: "God is big enough to handle your worries. You don't need to carry burdens alone because He cares deeply about what concerns you.", prayer: "Father, I give You my anxieties. I trust You to handle what I cannot. Amen." },
-            { verse: "Draw near to God, and he will draw near to you.", ref: "James 4:8", commentary: "Intimacy with God is a choice. As you make time for Him, He responds by making Himself more real to you.", prayer: "Lord, I want to be closer to You today. Draw me into deeper relationship. Amen." },
-            { verse: "But seek first his kingdom and his righteousness, and all these things will be given to you as well.", ref: "Matthew 6:33", commentary: "When you prioritize God's will, He takes care of your needs. Your primary focus should be on His kingdom, not just earthly concerns.", prayer: "Father, help me to seek You first today. I trust You to provide what I need. Amen." },
-            { verse: "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.", ref: "Philippians 4:6", commentary: "Anxiety loses its power when replaced with prayer. Bring everything to God with a thankful heart, and experience His peace.", prayer: "Lord, I bring my concerns to You. Fill me with Your peace that surpasses understanding. Amen." },
-            { verse: "And we know that in all things God works for the good of those who love him, who have been called according to his purpose.", ref: "Romans 8:28", commentary: "Even difficult situations are not wasted. God weaves everything together for your ultimate good when you love Him.", prayer: "Father, I trust Your sovereignty over my circumstances. Thank You for working all things for good. Amen." },
-            { verse: "Have I not commanded you? Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.", ref: "Joshua 1:9", commentary: "God's command comes with His promise. You're not expected to be strong in your own strength—He goes with you.", prayer: "Lord, I choose courage because You are with me. Help me to walk in faith today. Amen." },
-            { verse: "I have told you these things, so that in me you may have peace. In this world you will have trouble. But take heart! I have overcome the world.", ref: "John 16:33", commentary: "Jesus doesn't promise a trouble-free life, but He guarantees victory. His peace is available regardless of circumstances.", prayer: "Jesus, thank You for overcoming the world. Fill me with Your peace today. Amen." },
-            { verse: "Come to me, all you who are weary and burdened, and I will give you rest.", ref: "Matthew 11:28", commentary: "When you're exhausted, Jesus offers rest. Not just physical rest, but soul-deep peace that refreshes your spirit.", prayer: "Lord, I come to You with my burdens. Give me rest for my soul. Amen." },
-            { verse: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.", ref: "John 3:16", commentary: "God's love is the foundation of everything. He gave His best so you could have eternal life. This love is available to everyone who believes.", prayer: "Father, thank You for Your incredible love. Help me to live in the reality of that love today. Amen." },
-            { verse: "Your word is a lamp for my feet, a light on my path.", ref: "Psalm 119:105", commentary: "Scripture guides your steps. When you feel lost, God's Word illuminates the way forward one step at a time.", prayer: "Lord, let Your Word guide my decisions today. Light my path with Your truth. Amen." },
-            { verse: "The Lord is my light and my salvation—whom shall I fear? The Lord is the stronghold of my life—of whom shall I be afraid?", ref: "Psalm 27:1", commentary: "Fear loses its grip when you recognize who God is. He is your light, salvation, and stronghold—nothing can defeat you.", prayer: "Lord, You are my security. I will not fear because You are with me. Amen." },
-            { verse: "But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness, gentleness and self-control.", ref: "Galatians 5:22-23", commentary: "As you grow in relationship with God, His character develops in you. These qualities are evidence of the Spirit's work in your life.", prayer: "Holy Spirit, cultivate Your fruit in me. Make me more like Jesus today. Amen." },
-            { verse: "Rejoice always, pray continually, give thanks in all circumstances; for this is God’s will for you in Christ Jesus.", ref: "1 Thessalonians 5:16-18", commentary: "God's will isn't mysterious—it's practical. Joy, prayer, and gratitude should mark your daily life.", prayer: "Lord, help me to rejoice, pray, and give thanks today. Align my heart with Your will. Amen." },
-            { verse: "I sought the Lord, and he answered me; he delivered me from all my fears.", ref: "Psalm 34:4", commentary: "When you turn to God, He responds. He doesn't just calm your fears—He delivers you from them completely.", prayer: "Father, I seek You today. Deliver me from every fear that holds me back. Amen." },
-            { verse: "Be still, and know that I am God; I will be exalted among the nations, I will be exalted in the earth.", ref: "Psalm 46:10", commentary: "In the midst of chaos, stillness helps you recognize God's sovereignty. He is in control, and He will be exalted.", prayer: "Lord, I quiet my heart before You. Help me to know You more deeply. Amen." },
-            { verse: "Therefore, if anyone is in Christ, the new creation has come: The old has gone, the new is here!", ref: "2 Corinthians 5:17", commentary: "Your past doesn't define you. In Christ, you are completely new. The old struggles have lost their power.", prayer: "Jesus, thank You for making me new. Help me to walk in my new identity today. Amen." },
-            { verse: "Let the peace of Christ rule in your hearts, to which indeed you were called in one body. And be thankful.", ref: "Colossians 3:15", commentary: "Peace should be the umpire in your heart—letting you know when something is off. Thankfulness accompanies true peace.", prayer: "Lord, let Your peace rule in my heart today. Teach me to be thankful in all things. Amen." },
-            { verse: "For we live by faith, not by sight.", ref: "2 Corinthians 5:7", commentary: "Your physical eyes see only part of the picture. Faith allows you to see what God is doing beyond what's visible.", prayer: "Father, help me to walk by faith, not by what I see. Open my spiritual eyes. Amen." },
-            { verse: "And my God will meet all your needs according to the riches of his glory in Christ Jesus.", ref: "Philippians 4:19", commentary: "God's resources are unlimited. He doesn't just meet needs—He does so out of His glorious abundance.", prayer: "Lord, I trust You to provide what I need today. Thank You for Your abundant provision. Amen." },
-            { verse: "Jesus Christ is the same yesterday and today and forever.", ref: "Hebrews 13:8", commentary: "Circumstances change, but Jesus never does. His love, power, and character are constant anchors in a shifting world.", prayer: "Jesus, thank You for being unchanging. Help me to anchor my life in You. Amen." },
-            { verse: "But those who hope in the Lord will renew their strength. They will soar on wings like eagles; they will run and not grow weary, they will walk and not be faint.", ref: "Isaiah 40:31", commentary: "When you feel depleted, hope in God brings supernatural renewal. He gives strength to keep going when your own is gone.", prayer: "Lord, I put my hope in You. Renew my strength and help me to soar today. Amen." },
-            { verse: "The Lord is close to the brokenhearted and saves those who are crushed in spirit.", ref: "Psalm 34:18", commentary: "God doesn't distance Himself from your pain. When you're hurting, He draws especially close to comfort and heal.", prayer: "Father, draw near to me in my struggles. Heal my broken heart and restore my spirit. Amen." },
-            { verse: "Greater love has no one than this: to lay down one’s life for one’s friends.", ref: "John 15:13", commentary: "Jesus demonstrated the ultimate love by sacrificing Himself for you. This same selfless love is what He calls you to share.", prayer: "Jesus, thank You for Your sacrificial love. Help me to love others as You have loved me. Amen." },
-            { verse: "Therefore do not worry about tomorrow, for tomorrow will worry about itself. Each day has enough trouble of its own.", ref: "Matthew 6:34", commentary: "Worrying about the future robs you of today's peace. Focus on what God has for you right now.", prayer: "Lord, help me to trust You with tomorrow. Give me grace for today's challenges. Amen." },
-            // February
-            { verse: "Love is patient, love is kind. It does not envy, it does not boast, it is not proud.", ref: "1 Corinthians 13:4", commentary: "True love is not just a feeling—it's demonstrated through patience, kindness, and humility. This is the love God calls you to embody.", prayer: "Lord, fill me with Your love. Help me to be patient and kind to those around me. Amen." },
-            { verse: "For where your treasure is, there your heart will be also.", ref: "Matthew 6:21", commentary: "What you value most will capture your heart. Invest in eternal things that truly matter.", prayer: "Father, help me to treasure what You treasure. Align my heart with Yours. Amen." },
-            { verse: "Do not let any unwholesome talk come out of your mouths, but only what is helpful for building others up according to their needs.", ref: "Ephesians 4:29", commentary: "Your words have power to build or destroy. Choose to speak life, encouragement, and truth that helps others grow.", prayer: "Lord, guard my tongue today. Let my words bring life and encouragement to others. Amen." },
-            { verse: "And we all, who with unveiled faces contemplate the Lord’s glory, are being transformed into his image with ever-increasing glory.", ref: "2 Corinthians 3:18", commentary: "As you spend time with God, you naturally become more like Him. Transformation happens through relationship.", prayer: "Holy Spirit, transform me as I spend time with You. Make me more like Jesus. Amen." },
-            { verse: "Humble yourselves before the Lord, and he will lift you up.", ref: "James 4:10", commentary: "God opposes the proud but gives grace to the humble. True exaltation comes through humility.", prayer: "Lord, help me to walk in humility. I trust You to lift me up in Your timing. Amen." }
+            { verse: "This is the day that the Lord has made; let us rejoice and be glad in it.", ref: "Psalm 118:24", commentary: "Each day is a gift from God. Choose joy regardless of circumstances because the Creator of the universe gave you this day.", prayer: "Lord, I receive this day as a gift. Fill my heart with joy and gratitude. Amen." }
         ];
-
-        // Generate full 365 verses by repeating and varying
+        
         function getDailyVerse(dayOfYear) {
             const index = (dayOfYear - 1) % yearlyVerses.length;
             return yearlyVerses[index];
@@ -702,97 +704,42 @@
 
         // --- CLOCK & GREETING ---
         function updateUI() {
-    const now = moment();
-    
-    // Lock screen elements removed - no longer needed
-    
-    const hour = now.hour();
-    let g = "Good Evening";
-    if(hour < 12) g = "Good Morning";
-    else if(hour < 17) g = "Good Afternoon";
-    
-    const devDateEl = document.getElementById('js-dev-date');
-    if (devDateEl) devDateEl.innerText = g.toUpperCase();
-    
-    const greetEl = document.getElementById('js-greeting');
-    if(greetEl && (greetEl.innerText === "Welcome" || greetEl.innerText.startsWith("Good"))) {
-        if(currentUser) {
-            greetEl.innerText = g + ", " + (currentUser.displayName?.split(' ')[0] || 'Beloved');
-        } else {
-            greetEl.innerText = g + ", Child of God";
-        }
-    }
-}
-
-        // --- DAILY DEVOTIONAL WITH 365 VERSES ---
-        async function loadDailyDevotional() {
-    const now = moment();
-    const dayOfYear = now.dayOfYear();
-    const dailyVerse = getDailyVerse(dayOfYear);
-    
-    document.getElementById('dailyScripture').innerHTML = `"${dailyVerse.verse}"`;
-    document.getElementById('dailyRef').innerHTML = `— ${dailyVerse.ref}`;
-    document.getElementById('dailyMessage').innerHTML = dailyVerse.commentary;
-    document.getElementById('dailyPrayer').innerHTML = dailyVerse.prayer;
-    // Lock screen elements removed - no longer needed
-}
-
-        // --- NOTIFICATION PERMISSION & TOKEN ---
-        async function requestNotificationPermission() {
-    if (!currentUser) {
-        console.log("User not logged in");
-        return;
-    }
-
-    // Check if Notification API exists in browser
-    if (typeof Notification === 'undefined') {
-        console.log("Notifications not supported in this browser");
-        showToast("Notifications not supported in this browser", "info");
-        return;
-    }
-
-    try {
-        const permission = await Notification.requestPermission();
-        
-        if (permission === 'granted') {
-            console.log("Notification permission granted");
+            const now = moment();
+            const hour = now.hour();
+            let g = "Good Evening";
+            if(hour < 12) g = "Good Morning";
+            else if(hour < 17) g = "Good Afternoon";
             
-            if (VAPID_KEY && VAPID_KEY !== "YOUR_VAPID_KEY_HERE") {
-                const token = await getToken(messaging, { vapidKey: VAPID_KEY });
-                
-                if (token) {
-                    await saveTokenToFirestore(token);
-                    const banner = document.getElementById('notifPermissionBanner');
-                    if (banner) banner.style.display = 'none';
-                    
-                    const hasShown = localStorage.getItem('notif_permission_shown');
-                    if (!hasShown) {
-                        showToast("✅ Notifications enabled! You'll receive daily Bible verses.", "success");
-                        localStorage.setItem('notif_permission_shown', 'true');
-                    }
+            const devDateEl = document.getElementById('js-dev-date');
+            if (devDateEl) devDateEl.innerText = g.toUpperCase();
+            
+            const greetEl = document.getElementById('js-greeting');
+            if(greetEl && (greetEl.innerText === "Welcome" || greetEl.innerText.startsWith("Good"))) {
+                if(currentUser) {
+                    greetEl.innerText = g + ", " + (currentUser.displayName?.split(' ')[0] || 'Beloved');
+                } else {
+                    greetEl.innerText = g + ", Child of God";
                 }
-            } else {
-                console.warn("VAPID key not configured. Get it from Firebase Console > Project Settings > Cloud Messaging");
-                showToast("🔔 Please configure VAPID key in Firebase Console", "info");
-            }
-        } else if (permission === 'denied') {
-            const hasShownDenied = localStorage.getItem('notif_denied_shown');
-            if (!hasShownDenied) {
-                showToast("🔔 Please enable notifications in browser settings to receive daily verses", "info");
-                localStorage.setItem('notif_denied_shown', 'true');
             }
         }
-    } catch (error) {
-        console.error("Error requesting permission:", error);
-        // If error is about insecure context (HTTP), show helpful message
-        if (error.message && error.message.includes('insecure')) {
-            showToast("Notifications require HTTPS. Please use HTTPS connection.", "info");
-        }
-    }
-}
+        setInterval(updateUI, 1000);
+        updateUI();
 
+        // --- DAILY DEVOTIONAL ---
+        async function loadDailyDevotional() {
+            const now = moment();
+            const dayOfYear = now.dayOfYear();
+            const dailyVerse = getDailyVerse(dayOfYear);
+            
+            document.getElementById('dailyScripture').innerHTML = `"${dailyVerse.verse}"`;
+            document.getElementById('dailyRef').innerHTML = `— ${dailyVerse.ref}`;
+            document.getElementById('dailyMessage').innerHTML = dailyVerse.commentary;
+            document.getElementById('dailyPrayer').innerHTML = dailyVerse.prayer;
+        }
+
+        // ==================== NOTIFICATION TOKEN SAVING (FIXED) ====================
         async function saveTokenToFirestore(token) {
-            if (!currentUser) return;
+            if (!currentUser) return false;
             
             try {
                 const userTokensRef = doc(db, "userTokens", currentUser.uid);
@@ -804,12 +751,81 @@
                     lastUpdated: serverTimestamp(),
                     active: true
                 }, { merge: true });
-                console.log("Token saved to Firestore");
+                console.log("✅ Token saved to Firestore for user:", currentUser.email);
+                return true;
             } catch (error) {
                 console.error("Error saving token:", error);
+                return false;
             }
         }
 
+        // Request notification permission and save token - CALL THIS AFTER LOGIN
+        async function requestNotificationPermission() {
+            if (!currentUser) {
+                console.log("User not logged in, cannot request notifications");
+                return false;
+            }
+
+            if (typeof Notification === 'undefined') {
+                console.log("Notifications not supported in this browser");
+                showToast("Notifications not supported in this browser", "info");
+                return false;
+            }
+
+            try {
+                let permission = Notification.permission;
+                
+                if (permission === 'default') {
+                    permission = await Notification.requestPermission();
+                }
+                
+                if (permission === 'granted') {
+                    console.log("Notification permission granted");
+                    
+                    try {
+                        const token = await getToken(messaging, { vapidKey: VAPID_KEY });
+                        
+                        if (token) {
+                            await saveTokenToFirestore(token);
+                            const banner = document.getElementById('notifPermissionBanner');
+                            if (banner) banner.style.display = 'none';
+                            
+                            const hasShown = localStorage.getItem('notif_permission_shown');
+                            if (!hasShown) {
+                                showToast("✅ Notifications enabled! You'll receive daily Bible verses.", "success");
+                                localStorage.setItem('notif_permission_shown', 'true');
+                            }
+                            return true;
+                        } else {
+                            console.log("No registration token available");
+                            return false;
+                        }
+                    } catch (tokenError) {
+                        console.error("Error getting token:", tokenError);
+                        if (tokenError.message && tokenError.message.includes('messaging/permission')) {
+                            showToast("Please enable notifications in browser settings", "info");
+                        }
+                        return false;
+                    }
+                } else if (permission === 'denied') {
+                    const hasShownDenied = localStorage.getItem('notif_denied_shown');
+                    if (!hasShownDenied) {
+                        showToast("🔔 Please enable notifications in browser settings to receive daily verses", "info");
+                        localStorage.setItem('notif_denied_shown', 'true');
+                    }
+                    return false;
+                }
+                return false;
+            } catch (error) {
+                console.error("Error requesting permission:", error);
+                if (error.message && error.message.includes('insecure')) {
+                    showToast("Notifications require HTTPS. Please use HTTPS connection.", "info");
+                }
+                return false;
+            }
+        }
+
+        // Handle foreground messages
         function handleForegroundMessages() {
             onMessage(messaging, (payload) => {
                 console.log("Message received in foreground:", payload);
@@ -817,7 +833,6 @@
                 if (payload.notification) {
                     showInAppNotification(payload.notification.title, payload.notification.body);
                     
-                    // Add to notification panel
                     const newNotif = {
                         id: Date.now().toString(),
                         title: payload.notification.title,
@@ -862,8 +877,8 @@
                 <div style="display: flex; gap: 12px; align-items: center;">
                     <i class="fas fa-bible" style="color: var(--accent-green); font-size: 1.5rem;"></i>
                     <div style="flex: 1;">
-                        <strong style="color: var(--accent-green);">${title}</strong>
-                        <p style="margin: 5px 0 0; font-size: 0.85rem; color: var(--text-sub);">${body}</p>
+                        <strong style="color: var(--accent-green);">${escapeHTML(title)}</strong>
+                        <p style="margin: 5px 0 0; font-size: 0.85rem; color: var(--text-sub);">${escapeHTML(body)}</p>
                     </div>
                     <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">&times;</button>
                 </div>
@@ -878,24 +893,22 @@
             setTimeout(() => notifElement.remove(), 8000);
         }
 
-        // Show notification banner if not granted
-function checkNotificationStatus() {
-    // Check if Notification API exists in browser
-    if (typeof Notification !== 'undefined' && Notification.permission === 'default' && currentUser) {
-        const hasSeenBanner = localStorage.getItem('notif_banner_shown');
-        if (!hasSeenBanner) {
-            setTimeout(() => {
-                const banner = document.getElementById('notifPermissionBanner');
-                if (banner) banner.style.display = 'flex';
-                localStorage.setItem('notif_banner_shown', 'true');
-            }, 2000);
+        function checkNotificationStatus() {
+            if (typeof Notification !== 'undefined' && Notification.permission === 'default' && currentUser) {
+                const hasSeenBanner = localStorage.getItem('notif_banner_shown');
+                if (!hasSeenBanner) {
+                    setTimeout(() => {
+                        const banner = document.getElementById('notifPermissionBanner');
+                        if (banner) banner.style.display = 'flex';
+                        localStorage.setItem('notif_banner_shown', 'true');
+                    }, 2000);
+                }
+            }
         }
-    }
-}
 
-        window.enableNotifications = function() {
+        window.enableNotifications = async function() {
             document.getElementById('notifPermissionBanner').style.display = 'none';
-            requestNotificationPermission();
+            await requestNotificationPermission();
         };
 
         // --- NOTIFICATION PANEL FUNCTIONS ---
@@ -930,12 +943,7 @@ function checkNotificationStatus() {
             if (!container) return;
             
             if (notifications.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-notifications">
-                        <i class="fas fa-bell-slash" style="font-size: 3rem; opacity: 0.3; margin-bottom: 10px; display: block;"></i>
-                        <p>No notifications yet</p>
-                    </div>
-                `;
+                container.innerHTML = `<div class="empty-notifications"><i class="fas fa-bell-slash" style="font-size: 3rem; opacity: 0.3; margin-bottom: 10px; display: block;"></i><p>No notifications yet</p></div>`;
                 return;
             }
             
@@ -951,31 +959,8 @@ function checkNotificationStatus() {
         window.showNotificationDetail = function(title, message, time) {
             const modal = document.createElement('div');
             modal.className = 'modal-overlay-temp';
-            modal.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.85);
-                backdrop-filter: blur(8px);
-                z-index: 10000;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-            `;
-            modal.innerHTML = `
-                <div style="background: var(--bg-card); border-radius: 32px; padding: 30px; max-width: 400px; width: 90%; margin: 20px; animation: fadeInUp 0.3s ease;">
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <i class="fas fa-bible" style="font-size: 3rem; color: var(--accent-gold);"></i>
-                    </div>
-                    <h3 style="color: var(--accent-green); margin-bottom: 10px;">${escapeHTML(title)}</h3>
-                    <p style="color: var(--text-sub); font-size: 0.85rem; margin-bottom: 15px;">${escapeHTML(time)}</p>
-                    <p style="color: var(--text-main); line-height: 1.6;">${escapeHTML(message)}</p>
-                    <button class="btn-primary" style="margin-top: 25px; width: 100%; padding: 12px; border-radius: 30px; background: var(--accent-green); color: white; border: none; cursor: pointer;" onclick="this.closest('.modal-overlay-temp').remove()">Close</button>
-                </div>
-            `;
+            modal.style.cssText = `position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 10000; display: flex; align-items: center; justify-content: center; cursor: pointer;`;
+            modal.innerHTML = `<div style="background: var(--bg-card); border-radius: 32px; padding: 30px; max-width: 400px; width: 90%; margin: 20px; animation: fadeInUp 0.3s ease;"><div style="text-align: center; margin-bottom: 20px;"><i class="fas fa-bible" style="font-size: 3rem; color: var(--accent-gold);"></i></div><h3 style="color: var(--accent-green); margin-bottom: 10px;">${escapeHTML(title)}</h3><p style="color: var(--text-sub); font-size: 0.85rem; margin-bottom: 15px;">${escapeHTML(time)}</p><p style="color: var(--text-main); line-height: 1.6;">${escapeHTML(message)}</p><button class="btn-primary" style="margin-top: 25px; width: 100%; padding: 12px; border-radius: 30px; background: var(--accent-green); color: white; border: none; cursor: pointer;" onclick="this.closest('.modal-overlay-temp').remove()">Close</button></div>`;
             modal.onclick = (e) => { if(e.target === modal) modal.remove(); };
             document.body.appendChild(modal);
             document.getElementById('notificationPanel').classList.remove('open');
@@ -1058,17 +1043,7 @@ function checkNotificationStatus() {
                 container.innerHTML = snapshot.docs.map(doc => {
                     const event = doc.data();
                     const eventDate = event.date?.toDate() || new Date();
-                    return `
-                        <div class="content-card" onclick="window.location.href='event.html'">
-                            <div class="content-icon"><i class="fas fa-calendar-day"></i></div>
-                            <div style="flex:1;">
-                                <h4 style="font-weight: 800; color: var(--text-main); font-size:1.1rem; margin-bottom: 2px;">${escapeHTML(event.title || 'Event')}</h4>
-                                <p style="font-size: 0.8rem; color: var(--accent-green); font-weight:600; margin-bottom: 2px;">${moment(eventDate).format('dddd, MMMM D • h:mm A')}</p>
-                                <p style="font-size: 0.75rem; color: var(--text-sub);"><i class="fas fa-map-marker-alt"></i> ${escapeHTML(event.location || 'Prayer Dome')}</p>
-                            </div>
-                            <i class="fas fa-chevron-right" style="color: var(--border-color);"></i>
-                        </div>
-                    `;
+                    return `<div class="content-card" onclick="window.location.href='event.html'"><div class="content-icon"><i class="fas fa-calendar-day"></i></div><div style="flex:1;"><h4 style="font-weight: 800; color: var(--text-main); font-size:1.1rem; margin-bottom: 2px;">${escapeHTML(event.title || 'Event')}</h4><p style="font-size: 0.8rem; color: var(--accent-green); font-weight:600; margin-bottom: 2px;">${moment(eventDate).format('dddd, MMMM D • h:mm A')}</p><p style="font-size: 0.75rem; color: var(--text-sub);"><i class="fas fa-map-marker-alt"></i> ${escapeHTML(event.location || 'Prayer Dome')}</p></div><i class="fas fa-chevron-right" style="color: var(--border-color);"></i></div>`;
                 }).join('');
             } catch (error) { console.error("Error loading events:", error); }
         }
@@ -1084,15 +1059,7 @@ function checkNotificationStatus() {
                 }
                 container.innerHTML = snapshot.docs.map(doc => {
                     const t = doc.data();
-                    return `
-                        <div class="content-card" onclick="window.location.href='testimony.html'" style="border-left-color: var(--accent-gold);">
-                            <div class="content-icon" style="background: rgba(212, 175, 55, 0.1); color: var(--accent-gold);"><i class="fas fa-quote-left"></i></div>
-                            <div style="flex: 1;">
-                                <p style="font-size: 0.9rem; font-style: italic; color: var(--text-main); line-height: 1.5;">"${escapeHTML(t.content?.substring(0, 100))}${t.content?.length > 100 ? '...' : ''}"</p>
-                                <p style="font-size: 0.75rem; color: var(--accent-gold); font-weight:700; margin-top:8px;">— ${escapeHTML(t.author || 'Anonymous')}</p>
-                            </div>
-                        </div>
-                    `;
+                    return `<div class="content-card" onclick="window.location.href='testimony.html'" style="border-left-color: var(--accent-gold);"><div class="content-icon" style="background: rgba(212, 175, 55, 0.1); color: var(--accent-gold);"><i class="fas fa-quote-left"></i></div><div style="flex: 1;"><p style="font-size: 0.9rem; font-style: italic; color: var(--text-main); line-height: 1.5;">"${escapeHTML(t.content?.substring(0, 100))}${t.content?.length > 100 ? '...' : ''}"</p><p style="font-size: 0.75rem; color: var(--accent-gold); font-weight:700; margin-top:8px;">— ${escapeHTML(t.author || 'Anonymous')}</p></div></div>`;
                 }).join('');
             } catch (error) { console.error("Error loading testimonies:", error); }
         }
@@ -1141,7 +1108,11 @@ function checkNotificationStatus() {
                     if (btnFinance && isFinance) btnFinance.style.display = 'inline-flex';
                     await checkAndShowAdminTab(user);
                     
-                    // Initialize notifications after login
+                    // CRITICAL: Request notification permission and save token AFTER login
+                    setTimeout(async () => {
+                        await requestNotificationPermission();
+                    }, 2000);
+                    
                     checkNotificationStatus();
                     handleForegroundMessages();
                 } catch (e) { console.error("Error processing user state:", e); }
@@ -1167,6 +1138,7 @@ function checkNotificationStatus() {
             })();
             const toast = document.createElement('div');
             toast.className = 'toast';
+            if (type === 'error') toast.classList.add('error');
             toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i> ${message}`;
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3500);
