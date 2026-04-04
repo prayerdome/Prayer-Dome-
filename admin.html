@@ -845,86 +845,107 @@
         // ==================== CONTENT ====================
         window.loadContent = async function(){ const col=document.getElementById('contentFilter').value, tbody=document.getElementById('listContent'); if(tbody) tbody.innerHTML='<td colspan="4">Loading...<\/td>'; try{ const snap=await getDocs(query(collection(db,col),orderBy("timestamp","desc"),limit(30))); if(snap.empty){ if(tbody) tbody.innerHTML=`<td colspan="4">No ${col}<\/td>`; return; } let html=''; snap.forEach(d=>{ const data=d.data(); const text=data.text||data.content||''; html+=`<tr><td>${data.timestamp?moment(data.timestamp.toDate()).format('MMM D, YYYY'):'N/A'}</td><td><strong>${escapeHTML(data.name||data.author||'Anonymous')}</strong></td><td title="${escapeHTML(text)}">${escapeHTML(text).substring(0,50)}...</td><td><button class="btn btn-sm btn-danger" onclick="deleteRecord('${col}','${d.id}')">Delete</button></td></tr>`; }); if(tbody) tbody.innerHTML=html; } catch(e){ console.error(e); } };
         
-        // ==================== NOTIFICATIONS WITH PUSH ====================
-        window.sendPushNotificationToAll = async function(title, message, type = 'general') {
-            if (!adminUser) return;
-            
-            showLoading();
-            try {
-                // Get all user tokens
-                const tokensSnapshot = await getDocs(collection(db, "userTokens"));
-                const tokens = [];
-                tokensSnapshot.forEach(doc => { 
-                    if (doc.data().active !== false && doc.data().token) {
-                        tokens.push(doc.data().token);
-                    }
-                });
-                
-                if (tokens.length === 0) { 
-                    toast("No active tokens found", "info");
-                    hideLoading();
-                    return; 
-                }
-                
-                toast(`Sending to ${tokens.length} devices...`, "info");
-                
-                // Send to FCM using HTTP API
-                const response = await fetch('https://fcm.googleapis.com/fcm/send', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json', 
-                        'Authorization': `key=${FCM_SERVER_KEY}`
-                    },
-                    body: JSON.stringify({
-                        registration_ids: tokens.slice(0, 1000),
-                        notification: { 
-                            title: title, 
-                            body: message, 
-                            icon: 'https://i.ibb.co/TB5Fx4tb/logo-0.png',
-                            badge: 'https://i.ibb.co/TB5Fx4tb/logo-0.png',
-                            vibrate: [200, 100, 200],
-                            sound: 'default',
-                            requireInteraction: true
-                        },
-                        data: { 
-                            click_action: 'FLUTTER_NOTIFICATION_CLICK', 
-                            screen: 'home',
-                            url: '/index.html'
-                        }
-                    })
-                });
-                
-                const result = await response.json();
-                console.log("FCM Response:", result);
-                
-                if (result.failure) {
-                    toast(`Sent to ${result.success} devices, ${result.failure} failed`, "warning");
-                } else {
-                    toast(`✅ Notification sent to ${result.success || tokens.length} devices`, "success");
-                }
-                
-                // Also save to Firestore for in-app notifications
-                await setDoc(doc(db, "notifications", "latest_alert"), { 
-                    title: title, 
-                    message: message, 
-                    type: type, 
-                    active: true, 
-                    createdAt: serverTimestamp(), 
-                    createdBy: adminUser?.email,
-                    sentTo: tokens.length,
-                    sentAt: serverTimestamp()
-                }, { merge: true });
-                
-                await logAdminActivity('notification_sent', { title: title, type: type, recipients: tokens.length });
-                confetti({ particleCount: 150, spread: 100 });
-                
-            } catch (error) { 
-                console.error("Error sending push notification:", error); 
-                toast("Error sending notification: " + error.message, "error"); 
-            } finally {
-                hideLoading();
+        // ==================== NOTIFICATIONS WITH PUSH (SIMPLIFIED - QUEUES TO CLOUD FUNCTION) ====================
+window.sendPushNotificationToAll = async function(title, message, type = 'general') {
+    if (!adminUser) {
+        toast("Admin not logged in", "error");
+        return;
+    }
+    
+    showLoading();
+    try {
+        // Get all user tokens
+        const tokensSnapshot = await getDocs(collection(db, "userTokens"));
+        const tokens = [];
+        tokensSnapshot.forEach(doc => { 
+            if (doc.data().active !== false && doc.data().token) {
+                tokens.push(doc.data().token);
             }
-        };
+        });
+        
+        if (tokens.length === 0) { 
+            toast("❌ No active tokens found. Users need to enable notifications first.", "error");
+            hideLoading();
+            return; 
+        }
+        
+        // Save to Firestore - Cloud Function will send the actual notifications
+        await addDoc(collection(db, "notifications"), {
+            title: title,
+            message: message,
+            type: type,
+            tokens: tokens,
+            status: 'pending',
+            createdAt: serverTimestamp(),
+            createdBy: adminUser?.email
+        });
+        
+        toast(`✅ Notification queued! Will be sent to ${tokens.length} users.`, "success");
+        
+        // Also save to latest_alert for in-app notifications
+        await setDoc(doc(db, "notifications", "latest_alert"), { 
+            title: title, 
+            message: message, 
+            type: type, 
+            active: true, 
+            createdAt: serverTimestamp(), 
+            createdBy: adminUser?.email,
+            sentTo: tokens.length
+        }, { merge: true });
+        
+        await logAdminActivity('notification_sent', { title: title, type: type, recipients: tokens.length });
+        confetti({ particleCount: 150, spread: 100 });
+        
+    } catch (error) { 
+        console.error("Error saving notification:", error); 
+        toast("Error: " + error.message, "error"); 
+    } finally {
+        hideLoading();
+    }
+};
+
+window.testNotification = async function() {
+    const title = "🔔 Test Notification";
+    const message = "This is a test notification from Prayer Dome Admin Panel.";
+    
+    if (!confirm("Send test notification to YOUR device only?")) return;
+    
+    if (!adminUser) {
+        toast("Admin not logged in", "error");
+        return;
+    }
+    
+    showLoading();
+    try {
+        // Get current admin's token
+        const tokenDoc = await getDoc(doc(db, "userTokens", adminUser.uid));
+        if (!tokenDoc.exists() || !tokenDoc.data().token) {
+            toast("❌ No token found for your device.", "error");
+            toast("Please enable notifications in your browser first.", "info");
+            hideLoading();
+            return;
+        }
+        
+        const token = tokenDoc.data().token;
+        
+        // Save test notification to Firestore - Cloud Function will send
+        await addDoc(collection(db, "test_notifications"), {
+            title: title,
+            message: message,
+            token: token,
+            status: 'pending',
+            createdAt: serverTimestamp(),
+            createdBy: adminUser?.email
+        });
+        
+        toast("✅ Test notification queued! Check your device in a few seconds.", "success");
+        
+    } catch (error) {
+        toast("Error: " + error.message, "error");
+    } finally {
+        hideLoading();
+    }
+};
 
         window.sendNotification = async function() {
             const title = document.getElementById('notifTitle').value;
