@@ -2,382 +2,149 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Prayer Dome | Ultimate Bible Quiz</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fredoka+One&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         :root {
-            --accent-green: #22c55e;
-            --accent-gold: #f59e0b;
-            --accent-red: #ef4444;
+            --accent-green: #15803d;
+            --accent-green-light: #22c55e;
+            --accent-gold: #d4af37;
             --accent-blue: #3b82f6;
             --accent-purple: #8b5cf6;
+            --accent-red: #ef4444;
             --bg-primary: #f8fafc;
-            --bg-secondary: #ffffff;
             --bg-card: #ffffff;
-            --text-primary: #0f172a;
-            --text-secondary: #334155;
-            --border-color: #e2e8f0;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-            --shadow-lg: 0 20px 35px -10px rgba(0, 0, 0, 0.1);
-            --shadow-glow: 0 0 20px rgba(34, 197, 94, 0.4);
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            transition: all 0.3s;
-            min-height: 100vh;
-            padding-bottom: 60px;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-glow: 0 10px 30px rgba(21, 128, 61, 0.15);
+            --glass-bg: rgba(255, 255, 255, 0.7);
         }
 
         body.dark-mode {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: #1e293b;
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --border-color: #334155;
+            --bg-primary: #020617; --bg-card: #0f172a; --text-main: #f8fafc; --text-sub: #94a3b8; 
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --shadow-glow: 0 10px 30px rgba(21, 128, 61, 0.1);
+            --glass-bg: rgba(15, 23, 42, 0.7);
         }
 
-        /* Header */
-        .quiz-header {
-            background: linear-gradient(135deg, var(--accent-green), #166534);
-            padding: 15px 25px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: var(--shadow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-main); line-height: 1.6; transition: 0.4s; padding-bottom: 40px; overflow-x: hidden;}
+
+        /* --- HEADER --- */
+        header {
+            background: linear-gradient(135deg, var(--accent-green), #064e3b); padding: 15px 20px; display: flex; align-items: center;
+            justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow);
+            transition: all 0.3s;
         }
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white;}
+        .logo-ring { width: 45px; height: 45px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 2px; box-shadow: var(--shadow-glow); }
+        .logo-ring img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px;}
 
-        .header-left { display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; color: white;}
-        .header-icon { width: 45px; height: 45px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
-        .header-title h1 { font-size: 1.4rem; font-weight: 800; }
-        .header-title p { font-size: 0.75rem; opacity: 0.9; }
+        .main-container { max-width: 1000px; margin: 30px auto; padding: 0 20px; position: relative; z-index: 5;}
 
-        .header-actions button {
-            background: rgba(255,255,255,0.2); border: none; padding: 10px 20px; border-radius: 40px; color: white; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; gap: 8px; font-weight: 600;
-        }
-        .header-actions button:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
-
-        .main-container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
-
-        /* Stats Bar */
-        .stats-bar {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 20px 30px;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow);
-        }
-
-        .score-display { display: flex; gap: 20px; flex-wrap: wrap; align-items: center;}
-        .score-box { background: linear-gradient(135deg, var(--accent-green), #16a34a); padding: 8px 20px; border-radius: 40px; color: white; font-weight: 800; font-size: 1.1rem; box-shadow: var(--shadow-glow); display: flex; align-items: center; gap: 8px;}
-        .level-box { background: rgba(245, 158, 11, 0.1); padding: 8px 20px; border-radius: 40px; font-weight: 800; color: var(--accent-gold); border: 2px solid var(--accent-gold); display: flex; align-items: center; gap: 8px;}
-
-        /* Level Grid */
-        .level-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-            background: var(--bg-card);
+        /* --- GLASS CARDS --- */
+        .glass-card {
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; border: 1px solid rgba(255,255,255,0.2); box-shadow: var(--shadow);
+            margin-bottom: 30px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             padding: 30px;
-            border-radius: 32px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow);
         }
+        .dark-mode .glass-card { border: 1px solid rgba(255,255,255,0.05); }
 
-        .level-badge {
-            aspect-ratio: 1;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            background: var(--bg-primary);
-            border: 2px solid var(--border-color);
-            color: var(--text-secondary);
-            position: relative;
-        }
-
-        .level-badge:hover:not(.locked) { transform: translateY(-5px) scale(1.1); box-shadow: var(--shadow-lg); border-color: var(--accent-green); }
-        .level-badge.completed { background: linear-gradient(135deg, var(--accent-green), #16a34a); border-color: var(--accent-green); color: white; }
-        .level-badge.locked { opacity: 0.4; cursor: not-allowed; background: var(--bg-secondary); }
-        .level-badge.locked::after { content: '\f023'; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; font-size: 0.8rem; top: 5px; right: 5px; opacity: 0.5; }
-        .level-badge.current { border: 3px solid var(--accent-gold); transform: scale(1.05); background: rgba(245, 158, 11, 0.1); color: var(--accent-gold); animation: pulseBorder 2s infinite; }
-
-        @keyframes pulseBorder {
-            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
-        }
-
-        /* Active Quiz UI */
-        .quiz-card {
-            background: var(--bg-card);
-            border-radius: 32px;
-            padding: 40px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-lg);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .quiz-top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .streak-counter {
-            font-weight: 800;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1.1rem;
-            transition: 0.3s;
-        }
+        /* --- STATS BAR --- */
+        .stats-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .score-display { display: flex; gap: 15px; flex-wrap: wrap; align-items: center;}
+        .score-box { background: linear-gradient(135deg, var(--accent-green), var(--accent-green-light)); padding: 10px 25px; border-radius: 40px; color: white; font-weight: 800; font-size: 1.1rem; box-shadow: var(--shadow-glow); display: flex; align-items: center; gap: 8px;}
+        .level-box { background: rgba(212, 175, 55, 0.1); padding: 10px 25px; border-radius: 40px; font-weight: 800; color: var(--accent-gold); border: 2px solid var(--accent-gold); display: flex; align-items: center; gap: 8px;}
+        .streak-counter { font-weight: 800; color: var(--text-sub); display: flex; align-items: center; gap: 8px; font-size: 1.1rem; transition: 0.3s; }
         .streak-counter.on-fire { color: #f97316; text-shadow: 0 0 10px rgba(249, 115, 22, 0.4); animation: fireShake 0.5s infinite alternate; }
 
-        @keyframes fireShake {
-            0% { transform: rotate(-2deg) scale(1.1); }
-            100% { transform: rotate(2deg) scale(1.1); }
-        }
+        @keyframes fireShake { 0% { transform: rotate(-2deg) scale(1.1); } 100% { transform: rotate(2deg) scale(1.1); } }
 
-        .timer-container {
-            width: 100%;
-            height: 12px;
-            background: var(--bg-primary);
-            border-radius: 10px;
-            margin-bottom: 30px;
-            overflow: hidden;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        /* --- LEVEL GRID MAP --- */
+        .level-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 15px;
         }
+        .level-badge {
+            aspect-ratio: 1; border-radius: 22px; display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.2rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: var(--bg-primary); border: 2px solid var(--border-color); color: var(--text-sub); position: relative;
+        }
+        .level-badge:hover:not(.locked) { transform: translateY(-5px) scale(1.1); box-shadow: var(--shadow); border-color: var(--accent-green); }
+        .level-badge.completed { background: linear-gradient(135deg, var(--accent-green), var(--accent-green-light)); border-color: var(--accent-green); color: white; }
+        .level-badge.locked { opacity: 0.4; cursor: not-allowed; background: var(--bg-card); }
+        .level-badge.locked::after { content: '\f023'; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; font-size: 0.8rem; top: 8px; right: 8px; opacity: 0.5; }
+        .level-badge.current { border: 3px solid var(--accent-gold); transform: scale(1.05); background: rgba(212, 175, 55, 0.1); color: var(--accent-gold); animation: pulseBorder 2s infinite; }
 
-        .timer-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-green), #4ade80);
-            width: 100%;
-            border-radius: 10px;
-            transition: width 1s linear, background-color 0.3s;
-        }
+        @keyframes pulseBorder { 0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); } 50% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); } }
+
+        /* --- ACTIVE QUIZ UI --- */
+        .quiz-top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid var(--border-color); }
+        
+        .timer-container { width: 100%; height: 12px; background: var(--bg-primary); border-radius: 10px; margin-bottom: 30px; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
+        .timer-fill { height: 100%; background: linear-gradient(90deg, var(--accent-green), var(--accent-green-light)); width: 100%; border-radius: 10px; transition: width 1s linear, background-color 0.3s; }
         .timer-fill.warning { background: linear-gradient(90deg, var(--accent-gold), #fcd34d); }
         .timer-fill.danger { background: linear-gradient(90deg, var(--accent-red), #fca5a5); animation: pulseDanger 0.5s infinite alternate; }
 
-        @keyframes pulseDanger {
-            from { opacity: 1; }
-            to { opacity: 0.6; }
-        }
+        @keyframes pulseDanger { from { opacity: 1; } to { opacity: 0.6; } }
 
-        .question-text {
-            font-family: 'Fredoka One', 'Inter', sans-serif;
-            font-size: 1.8rem;
-            line-height: 1.4;
-            margin-bottom: 35px;
-            color: var(--text-primary);
-            text-align: center;
-        }
+        .question-text { font-family: 'Fredoka One', 'Inter', sans-serif; font-size: 1.8rem; line-height: 1.4; margin-bottom: 35px; color: var(--text-main); text-align: center; }
 
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
         .option-btn {
-            background: var(--bg-primary);
-            border: 2px solid var(--border-color);
-            border-radius: 20px;
-            padding: 20px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            text-align: left;
+            background: var(--bg-primary); border: 2px solid var(--border-color); border-radius: 20px; padding: 20px;
+            font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: var(--text-main); display: flex; align-items: center; gap: 15px; text-align: left;
         }
-
         .option-btn:hover:not(:disabled) {
-            border-color: var(--accent-blue);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
-            background: rgba(59, 130, 246, 0.05);
+            border-color: var(--accent-blue); transform: translateY(-4px); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15); background: rgba(59, 130, 246, 0.05);
         }
 
-        .option-letter {
-            width: 35px;
-            height: 35px;
-            background: var(--bg-card);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            color: var(--text-secondary);
-            border: 2px solid var(--border-color);
-            flex-shrink: 0;
-        }
+        .option-letter { width: 35px; height: 35px; background: var(--bg-card); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--text-sub); border: 2px solid var(--border-color); flex-shrink: 0; }
 
-        .option-btn.correct {
-            background: linear-gradient(135deg, var(--accent-green), #16a34a);
-            border-color: var(--accent-green);
-            color: white;
-            animation: correctPop 0.5s ease;
-        }
+        .option-btn.correct { background: linear-gradient(135deg, var(--accent-green), var(--accent-green-light)); border-color: var(--accent-green); color: white; animation: correctPop 0.5s ease; }
         .option-btn.correct .option-letter { color: var(--accent-green); border-color: white; }
 
-        .option-btn.wrong {
-            background: linear-gradient(135deg, var(--accent-red), #dc2626);
-            border-color: var(--accent-red);
-            color: white;
-            animation: wrongShake 0.4s ease;
-        }
+        .option-btn.wrong { background: linear-gradient(135deg, var(--accent-red), #dc2626); border-color: var(--accent-red); color: white; animation: wrongShake 0.4s ease; }
         .option-btn.wrong .option-letter { color: var(--accent-red); border-color: white; }
+        .option-btn.hidden { opacity: 0; pointer-events: none; transform: scale(0.8); }
 
-        .option-btn.hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.8);
-        }
-
-        @keyframes correctPop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(34,197,94,0.6); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes wrongShake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-10px); }
-            40%, 80% { transform: translateX(10px); }
-        }
+        @keyframes correctPop { 0% { transform: scale(1); } 50% { transform: scale(1.05); box-shadow: var(--shadow-glow); } 100% { transform: scale(1); } }
+        @keyframes wrongShake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-10px); } 40%, 80% { transform: translateX(10px); } }
 
         /* Power-ups */
-        .powerups-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .powerup-btn {
-            background: var(--bg-card);
-            border: 2px solid var(--accent-blue);
-            color: var(--accent-blue);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: 0.3s;
-            position: relative;
-        }
-
-        .powerup-btn:hover:not(:disabled) {
-            background: var(--accent-blue);
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
-        }
-
-        .powerup-btn:disabled {
-            border-color: var(--border-color);
-            color: var(--text-secondary);
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-
-        .powerup-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--accent-red);
-            color: white;
-            font-size: 10px;
-            font-weight: 800;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .powerups-container { display: flex; justify-content: center; gap: 15px; }
+        .powerup-btn { background: var(--bg-card); border: 2px solid var(--accent-blue); color: var(--accent-blue); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; transition: 0.3s; position: relative; }
+        .powerup-btn:hover:not(:disabled) { background: var(--accent-blue); color: white; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4); }
+        .powerup-btn:disabled { border-color: var(--border-color); color: var(--text-sub); cursor: not-allowed; opacity: 0.5; }
+        .powerup-count { position: absolute; top: -5px; right: -5px; background: var(--accent-red); color: white; font-size: 9px; font-weight: 800; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
         /* Buttons */
         .btn-modern {
-            padding: 14px 32px;
-            border-radius: 40px;
-            font-weight: 700;
-            cursor: pointer;
-            border: none;
-            background: linear-gradient(135deg, var(--accent-green), #16a34a);
-            color: white;
-            font-size: 1.1rem;
-            transition: all 0.3s;
-            display: inline-flex;
-            gap: 10px;
-            align-items: center;
-            justify-content: center;
+            padding: 14px 32px; border-radius: 40px; font-weight: 700; cursor: pointer; border: none; background: linear-gradient(135deg, var(--accent-green), var(--accent-green-light)); color: white; font-size: 1.1rem; transition: all 0.3s; display: inline-flex; gap: 10px; align-items: center; justify-content: center;
         }
-        .btn-modern:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(34,197,94,0.4); }
+        .btn-modern:hover:not(:disabled) { transform: translateY(-3px); box-shadow: var(--shadow-glow); }
         .btn-modern:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* Leaderboard */
         .leaderboard-card {
-            background: var(--bg-card);
-            border-radius: 32px;
-            padding: 30px;
-            margin-top: 40px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow);
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius: 32px; padding: 30px; margin-top: 40px; border: 1px solid rgba(255,255,255,0.2); box-shadow: var(--shadow);
         }
-
-        .lb-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border-color);
-            transition: 0.2s;
-        }
-        .lb-item:hover { background: rgba(245, 158, 11, 0.05); border-radius: 16px; transform: scale(1.01); }
-        .lb-rank { font-weight: 800; font-size: 1.2rem; width: 40px; color: var(--text-secondary); }
-        .lb-item:nth-child(1) .lb-rank { color: #fbbf24; font-size: 1.5rem; } /* Gold */
-        .lb-item:nth-child(2) .lb-rank { color: #9ca3af; font-size: 1.3rem; } /* Silver */
-        .lb-item:nth-child(3) .lb-rank { color: #b45309; font-size: 1.2rem; } /* Bronze */
-        
-        .lb-score { background: var(--accent-green); color: white; padding: 6px 15px; border-radius: 30px; font-weight: 800; }
+        .lb-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border-color); transition: 0.2s; }
+        .lb-item:hover { background: rgba(212, 175, 55, 0.05); border-radius: 16px; transform: scale(1.01); }
+        .lb-rank { font-weight: 800; font-size: 1.2rem; width: 40px; color: var(--text-sub); }
+        .lb-item:nth-child(1) .lb-rank { color: #fbbf24; font-size: 1.5rem; } 
+        .lb-item:nth-child(2) .lb-rank { color: #9ca3af; font-size: 1.3rem; } 
+        .lb-item:nth-child(3) .lb-rank { color: #b45309; font-size: 1.2rem; } 
+        .lb-score { background: var(--accent-green); color: white; padding: 6px 15px; border-radius: 30px; font-weight: 800; font-size: 0.85rem;}
 
         /* Modals */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(8px); }
@@ -385,17 +152,22 @@
         @keyframes modalPop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .trophy-container { position: relative; display: inline-block; margin-bottom: 20px; }
-        .trophy-icon { font-size: 100px; color: var(--accent-gold); animation: floatTrophy 3s ease-in-out infinite; text-shadow: 0 10px 20px rgba(245, 158, 11, 0.4); }
-        .trophy-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 150px; height: 150px; background: radial-gradient(circle, rgba(245,158,11,0.4) 0%, transparent 70%); z-index: -1; animation: pulseGlow 2s infinite; }
+        .trophy-icon { font-size: 100px; color: var(--accent-gold); animation: floatTrophy 3s ease-in-out infinite; text-shadow: 0 10px 20px rgba(212, 175, 55, 0.4); }
+        .trophy-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 150px; height: 150px; background: radial-gradient(circle, rgba(212,175,55,0.4) 0%, transparent 70%); z-index: -1; animation: pulseGlow 2s infinite; }
 
         @keyframes floatTrophy { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         @keyframes pulseGlow { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; } 50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; } }
 
         /* Toast */
         .toast-container { position: fixed; top: 20px; right: 20px; z-index: 3000; }
-        .toast { background: var(--bg-card); padding: 15px 25px; border-radius: 40px; margin-bottom: 10px; box-shadow: var(--shadow-lg); border-left: 5px solid var(--accent-green); display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 1rem; animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .toast { background: var(--bg-card); padding: 15px 25px; border-radius: 40px; margin-bottom: 10px; box-shadow: var(--shadow-lg); border-left: 5px solid var(--accent-green); display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 1rem; animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); color: var(--text-main);}
         .toast.error { border-left-color: var(--accent-red); }
         @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        /* FOOTER */
+        footer { padding: 40px 20px; text-align: center; background: transparent; margin-top: 40px;}
+        .footer-logo { font-size: 1.5rem; font-weight: 900; color: var(--accent-green); margin-bottom: 10px; }
+        .copyright { font-size: 12px; color: var(--text-sub); font-weight: 600; letter-spacing: 0.5px; }
 
         @media (max-width: 768px) {
             .options-grid { grid-template-columns: 1fr; gap: 12px; }
@@ -409,22 +181,20 @@
 </head>
 <body>
 
-    <!-- Audio Elements (Using reliable standard sounds) -->
-    <audio id="soundCorrect" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3" preload="auto"></audio>
-    <audio id="soundWrong" src="https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3" preload="auto"></audio>
+    <!-- Audio Elements for UI events (Level Up, Tick) -->
     <audio id="soundLevelUp" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" preload="auto"></audio>
     <audio id="soundTick" src="https://assets.mixkit.co/active_storage/sfx/2044/2044-preview.mp3" preload="auto"></audio>
 
-    <header class="quiz-header">
-        <a href="index.html" class="header-left">
-            <div class="header-icon"><i class="fas fa-crown"></i></div>
-            <div class="header-title">
-                <h1>Prayer Dome Quiz</h1>
-                <p>50 Levels • 500 Questions</p>
+    <header>
+        <a href="index.html" class="brand">
+            <div class="logo-ring"><img src="https://i.ibb.co/TB5Fx4tb/logo-0.png" alt="PD Logo"></div>
+            <div style="display: flex; flex-direction: column;">
+                <h1 style="font-size: 1.1rem; font-weight: 900; letter-spacing: -0.5px; margin: 0;">PRAYER DOME</h1>
+                <p style="font-size: 0.7rem; opacity: 0.9; margin: 0; color: var(--text-sub); font-weight: 600;">BIBLE QUIZ</p>
             </div>
         </a>
-        <div class="header-actions">
-            <button onclick="toggleDarkMode()"><i class="fas fa-moon"></i></button>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <button onclick="toggleDarkMode()" style="background: var(--bg-primary); color:var(--text-main); border:1px solid var(--border-color); padding:8px 12px; border-radius:20px; cursor:pointer;"><i class="fas fa-moon"></i></button>
         </div>
     </header>
 
@@ -433,34 +203,34 @@
     <div class="main-container">
         
         <!-- Stats Bar -->
-        <div class="stats-bar">
+        <div class="stats-bar glass-card">
             <div class="score-display">
                 <div class="score-box"><i class="fas fa-star"></i> <span id="totalScore">0</span> Pts</div>
                 <div class="level-box"><i class="fas fa-map-marker-alt"></i> Level <span id="currentLevelDisplay">1</span>/50</div>
                 <div class="streak-counter" id="streakCounter"><i class="fas fa-fire"></i> Streak: 0</div>
             </div>
-            <button class="btn-modern" style="padding: 10px 20px; font-size: 0.9rem; background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color);" onclick="resetProgress()">
-                <i class="fas fa-redo"></i> Reset
+            <button class="btn-modern" style="padding: 10px 20px; font-size: 0.9rem; background: var(--bg-primary); color: var(--text-main); border: 1px solid var(--border-color); box-shadow: none;" onclick="resetProgress()">
+                <i class="fas fa-redo"></i> Reset Progress
             </button>
         </div>
 
         <!-- Level Map Grid -->
         <div id="levelMap" style="display: block;">
-            <h2 style="margin-bottom: 20px; color: var(--accent-green);"><i class="fas fa-map-signs"></i> Journey Map</h2>
+            <h2 style="margin-bottom: 20px; color: var(--accent-green); font-weight: 800;"><i class="fas fa-map-signs"></i> Journey Map</h2>
             <div class="level-grid" id="levelGrid"></div>
         </div>
 
         <!-- Active Quiz Area -->
-        <div class="quiz-card" id="quizActiveScreen" style="display: none;">
+        <div class="glass-card" id="quizActiveScreen" style="display: none;">
             
             <div class="quiz-top-bar">
-                <div style="font-weight: 700; color: var(--accent-gold); font-size: 1.2rem;">
-                    Question <span id="qCurrent">1</span>/<span id="qTotal">10</span>
+                <div style="font-weight: 800; color: var(--accent-gold); font-size: 1.2rem; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-question-circle"></i> Question <span id="qCurrent">1</span>/<span id="qTotal">10</span>
                 </div>
                 
                 <!-- Power-ups -->
                 <div class="powerups-container">
-                    <button class="powerup-btn" id="btnFifty" onclick="useFiftyFifty()" title="50/50">
+                    <button class="powerup-btn" id="btnFifty" onclick="useFiftyFifty()" title="50/50 Lifeline">
                         <i class="fas fa-magic"></i>
                         <span class="powerup-count" id="countFifty">3</span>
                     </button>
@@ -488,8 +258,8 @@
         <!-- Leaderboard -->
         <div class="leaderboard-card" id="leaderboardSection">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                <h2 style="color: var(--accent-gold);"><i class="fas fa-globe"></i> Global Top 10</h2>
-                <button class="btn-modern" style="padding: 8px 16px; font-size: 0.85rem;" onclick="loadLeaderboard()"><i class="fas fa-sync-alt"></i> Refresh</button>
+                <h2 style="color: var(--accent-gold); font-weight: 800;"><i class="fas fa-globe"></i> Global Top 10</h2>
+                <button class="btn-modern" style="padding: 8px 16px; font-size: 0.85rem; background: var(--bg-primary); color: var(--text-main); border: 1px solid var(--border-color); box-shadow: none;" onclick="loadLeaderboard()"><i class="fas fa-sync-alt"></i></button>
             </div>
             <div id="leaderboardList">
                 <div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin" style="font-size: 30px; color: var(--accent-green);"></i></div>
@@ -506,15 +276,21 @@
                 <i class="fas fa-trophy trophy-icon" id="modalIcon"></i>
             </div>
             <h1 style="font-family: 'Fredoka One', cursive; font-size: 2.5rem; color: var(--accent-green); margin-bottom: 10px;" id="modalTitle">LEVEL CLEARED!</h1>
-            <p style="font-size: 1.2rem; margin-bottom: 5px;">Score: <strong style="color: var(--accent-gold);" id="modalScore">0</strong></p>
-            <p style="color: var(--text-secondary); margin-bottom: 30px;" id="modalSubtitle">Great job! You unlocked the next level.</p>
+            <p style="font-size: 1.2rem; margin-bottom: 5px; color: var(--text-main);">Score: <strong style="color: var(--accent-gold); font-size: 1.5rem;" id="modalScore">0</strong></p>
+            <p style="color: var(--text-sub); margin-bottom: 30px; font-weight: 500;" id="modalSubtitle">Great job! You unlocked the next level.</p>
             
             <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                <button class="btn-modern" id="modalActionBtn" onclick="continueToMap()" style="flex: 1; min-width: 150px;">Continue <i class="fas fa-map"></i></button>
-                <button class="btn-modern" style="background: var(--bg-primary); color: var(--text-primary); border: 2px solid var(--border-color); flex: 1; min-width: 150px;" onclick="retryLevel()"><i class="fas fa-redo"></i> Retry</button>
+                <button class="btn-modern" id="modalActionBtn" onclick="continueToMap()" style="flex: 1; min-width: 150px;">Continue <i class="fas fa-map-marked-alt"></i></button>
+                <button class="btn-modern" style="background: var(--bg-primary); color: var(--text-main); border: 2px solid var(--border-color); flex: 1; min-width: 150px; box-shadow: none;" onclick="retryLevel()"><i class="fas fa-redo"></i> Retry</button>
             </div>
         </div>
     </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-logo" style="font-size: 1.5rem; font-weight: 900; color: var(--accent-green);">PRAYER DOME</div>
+        <p class="copyright" style="font-size: 12px; color: var(--text-sub);">© 2026 PRAYER DOME MINISTRY.</p>
+    </footer>
 
     <!-- Script Logic -->
     <script type="module">
@@ -537,17 +313,57 @@
         const auth = getAuth(app);
         let currentUser = null;
 
+        // --- TTS VOICE ENGINE ("CORRECT" / "WRONG") ---
+        // This makes the device literally speak the words using its built-in voices.
+        function speakWord(word) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop any current speech
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.rate = 1.2; // Slightly faster for punchy game feel
+                utterance.pitch = 1.1; // Slightly higher pitch
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
         // --- MASSIVE QUESTION BANK (150 Diverse Questions) ---
-        const rawQuestions = [["Who created the heavens and the earth?", "Moses", "God", "Abraham", "David", 1],["Who built the ark?", "Noah", "Abraham", "Moses", "David", 0],["What did God create on the first day?", "Sun", "Earth", "Light", "Stars", 2],["Who was the first man?", "Adam", "Eve", "Cain", "Abel", 0],["How many days did it rain during Noah's flood?", "20", "30", "40", "50", 2],["What was the sign of God's covenant with Noah?", "Rainbow", "Dove", "Olive branch", "Cloud", 0],["Who was Abraham's wife?", "Sarah", "Hagar", "Rebekah", "Rachel", 0],["What city did Lot flee from?", "Sodom", "Gomorrah", "Jericho", "Babylon", 0],["Who was Isaac's wife?", "Rebekah", "Rachel", "Leah", "Sarah", 0],["Who was Jacob's twin brother?", "Esau", "Ishmael", "Joseph", "Benjamin", 0],["Who led the Israelites out of Egypt?", "Aaron", "Joshua", "Moses", "Caleb", 2],["What did Moses part to cross the Red Sea?", "Water", "Mountains", "Desert", "River", 0],["How many plagues did God send on Egypt?", "7", "8", "10", "12", 2],["Where did Moses receive the Ten Commandments?", "Sinai", "Ararat", "Zion", "Carmel", 0],["Who was Moses' brother?", "Aaron", "Miriam", "Joshua", "Caleb", 0],["What did the Israelites eat in the wilderness?", "Manna", "Quail", "Bread", "All of these", 3],["Who led the Israelites after Moses?", "Joshua", "Caleb", "Aaron", "Samuel", 0],["What city did Joshua conquer by marching around it?", "Jericho", "Ai", "Jerusalem", "Hebron", 0],["Who was the first high priest of Israel?", "Aaron", "Moses", "Eleazar", "Samuel", 0],["What was the golden calf made from?", "Gold", "Silver", "Bronze", "Wood", 0],["Who was the strongest man in the Bible?", "Samson", "Goliath", "David", "Saul", 0],["Who killed Goliath?", "David", "Saul", "Jonathan", "Samson", 0],["Who was the first king of Israel?", "Saul", "David", "Solomon", "Samuel", 0],["Who was known for his wisdom?", "Solomon", "David", "Daniel", "Joseph", 0],["Who wrote most of the Psalms?", "David", "Moses", "Solomon", "Asaph", 0],["Who was thrown into the lion's den?", "Daniel", "Joseph", "David", "Jeremiah", 0],["Who interpreted Pharaoh's dreams?", "Joseph", "Daniel", "Moses", "Samuel", 0],["Who was the mother of Samuel?", "Hannah", "Elizabeth", "Mary", "Sarah", 0],["Which prophet confronted King Ahab?", "Elijah", "Elisha", "Isaiah", "Jeremiah", 0],["Who was swallowed by a great fish?", "Jonah", "Isaiah", "Jeremiah", "Ezekiel", 0],["Who saw the vision of dry bones?", "Ezekiel", "Isaiah", "Daniel", "Jeremiah", 0],["Which prophet was taken to heaven in a whirlwind?", "Elijah", "Elisha", "Isaiah", "Enoch", 0],["Who was the weeping prophet?", "Jeremiah", "Isaiah", "Ezekiel", "Hosea", 0],["Who prophesied about the virgin birth?", "Isaiah", "Jeremiah", "Micah", "Zechariah", 0],["Which prophet wrote the book of Lamentations?", "Jeremiah", "Isaiah", "Ezekiel", "Daniel", 0],["Who was the last prophet of the Old Testament?", "Malachi", "Zechariah", "Haggai", "Joel", 0],["Where was Jesus born?", "Bethlehem", "Nazareth", "Jerusalem", "Capernaum", 0],["Who baptized Jesus?", "John the Baptist", "Peter", "Andrew", "James", 0],["How many disciples did Jesus have?", "12", "10", "14", "8", 0],["What did Jesus turn into wine?", "Water", "Oil", "Bread", "Wine", 0],["Who denied Jesus three times?", "Peter", "Judas", "John", "Thomas", 0],["Who betrayed Jesus?", "Judas Iscariot", "Peter", "James", "John", 0],["What did Jesus feed 5000 with?", "5 loaves and 2 fish", "7 loaves", "Bread only", "Fish only", 0],["Who walked on water with Jesus?", "Peter", "John", "James", "Andrew", 0],["What was Jesus' first miracle?", "Water to wine", "Healing", "Feeding 5000", "Walking on water", 0],["Who was the mother of Jesus?", "Mary", "Martha", "Elizabeth", "Anna", 0],["Who was raised from the dead after 4 days?", "Lazarus", "Jairus' daughter", "The widow's son", "Tabitha", 0],["What parable is about a lost son?", "Prodigal Son", "Good Samaritan", "Lost Sheep", "Mustard Seed", 0],["Who was the first Christian martyr?", "Stephen", "James", "Peter", "Paul", 0],["Who had a vision of a sheet with animals?", "Peter", "Paul", "John", "James", 0],["Who was converted on the road to Damascus?", "Saul/Paul", "Peter", "Stephen", "Barnabas", 0],["What is the fruit of the Spirit?", "Love, joy, peace", "Faith, hope, love", "Wisdom, knowledge", "Power, glory", 0],["What is the greatest commandment?", "Love God and neighbor", "Keep the Sabbath", "Honor parents", "Do not steal", 0],["What chapter is known as the 'Love Chapter'?", "1 Corinthians 13", "Romans 12", "Ephesians 4", "Galatians 5", 0],["Who wrote Revelation?", "John", "Peter", "Paul", "James", 0],["What is the shortest verse in the Bible?", "Jesus wept", "Rejoice always", "Pray without ceasing", "God is love", 0],["How many books are in the Bible?", "66", "39", "27", "73", 0],["What does 'Emmanuel' mean?", "God with us", "God is love", "Son of God", "Messiah", 0],["Who was the oldest man in the Bible?", "Methuselah", "Noah", "Adam", "Abraham", 0],["What was Paul's name before conversion?", "Saul", "Simon", "Stephen", "Silas", 0],["What is the mark of the beast?", "666", "616", "777", "888", 0]
+        const rawQuestions =[["Who created the heavens and the earth?", "Moses", "God", "Abraham", "David", 1],["Who built the ark?", "Noah", "Abraham", "Moses", "David", 0],["What did God create on the first day?", "Sun", "Earth", "Light", "Stars", 2],["Who was the first man?", "Adam", "Eve", "Cain", "Abel", 0],["How many days did it rain during Noah's flood?", "20", "30", "40", "50", 2],["What was the sign of God's covenant with Noah?", "Rainbow", "Dove", "Olive branch", "Cloud", 0],["Who was Abraham's wife?", "Sarah", "Hagar", "Rebekah", "Rachel", 0],["What city did Lot flee from?", "Sodom", "Gomorrah", "Jericho", "Babylon", 0],["Who was Isaac's wife?", "Rebekah", "Rachel", "Leah", "Sarah", 0],["Who was Jacob's twin brother?", "Esau", "Ishmael", "Joseph", "Benjamin", 0],["Who led the Israelites out of Egypt?", "Aaron", "Joshua", "Moses", "Caleb", 2],["What did Moses part to cross the Red Sea?", "Water", "Mountains", "Desert", "River", 0],["How many plagues did God send on Egypt?", "7", "8", "10", "12", 2],["Where did Moses receive the Ten Commandments?", "Sinai", "Ararat", "Zion", "Carmel", 0],["Who was Moses' brother?", "Aaron", "Miriam", "Joshua", "Caleb", 0],["What did the Israelites eat in the wilderness?", "Manna", "Quail", "Bread", "All of these", 3],["Who led the Israelites after Moses?", "Joshua", "Caleb", "Aaron", "Samuel", 0],["What city did Joshua conquer by marching around it?", "Jericho", "Ai", "Jerusalem", "Hebron", 0],["Who was the first high priest of Israel?", "Aaron", "Moses", "Eleazar", "Samuel", 0],["What was the golden calf made from?", "Gold", "Silver", "Bronze", "Wood", 0],["Who was the strongest man in the Bible?", "Samson", "Goliath", "David", "Saul", 0],["Who killed Goliath?", "David", "Saul", "Jonathan", "Samson", 0],["Who was the first king of Israel?", "Saul", "David", "Solomon", "Samuel", 0],["Who was known for his wisdom?", "Solomon", "David", "Daniel", "Joseph", 0],["Who wrote most of the Psalms?", "David", "Moses", "Solomon", "Asaph", 0],["Who was thrown into the lion's den?", "Daniel", "Joseph", "David", "Jeremiah", 0],["Who interpreted Pharaoh's dreams?", "Joseph", "Daniel", "Moses", "Samuel", 0],
+            ["Who was the mother of Samuel?", "Hannah", "Elizabeth", "Mary", "Sarah", 0],["Which prophet confronted King Ahab?", "Elijah", "Elisha", "Isaiah", "Jeremiah", 0],["Who was swallowed by a great fish?", "Jonah", "Isaiah", "Jeremiah", "Ezekiel", 0],["Who saw the vision of dry bones?", "Ezekiel", "Isaiah", "Daniel", "Jeremiah", 0],["Which prophet was taken to heaven in a whirlwind?", "Elijah", "Elisha", "Isaiah", "Enoch", 0],["Who was the weeping prophet?", "Jeremiah", "Isaiah", "Ezekiel", "Hosea", 0],["Who prophesied about the virgin birth?", "Isaiah", "Jeremiah", "Micah", "Zechariah", 0],["Which prophet wrote the book of Lamentations?", "Jeremiah", "Isaiah", "Ezekiel", "Daniel", 0],["Who was the last prophet of the Old Testament?", "Malachi", "Zechariah", "Haggai", "Joel", 0],["Where was Jesus born?", "Bethlehem", "Nazareth", "Jerusalem", "Capernaum", 0],["Who baptized Jesus?", "John the Baptist", "Peter", "Andrew", "James", 0],["How many disciples did Jesus have?", "12", "10", "14", "8", 0],["What did Jesus turn into wine?", "Water", "Oil", "Bread", "Wine", 0],["Who denied Jesus three times?", "Peter", "Judas", "John", "Thomas", 0],["Who betrayed Jesus?", "Judas Iscariot", "Peter", "James", "John", 0],["What did Jesus feed 5000 with?", "5 loaves and 2 fish", "7 loaves", "Bread only", "Fish only", 0],["Who walked on water with Jesus?", "Peter", "John", "James", "Andrew", 0],["What was Jesus' first miracle?", "Water to wine", "Healing", "Feeding 5000", "Walking on water", 0],["Who was the mother of Jesus?", "Mary", "Martha", "Elizabeth", "Anna", 0],["Who was raised from the dead after 4 days?", "Lazarus", "Jairus' daughter", "The widow's son", "Tabitha", 0],["What parable is about a lost son?", "Prodigal Son", "Good Samaritan", "Lost Sheep", "Mustard Seed", 0],["Who was the first Christian martyr?", "Stephen", "James", "Peter", "Paul", 0],["Who had a vision of a sheet with animals?", "Peter", "Paul", "John", "James", 0],["Who was converted on the road to Damascus?", "Saul/Paul", "Peter", "Stephen", "Barnabas", 0],["What is the fruit of the Spirit?", "Love, joy, peace", "Faith, hope, love", "Wisdom, knowledge", "Power, glory", 0],["What is the greatest commandment?", "Love God and neighbor", "Keep the Sabbath", "Honor parents", "Do not steal", 0],["What chapter is known as the 'Love Chapter'?", "1 Corinthians 13", "Romans 12", "Ephesians 4", "Galatians 5", 0],["Who wrote Revelation?", "John", "Peter", "Paul", "James", 0],["What is the shortest verse in the Bible?", "Jesus wept", "Rejoice always", "Pray without ceasing", "God is love", 0],["How many books are in the Bible?", "66", "39", "27", "73", 0],["What does 'Emmanuel' mean?", "God with us", "God is love", "Son of God", "Messiah", 0],["Who was the oldest man in the Bible?", "Methuselah", "Noah", "Adam", "Abraham", 0],["What was Paul's name before conversion?", "Saul", "Simon", "Stephen", "Silas", 0],["What is the mark of the beast?", "666", "616", "777", "888", 0]
         ];
 
-        // Generate exactly 50 levels of 10 questions each by shuffling and cloning
+        // --- ADVANCED FISHER-YATES SHUFFLE ALGORITHM ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));[array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Generate exactly 50 levels of 10 questions each with 100% RANDOMIZED answers
         const levelQuestions = {};
         for(let lvl=1; lvl<=50; lvl++) {
-            let shuffled = [...rawQuestions].sort(() => 0.5 - Math.random());
-            levelQuestions[lvl] = shuffled.slice(0, 10).map(q => ({
-                text: q[0], options: [q[1], q[2], q[3], q[4]], correct: q[5]
-            }));
+            let shuffledQuestions = shuffleArray([...rawQuestions]);
+            
+            levelQuestions[lvl] = shuffledQuestions.slice(0, 10).map(q => {
+                // Map the original options and track which one is correct based on q[5] index
+                let opts = [
+                    { text: q[1], isCorrect: q[5] === 0 },
+                    { text: q[2], isCorrect: q[5] === 1 },
+                    { text: q[3], isCorrect: q[5] === 2 },
+                    { text: q[4], isCorrect: q[5] === 3 }
+                ];
+                
+                // SHUFFLE THE OPTIONS ARRAY SO A/B/C/D IS RANDOMIZED EVERY TIME
+                opts = shuffleArray(opts);
+                
+                // Find the NEW index of the correct answer after shuffling
+                let newCorrectIndex = opts.findIndex(o => o.isCorrect);
+                
+                return {
+                    text: q[0], 
+                    options: opts.map(o => o.text), 
+                    correct: newCorrectIndex
+                };
+            });
         }
 
         // --- GAME STATE ---
@@ -569,15 +385,9 @@
         let timeFrozen = false;
         let powerups = { fifty: 3, freeze: 3 };
 
-        // Audio Elements
-        const sfxCorrect = document.getElementById('soundCorrect');
-        const sfxWrong = document.getElementById('soundWrong');
+        // Audio Elements for ticks and win
         const sfxWin = document.getElementById('soundLevelUp');
         const sfxTick = document.getElementById('soundTick');
-
-        function playSound(snd) {
-            try { snd.currentTime = 0; snd.play().catch(()=>{}); } catch(e){}
-        }
 
         // --- FIREBASE SYNC ---
         onAuthStateChanged(auth, async (user) => {
@@ -589,7 +399,7 @@
                         userProgress = docSnap.data();
                     } else {
                         userProgress.userId = user.uid;
-                        await setDoc(doc(db, "userQuiz", user.uid), userProgress);
+                        await setDoc(doc(db, "userQuiz", user.uid), userProgress, {merge: true});
                     }
                 } catch(e) { console.error("Firebase load error", e); }
             } else {
@@ -630,7 +440,7 @@
                 
                 const div = document.createElement('div');
                 div.className = `level-badge ${isCompleted ? 'completed' : ''} ${!isUnlocked ? 'locked' : ''} ${isCurrent ? 'current' : ''}`;
-                div.innerHTML = isCompleted ? '<i class="fas fa-star"></i>' : i;
+                div.innerHTML = isCompleted ? '<i class="fas fa-check" style="font-size: 16px;"></i>' : i;
                 
                 if(isUnlocked) div.onclick = () => startLevel(i);
                 grid.appendChild(div);
@@ -656,6 +466,7 @@
             document.getElementById('quizActiveScreen').style.display = 'block';
             
             loadQuestion();
+            window.scrollTo({top: 0, behavior: 'smooth'});
         };
 
         function loadQuestion() {
@@ -694,7 +505,9 @@
                 timeLeft--;
                 updateTimerUI();
                 
-                if(timeLeft <= 3 && timeLeft > 0) playSound(sfxTick);
+                if(timeLeft <= 3 && timeLeft > 0) {
+                    try { sfxTick.currentTime = 0; sfxTick.play().catch(()=>{}); } catch(e){}
+                }
                 
                 if(timeLeft <= 0) {
                     clearInterval(timerInt);
@@ -728,7 +541,7 @@
 
             if(isCorrect) {
                 selectedBtn.classList.add('correct');
-                playSound(sfxCorrect);
+                speakWord("Correct!"); // Voice Feedback
                 
                 // Calculate Score (Base + Speed Bonus + Streak Multiplier)
                 streak++;
@@ -743,8 +556,8 @@
                 
             } else {
                 selectedBtn.classList.add('wrong');
-                correctBtn.classList.add('correct');
-                playSound(sfxWrong);
+                if(correctBtn) correctBtn.classList.add('correct');
+                speakWord("Wrong!"); // Voice Feedback
                 streak = 0;
             }
             
@@ -754,12 +567,14 @@
 
         function handleTimeOut() {
             isLocked = true;
-            playSound(sfxWrong);
+            speakWord("Time is up! Wrong!"); // Voice Feedback
             streak = 0;
             updateStreakUI();
             
             const qData = levelQuestions[activeLevel][qIndex];
-            document.getElementById(`opt-${qData.correct}`).classList.add('correct');
+            const correctBtn = document.getElementById(`opt-${qData.correct}`);
+            if(correctBtn) correctBtn.classList.add('correct');
+            
             document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
             document.getElementById('nextBtn').disabled = false;
         }
@@ -778,6 +593,7 @@
             const mSub = document.getElementById('modalSubtitle');
             const mIcon = document.getElementById('modalIcon');
             const mScore = document.getElementById('modalScore');
+            const actionBtn = document.getElementById('modalActionBtn');
             
             mScore.innerText = scoreInLevel;
             
@@ -785,8 +601,10 @@
                 mTitle.innerText = "LEVEL CLEARED!";
                 mTitle.style.color = "var(--accent-green)";
                 mIcon.className = "fas fa-trophy trophy-icon";
-                mSub.innerText = "Awesome job! You earned a trophy.";
-                playSound(sfxWin);
+                mSub.innerText = "Awesome job! You unlocked the next level.";
+                actionBtn.style.display = "inline-flex";
+                
+                try { sfxWin.currentTime = 0; sfxWin.play().catch(()=>{}); } catch(e){}
                 confetti({ particleCount: 150, spread: 100 });
                 
                 // Update Progress
@@ -806,7 +624,8 @@
                 mIcon.className = "fas fa-heart-broken trophy-icon";
                 mIcon.style.color = "var(--accent-red)";
                 mSub.innerText = `You need ${passScore} points to pass. Try again!`;
-                playSound(sfxWrong);
+                actionBtn.style.display = "none";
+                speakWord("Level Failed!");
             }
             
             modal.style.display = 'flex';
@@ -834,8 +653,9 @@
             const qData = levelQuestions[activeLevel][qIndex];
             let hiddenCount = 0;
             
-            // Randomly hide 2 incorrect options
-            const indices = [0,1,2,3].sort(() => Math.random() - 0.5);
+            let indices = [0,1,2,3];
+            indices = shuffleArray(indices);
+
             for(let i of indices) {
                 if(i !== qData.correct && hiddenCount < 2) {
                     document.getElementById(`opt-${i}`).classList.add('hidden');
@@ -859,11 +679,8 @@
         function updateStreakUI() {
             const el = document.getElementById('streakCounter');
             el.innerHTML = `<i class="fas fa-fire"></i> Streak: ${streak}`;
-            if(streak >= 3) {
-                el.classList.add('on-fire');
-            } else {
-                el.classList.remove('on-fire');
-            }
+            if(streak >= 3) el.classList.add('on-fire');
+            else el.classList.remove('on-fire');
         }
 
         function showPointsAnim(pts) {
@@ -874,7 +691,6 @@
             setTimeout(() => floater.remove(), 1000);
         }
 
-        // Add this to head styles dynamically
         const style = document.createElement('style');
         style.innerHTML = `@keyframes floatUp { 0% { opacity:1; transform:translate(-50%, -50%) scale(1); } 100% { opacity:0; transform:translate(-50%, -150%) scale(1.5); } }`;
         document.head.appendChild(style);
@@ -889,7 +705,7 @@
                 const snap = await getDocs(q);
                 
                 if(snap.empty) {
-                    list.innerHTML = '<p style="text-align:center; padding:20px;">No scores yet. Be the first!</p>';
+                    list.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-sub);">No scores yet. Be the first!</p>';
                     return;
                 }
                 
@@ -899,7 +715,6 @@
                     const data = docSnap.data();
                     let name = 'Anonymous Player';
                     
-                    // Attempt to fetch name from memberships
                     try {
                         const mDoc = await getDoc(doc(db, "memberships", data.userId));
                         if(mDoc.exists()) name = mDoc.data().fullName || 'Member';
@@ -909,7 +724,7 @@
                         <div class="lb-item">
                             <div style="display:flex; align-items:center; gap: 15px;">
                                 <span class="lb-rank">#${rank}</span>
-                                <span style="font-weight: 600;"><i class="fas fa-user-circle"></i> ${name.split(' ')[0]}</span>
+                                <span style="font-weight: 600; color:var(--text-main);"><i class="fas fa-user-circle"></i> ${name.split(' ')[0]}</span>
                             </div>
                             <div class="lb-score">${data.totalScore} pts</div>
                         </div>
@@ -919,7 +734,7 @@
                 list.innerHTML = html;
             } catch(e) {
                 console.error(e);
-                list.innerHTML = '<p style="text-align:center; color:red;">Failed to load leaderboard.</p>';
+                list.innerHTML = '<p style="text-align:center; color:var(--accent-red);">Failed to load leaderboard.</p>';
             }
         }
 
@@ -930,14 +745,11 @@
             t.className = `toast ${type}`;
             t.innerHTML = `<i class="fas ${type==='success'?'fa-check-circle':'fa-info-circle'}"></i> ${msg}`;
             cont.appendChild(t);
-            setTimeout(() => t.remove(), 3500);
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
         };
+        
         window.toggleDarkMode = function() { document.body.classList.toggle('dark-mode'); };
         
-        // Init
-        initUI();
-        loadLeaderboard();
-
-    </script>
-</body>
-</html>
+        window.resetProgress = function() {
+            if(confirm('Reset all progress to 0? All your scores will be lost.')) {
+                userProgress = { completedLevels:

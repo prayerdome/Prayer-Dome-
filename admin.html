@@ -505,7 +505,7 @@
         let allGalleryCache = [];
 
         // VAPID Key for web push notifications
-        const VAPID_KEY = "BCeo-ulgho1GqTrh4CCK8iMtRtvsgaFZa508b5wbTOXL2SyxIhxMiRbbn6xC2xvRBI3-J3CqsqBDN6gjG5Hd-R4";
+        const VAPID_KEY = "BFo6TSo4Urth0PXWZETz6cuPgRlemsFx7LDn8yDlFqCrIELU16X12O4ObOOlnbP2h7PvKqbC0N6a-_vrSsksrnM";
         const FCM_SERVER_KEY = "AAAA_Vd9FEE:APA91bGvZPp_hJKpH7cOqTSAs5Hm-uwE1FNRdKJMRddkpH_0iGJhJpIhUy1LIdfnygU4DQ4MgAtnqlFtrTvhZZGryk7gT8hY-aNcYI93Hj-t-gLhRgTqMlUYx9wWn1q2Mx7LbUvWYkWw";
 
         // ==================== UTILITY FUNCTIONS ====================
@@ -845,7 +845,7 @@
         // ==================== CONTENT ====================
         window.loadContent = async function(){ const col=document.getElementById('contentFilter').value, tbody=document.getElementById('listContent'); if(tbody) tbody.innerHTML='<td colspan="4">Loading...<\/td>'; try{ const snap=await getDocs(query(collection(db,col),orderBy("timestamp","desc"),limit(30))); if(snap.empty){ if(tbody) tbody.innerHTML=`<td colspan="4">No ${col}<\/td>`; return; } let html=''; snap.forEach(d=>{ const data=d.data(); const text=data.text||data.content||''; html+=`<tr><td>${data.timestamp?moment(data.timestamp.toDate()).format('MMM D, YYYY'):'N/A'}</td><td><strong>${escapeHTML(data.name||data.author||'Anonymous')}</strong></td><td title="${escapeHTML(text)}">${escapeHTML(text).substring(0,50)}...</td><td><button class="btn btn-sm btn-danger" onclick="deleteRecord('${col}','${d.id}')">Delete</button></td></tr>`; }); if(tbody) tbody.innerHTML=html; } catch(e){ console.error(e); } };
         
-        // ==================== NOTIFICATIONS WITH PUSH (SIMPLIFIED - QUEUES TO CLOUD FUNCTION) ====================
+        // ==================== NOTIFICATIONS WITH PUSH ====================
 window.sendPushNotificationToAll = async function(title, message, type = 'general') {
     if (!adminUser) {
         toast("Admin not logged in", "error");
@@ -902,6 +902,70 @@ window.sendPushNotificationToAll = async function(title, message, type = 'genera
     } finally {
         hideLoading();
     }
+};
+
+// SAFE test notification - uses Cloud Function instead of direct FCM
+window.testNotification = async function() {
+    const title = "🔔 Test Notification";
+    const message = "This is a test notification from Prayer Dome Admin Panel.";
+    
+    if (!confirm("Send test notification to YOUR device only?")) return;
+    
+    if (!adminUser) {
+        toast("Admin not logged in", "error");
+        return;
+    }
+    
+    showLoading();
+    try {
+        // Get current admin's token
+        const tokenDoc = await getDoc(doc(db, "userTokens", adminUser.uid));
+        if (!tokenDoc.exists() || !tokenDoc.data().token) {
+            toast("❌ No token found for your device.", "error");
+            toast("Please enable notifications in your browser first.", "info");
+            hideLoading();
+            return;
+        }
+        
+        // Save test notification to Firestore for Cloud Function to process
+        await addDoc(collection(db, "test_notifications"), {
+            title: title,
+            message: message,
+            token: tokenDoc.data().token,
+            userId: adminUser.uid,
+            status: 'pending',
+            createdAt: serverTimestamp(),
+            createdBy: adminUser?.email
+        });
+        
+        toast("✅ Test notification queued! Check your device in a few seconds.", "success");
+        
+    } catch (error) {
+        toast("Error: " + error.message, "error");
+    } finally {
+        hideLoading();
+    }
+};
+
+window.sendNotification = async function() {
+    const title = document.getElementById('notifTitle').value;
+    const msg = document.getElementById('notifMessage').value;
+    const type = document.getElementById('notifType').value;
+    
+    if (!title || !msg) {
+        toast("Title and message required", "error");
+        return;
+    }
+    
+    if (!confirm(`Send notification to ALL users?\n\nTitle: ${title}\nMessage: ${msg}\n\nThis will send push notifications to all registered devices.`)) {
+        return;
+    }
+    
+    await sendPushNotificationToAll(title, msg, type);
+    
+    // Clear form
+    document.getElementById('notifTitle').value = '';
+    document.getElementById('notifMessage').value = '';
 };
 
 window.testNotification = async function() {
