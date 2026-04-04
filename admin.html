@@ -845,7 +845,7 @@
         // ==================== CONTENT ====================
         window.loadContent = async function(){ const col=document.getElementById('contentFilter').value, tbody=document.getElementById('listContent'); if(tbody) tbody.innerHTML='<td colspan="4">Loading...<\/td>'; try{ const snap=await getDocs(query(collection(db,col),orderBy("timestamp","desc"),limit(30))); if(snap.empty){ if(tbody) tbody.innerHTML=`<td colspan="4">No ${col}<\/td>`; return; } let html=''; snap.forEach(d=>{ const data=d.data(); const text=data.text||data.content||''; html+=`<tr><td>${data.timestamp?moment(data.timestamp.toDate()).format('MMM D, YYYY'):'N/A'}</td><td><strong>${escapeHTML(data.name||data.author||'Anonymous')}</strong></td><td title="${escapeHTML(text)}">${escapeHTML(text).substring(0,50)}...</td><td><button class="btn btn-sm btn-danger" onclick="deleteRecord('${col}','${d.id}')">Delete</button></td></tr>`; }); if(tbody) tbody.innerHTML=html; } catch(e){ console.error(e); } };
         
-        // ==================== NOTIFICATIONS WITH PUSH ====================
+        // ==================== NOTIFICATIONS WITH PUSH (USING CLOUD FUNCTION) ====================
 window.sendPushNotificationToAll = async function(title, message, type = 'general') {
     if (!adminUser) {
         toast("Admin not logged in", "error");
@@ -904,7 +904,7 @@ window.sendPushNotificationToAll = async function(title, message, type = 'genera
     }
 };
 
-// SAFE test notification - uses Cloud Function instead of direct FCM
+// Test notification - sends to admin only
 window.testNotification = async function() {
     const title = "🔔 Test Notification";
     const message = "This is a test notification from Prayer Dome Admin Panel.";
@@ -947,6 +947,7 @@ window.testNotification = async function() {
     }
 };
 
+// Main send notification function
 window.sendNotification = async function() {
     const title = document.getElementById('notifTitle').value;
     const msg = document.getElementById('notifMessage').value;
@@ -968,128 +969,6 @@ window.sendNotification = async function() {
     document.getElementById('notifMessage').value = '';
 };
 
-window.testNotification = async function() {
-    const title = "🔔 Test Notification";
-    const message = "This is a test notification from Prayer Dome Admin Panel.";
-    
-    if (!confirm("Send test notification to YOUR device only?")) return;
-    
-    if (!adminUser) {
-        toast("Admin not logged in", "error");
-        return;
-    }
-    
-    showLoading();
-    try {
-        // Get current admin's token
-        const tokenDoc = await getDoc(doc(db, "userTokens", adminUser.uid));
-        if (!tokenDoc.exists() || !tokenDoc.data().token) {
-            toast("❌ No token found for your device.", "error");
-            toast("Please enable notifications in your browser first.", "info");
-            hideLoading();
-            return;
-        }
-        
-        const token = tokenDoc.data().token;
-        
-        // Save test notification to Firestore - Cloud Function will send
-        await addDoc(collection(db, "test_notifications"), {
-            title: title,
-            message: message,
-            token: token,
-            status: 'pending',
-            createdAt: serverTimestamp(),
-            createdBy: adminUser?.email
-        });
-        
-        toast("✅ Test notification queued! Check your device in a few seconds.", "success");
-        
-    } catch (error) {
-        toast("Error: " + error.message, "error");
-    } finally {
-        hideLoading();
-    }
-};
-
-        window.sendNotification = async function() {
-            const title = document.getElementById('notifTitle').value;
-            const msg = document.getElementById('notifMessage').value;
-            const type = document.getElementById('notifType').value;
-            
-            if (!title || !msg) {
-                toast("Title and message required", "error");
-      return;
-            }
-            
-            if (!confirm(`Send notification to ALL users?\n\nTitle: ${title}\nMessage: ${msg}\n\nThis will send push notifications to all registered devices.`)) {
-                return;
-            }
-            
-            await sendPushNotificationToAll(title, msg, type);
-            
-            // Clear form
-            document.getElementById('notifTitle').value = '';
-            document.getElementById('notifMessage').value = '';
-        };
-        
-        // Test notification - send to admin's own device
-        window.testNotification = async function() {
-            const title = "🔔 Test Notification";
-            const message = "This is a test notification from Prayer Dome Admin Panel. If you received this, notifications are working!";
-            
-            if (!confirm("Send test notification to YOUR device only?")) return;
-            
-            if (!adminUser) {
-                toast("Admin not logged in", "error");
-                return;
-            }
-            
-            showLoading();
-            try {
-                // Get current admin's token
-                const tokenDoc = await getDoc(doc(db, "userTokens", adminUser.uid));
-                if (!tokenDoc.exists() || !tokenDoc.data().token) {
-                    toast("No token found for your device. Please enable notifications first.", "error");
-                    hideLoading();
-                    return;
-                }
-                
-                const token = tokenDoc.data().token;
-                
-                const response = await fetch('https://fcm.googleapis.com/fcm/send', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json', 
-                        'Authorization': `key=${FCM_SERVER_KEY}`
-                    },
-                    body: JSON.stringify({
-                        to: token,
-                        notification: { 
-                            title: title, 
-                            body: message, 
-                            icon: 'https://i.ibb.co/TB5Fx4tb/logo-0.png',
-                            badge: 'https://i.ibb.co/TB5Fx4tb/logo-0.png',
-                            vibrate: [200, 100, 200]
-                        }
-                    })
-                });
-                
-                const result = await response.json();
-                console.log("Test result:", result);
-                
-                if (result.failure) {
-                    toast("Test failed: " + (result.results?.[0]?.error || "Unknown error"), "error");
-                } else {
-                    toast("✅ Test notification sent! Check your device.", "success");
-                }
-                
-            } catch (error) {
-                toast("Error: " + error.message, "error");
-            } finally {
-                hideLoading();
-            }
-        };
-        
         // ==================== FINANCIAL REPORTS ====================
         window.uploadFinancialReport = function() {
             if(typeof cloudinary === 'undefined') return toast("Cloudinary not loaded", "error");
