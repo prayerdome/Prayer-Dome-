@@ -738,18 +738,99 @@
             }
         }
 
-        // --- UTILS ---
-        window.showToast = function(msg, type='success') {
+                // --- UTILS ---
+        window.showToast = function(msg, type = 'success') {
             const cont = document.getElementById('toastContainer');
+            if (!cont) return;
             const t = document.createElement('div');
             t.className = `toast ${type}`;
-            t.innerHTML = `<i class="fas ${type==='success'?'fa-check-circle':'fa-info-circle'}"></i> ${msg}`;
+            t.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'}"></i> ${msg}`;
             cont.appendChild(t);
-            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 3000);
+            setTimeout(() => {
+                t.style.opacity = '0';
+                t.style.transition = 'opacity 0.3s';
+                setTimeout(() => t.remove(), 300);
+            }, 3000);
         };
-        
-        window.toggleDarkMode = function() { document.body.classList.toggle('dark-mode'); };
-        
+
+        window.toggleDarkMode = function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.querySelector('header button i');
+            if (icon) {
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.className = 'fas fa-sun';
+                } else {
+                    icon.className = 'fas fa-moon';
+                }
+            }
+            showToast(document.body.classList.contains('dark-mode') ? 'Dark Mode ON 🌙' : 'Light Mode ON ☀️');
+        };
+
         window.resetProgress = function() {
-            if(confirm('Reset all progress to 0? All your scores will be lost.')) {
-                userProgress = { completedLevels:
+            if (confirm('⚠️ RESET ALL PROGRESS ⚠️\n\nAre you sure? All your scores, completed levels, and total points will be permanently lost!')) {
+                userProgress = {
+                    completedLevels: [],
+                    currentLevel: 1,
+                    totalScore: 0
+                };
+                saveProgress();
+                initUI();
+                showToast('Progress has been reset!', 'success');
+                
+                // Also reset any active quiz if open
+                document.getElementById('quizActiveScreen').style.display = 'none';
+                document.getElementById('levelMap').style.display = 'block';
+            }
+        };
+
+        // Fix missing CSS variable
+        const styleFix = document.createElement('style');
+        styleFix.textContent = `
+            :root {
+                --border-color: #e2e8f0;
+            }
+            body.dark-mode {
+                --border-color: #334155;
+            }
+            .toast {
+                animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            .level-badge {
+                border-color: var(--border-color);
+            }
+            .option-btn.disabled, .option-btn:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+        `;
+        document.head.appendChild(styleFix);
+
+        // Global leaderboard refresh function
+        window.loadLeaderboard = loadLeaderboard;
+
+        // Initialize on page load if no auth
+        if (!currentUser) {
+            const local = localStorage.getItem('prayerdome_quiz');
+            if (local) {
+                try {
+                    userProgress = JSON.parse(local);
+                } catch(e) {}
+            }
+            initUI();
+            loadLeaderboard();
+        }
+
+        // Handle before unload to save
+        window.addEventListener('beforeunload', () => {
+            saveProgress();
+        });
+
+        console.log('✅ Prayer Dome Quiz fully loaded! Voice feedback enabled for Correct/Wrong answers.');
+    
+    </script>
+</body>
+</html>
