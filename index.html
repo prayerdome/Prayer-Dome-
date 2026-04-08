@@ -11,6 +11,33 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     
+    <!-- Detection Script - Runs immediately -->
+    <script>
+        // Detect if running in WebView / App
+        function isInApp() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            const isWebView = /wv|; wv\)/i.test(userAgent) || 
+                             (window.navigator && /Android.*Version\/[\d\.]+.*Chrome\/[\d\.]+ Mobile Safari\/[\d\.]+/i.test(userAgent) &&
+                              !/Chrome\/[\d\.]+ Mobile Safari/.test(userAgent));
+            const isIOSWebView = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(userAgent);
+            const isFromApp = window.location.href.includes('app_origin') || 
+                             document.referrer.includes('android-app://') ||
+                             localStorage.getItem('app_installed') === 'true';
+            return isWebView || isIOSWebView || isFromApp;
+        }
+        
+        let isAppEnvironment = false;
+        
+        (function() {
+            isAppEnvironment = isInApp();
+            if (isAppEnvironment) {
+                document.body.classList.add('in-app');
+            } else {
+                document.body.classList.add('on-website');
+            }
+        })();
+    </script>
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         :root {
@@ -323,7 +350,7 @@
             margin-bottom: 10px;
         }
 
-        /* --- REST OF EXISTING STYLES (Keeping all original) --- */
+        /* --- REST OF EXISTING STYLES --- */
         header {
             background: var(--bg-card); padding: 15px 20px; display: flex; align-items: center;
             justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow);
@@ -448,11 +475,234 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
+        /* Play Store Banner Styles - Website Only */
+        .playstore-banner {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            margin: 20px 20px 30px;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            animation: bannerGlow 3s infinite alternate;
+        }
+
+        @keyframes bannerGlow {
+            0% { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3); transform: scale(1); }
+            100% { box-shadow: 0 20px 45px rgba(34, 197, 94, 0.3); transform: scale(1.01); }
+        }
+
+        .playstore-banner:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 25px 50px rgba(34, 197, 94, 0.4);
+        }
+
+        .playstore-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 25px;
+            flex-wrap: wrap;
+        }
+
+        .playstore-icon {
+            position: relative;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .playstore-icon-img {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4);
+        }
+
+        .playstore-icon-img i {
+            font-size: 40px;
+            color: white;
+        }
+
+        .playstore-text {
+            flex: 1;
+        }
+
+        .playstore-badge {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 8px;
+        }
+
+        .playstore-text h3 {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .playstore-text p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+        }
+
+        .playstore-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .stars {
+            color: #ffc107;
+            font-size: 12px;
+        }
+
+        .rating-text {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .playstore-button {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            color: white;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+            white-space: nowrap;
+        }
+
+        .playstore-button:hover {
+            transform: scale(1.05);
+            gap: 15px;
+        }
+
+        .qr-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .qr-code {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+        }
+
+        .qr-code i {
+            font-size: 45px;
+            color: var(--accent-green);
+        }
+
+        .qr-section p {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Hide in app, show on website */
+        body.in-app .playstore-banner {
+            display: none !important;
+        }
+
+        body.on-website .playstore-banner {
+            display: block !important;
+        }
+
+        .banner-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            transition: 0.3s;
+            z-index: 3;
+        }
+
+        .banner-close:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .banner-close i {
+            color: white;
+            font-size: 14px;
+        }
+
+        .download-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #22c55e, #d4af37, #22c55e);
+            transform: translateX(-100%);
+            z-index: 10001;
+            display: none;
+        }
+
+        /* Lock screen notification optimization */
+        @media (prefers-color-scheme: dark) {
+            .notification-bell {
+                filter: brightness(1);
+            }
+        }
+
         @media (max-width: 600px) {
             .portal-grid { grid-template-columns: repeat(4, 1fr); gap: 10px;}
             .portal-icon { width: 55px; height: 55px; font-size: 1.2rem; }
             .hero h1 { font-size: 2rem; }
             .insight-verse { font-size: 1rem; }
+            .playstore-content {
+                flex-direction: column;
+                text-align: center;
+                padding: 25px;
+            }
+            .playstore-text h3 {
+                font-size: 1.2rem;
+            }
+            .playstore-button {
+                padding: 12px 24px;
+                width: 100%;
+                justify-content: center;
+            }
+            .qr-section {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -487,7 +737,7 @@
         </div>
         <button onclick="enableNotifications()">Enable</button>
     </div>
-
+    
     <!-- NOTIFICATION PANEL (Slide Down) -->
     <div class="notification-panel" id="notificationPanel">
         <div class="notification-header">
@@ -555,15 +805,15 @@
 
         <!-- PORTAL GRID -->
         <div class="portal-grid">
-    <a href="/bible" class="portal-item" style="animation-delay: 0.1s;"><div class="portal-icon"><i class="fas fa-bible"></i></div><span>Bible</span></a>
-    <a href="/gallery" class="portal-item"><div class="portal-icon"><i class="fas fa-camera"></i></div><span>GALLERY</span></a>
-    <a href="/give" class="portal-item" style="animation-delay: 0.2s;"><div class="portal-icon"><i class="fas fa-heart"></i></div><span>Give</span></a>
-    <a href="/video" class="portal-item" style="animation-delay: 0.25s;"><div class="portal-icon"><i class="fas fa-video"></i></div><span>Live</span></a>
-    <a href="/quiz" class="portal-item" style="animation-delay: 0.3s;"><div class="portal-icon"><i class="fas fa-brain"></i></div><span>Quiz</span></a>
-    <a href="/membership" class="portal-item" style="animation-delay: 0.35s;"><div class="portal-icon"><i class="fas fa-id-card"></i></div><span>membership</span></a>
-    <a href="/support" class="portal-item" style="animation-delay: 0.4s;"><div class="portal-icon"><i class="fas fa-hand-holding-heart"></i></div><span>Support</span></a>
-    <a href="/team" class="portal-item" style="animation-delay: 0.45s;"><div class="portal-icon"><i class="fas fa-users"></i></div><span>Team</span></a>
-</div>
+            <a href="/bible" class="portal-item" style="animation-delay: 0.1s;"><div class="portal-icon"><i class="fas fa-bible"></i></div><span>Bible</span></a>
+            <a href="/gallery" class="portal-item"><div class="portal-icon"><i class="fas fa-camera"></i></div><span>GALLERY</span></a>
+            <a href="/give" class="portal-item" style="animation-delay: 0.2s;"><div class="portal-icon"><i class="fas fa-heart"></i></div><span>Give</span></a>
+            <a href="/video" class="portal-item" style="animation-delay: 0.25s;"><div class="portal-icon"><i class="fas fa-video"></i></div><span>Live</span></a>
+            <a href="/quiz" class="portal-item" style="animation-delay: 0.3s;"><div class="portal-icon"><i class="fas fa-brain"></i></div><span>Quiz</span></a>
+            <a href="/membership" class="portal-item" style="animation-delay: 0.35s;"><div class="portal-icon"><i class="fas fa-id-card"></i></div><span>membership</span></a>
+            <a href="/support" class="portal-item" style="animation-delay: 0.4s;"><div class="portal-icon"><i class="fas fa-hand-holding-heart"></i></div><span>Support</span></a>
+            <a href="/team" class="portal-item" style="animation-delay: 0.45s;"><div class="portal-icon"><i class="fas fa-users"></i></div><span>Team</span></a>
+        </div>
 
         <!-- LIVE PROMO BANNER -->
         <div class="live-promo" onclick="window.location.href='/video'">
@@ -611,6 +861,51 @@
             </div>
         </div>
 
+        <!-- PLAY STORE BANNER - Before Footer -->
+        <div class="playstore-banner" id="playstoreBanner" style="display: none;">
+            <div class="banner-close" onclick="event.stopPropagation(); closePlayStoreBanner()">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="playstore-content">
+                <div class="playstore-icon">
+                    <div class="playstore-icon-img">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                </div>
+                
+                <div class="playstore-text">
+                    <div class="playstore-badge">
+                        <i class="fas fa-star"></i> OFFICIAL APP
+                    </div>
+                    <h3>Prayer Dome Mobile App</h3>
+                    <p>Take your prayer life anywhere! Daily devotionals, Bible reading, live services & more.</p>
+                    <div class="playstore-rating">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span class="rating-text">4.8 ★ (1,200+ reviews)</span>
+                    </div>
+                </div>
+                
+                <button class="playstore-button" onclick="event.stopPropagation(); downloadApp()">
+                    <i class="fab fa-google-play"></i>
+                    <span>GET IT ON Google Play</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                
+                <div class="qr-section">
+                    <div class="qr-code">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <p>Scan to Download</p>
+                </div>
+            </div>
+        </div>
+
         <!-- FOOTER -->
         <footer>
             <div class="footer-logo">
@@ -625,7 +920,7 @@
                 <a href="mailto:info@prayerdome.net" class="social-link email"><i class="fas fa-envelope"></i><span>Email</span></a>
                 
                 <a href="/admin" id="btn-admin" class="social-link admin-btn-special" style="display: none;"><i class="fas fa-shield-alt" style="color: var(--accent-red);"></i><span>Admin Console</span></a>
-<a href="/finance" id="btn-finance" class="social-link admin-btn-special" style="display: none;"><i class="fas fa-chart-line" style="color: var(--accent-gold);"></i><span>Finance Report</span></a>
+                <a href="/finance" id="btn-finance" class="social-link admin-btn-special" style="display: none;"><i class="fas fa-chart-line" style="color: var(--accent-gold);"></i><span>Finance Report</span></a>
             </div>
             
             <div class="contact-info">
@@ -644,12 +939,12 @@
     <!-- BOTTOM UI SYSTEM -->
     <div class="bottom-ui-system">
         <nav class="nav-bar" id="mainNavBar">
-    <a href="/" class="nav-link active"><i class="fas fa-home"></i><span>Home</span></a>
-    <a href="/bible" class="nav-link"><i class="fas fa-book-open"></i><span>Bible</span></a>
-    <a href="/prayer" class="nav-link"><i class="fas fa-hands-praying"></i><span>Pray</span></a>
-    <a href="/give" class="nav-link"><i class="fas fa-donate"></i><span>Give</span></a>
-    <a href="/account" class="nav-link"><i class="fas fa-user-circle"></i><span>Account</span></a>
-</nav>
+            <a href="/" class="nav-link active"><i class="fas fa-home"></i><span>Home</span></a>
+            <a href="/bible" class="nav-link"><i class="fas fa-book-open"></i><span>Bible</span></a>
+            <a href="/prayer" class="nav-link"><i class="fas fa-hands-praying"></i><span>Pray</span></a>
+            <a href="/give" class="nav-link"><i class="fas fa-donate"></i><span>Give</span></a>
+            <a href="/account" class="nav-link"><i class="fas fa-user-circle"></i><span>Account</span></a>
+        </nav>
         
         <div class="ticker-bar">
             <div class="ticker-track">
@@ -657,6 +952,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Download Progress Bar -->
+    <div class="download-progress" id="downloadProgressBar"></div>
 
     <!-- FIREBASE & LOGIC -->
     <script type="module">
@@ -682,10 +980,11 @@
         let notifications = [];
         let unreadCount = 0;
         let currentUser = null;
+        let hourlyNotificationInterval = null;
 
         // VAPID Key for web push notifications
         const VAPID_KEY = "BFo6TSo4Urth0PXWZETz6cuPgRlemsFx7LDn8yDlFqCrIELU16X12O4ObOOlnbP2h7PvKqbC0N6a-_vrSsksrnM";
-
+        
         // --- 365 Days of Bible Verses (Complete Year) ---
         const yearlyVerses = [
             { verse: "For I know the plans I have for you, declares the Lord, plans to prosper you and not to harm you, plans to give you hope and a future.", ref: "Jeremiah 29:11", commentary: "God has a purpose for your life. Even when circumstances seem uncertain, His plans are good. Trust that He is working behind the scenes.", prayer: "Lord, I trust Your plans for my life. Help me to walk in faith, knowing that You are leading me to a future filled with hope. Amen." },
@@ -693,7 +992,13 @@
             { verse: "I can do all things through Christ who strengthens me.", ref: "Philippians 4:13", commentary: "Your limitations are not God's limitations. Through Christ, you have supernatural strength to accomplish what seems impossible.", prayer: "Jesus, I draw strength from You today. Help me to do what I cannot do alone. Amen." },
             { verse: "Trust in the Lord with all your heart and lean not on your own understanding.", ref: "Proverbs 3:5", commentary: "Human understanding is limited. When you trust God completely, He guides your steps in ways you couldn't have planned yourself.", prayer: "Lord, I choose to trust You even when I don't understand. Guide my steps today. Amen." },
             { verse: "The Lord is my shepherd; I shall not want.", ref: "Psalm 23:1", commentary: "God provides everything you need. Like a shepherd caring for sheep, He ensures you lack nothing essential for your journey.", prayer: "Good Shepherd, thank You for providing for me. Help me to rest in Your care. Amen." },
-            { verse: "This is the day that the Lord has made; let us rejoice and be glad in it.", ref: "Psalm 118:24", commentary: "Each day is a gift from God. Choose joy regardless of circumstances because the Creator of the universe gave you this day.", prayer: "Lord, I receive this day as a gift. Fill my heart with joy and gratitude. Amen." }
+            { verse: "This is the day that the Lord has made; let us rejoice and be glad in it.", ref: "Psalm 118:24", commentary: "Each day is a gift from God. Choose joy regardless of circumstances because the Creator of the universe gave you this day.", prayer: "Lord, I receive this day as a gift. Fill my heart with joy and gratitude. Amen." },
+            { verse: "Jesus Christ is the same yesterday, today and forever.", ref: "Hebrews 13:8", commentary: "In a changing world, God never changes. His love, His power, and His promises remain constant.", prayer: "Lord, thank You for being unchanging. Help me to trust in Your consistency. Amen." },
+            { verse: "Cast all your anxiety on him because he cares for you.", ref: "1 Peter 5:7", commentary: "You don't have to carry your burdens alone. God cares deeply about everything that concerns you.", prayer: "Father, I cast my worries upon You today. Thank You for caring for me. Amen." },
+            { verse: "The prayer of a righteous person is powerful and effective.", ref: "James 5:16", commentary: "Your prayers make a difference. Never underestimate the power of kneeling before God.", prayer: "Lord, help me to pray with faith, knowing that my prayers are powerful. Amen." },
+            { verse: "Love the Lord your God with all your heart and with all your soul and with all your mind.", ref: "Matthew 22:37", commentary: "Loving God isn't just an emotion—it's a commitment of your entire being.", prayer: "Jesus, help me to love You with everything I have. Amen." },
+            { verse: "Ask and it will be given to you; seek and you will find; knock and the door will be opened to you.", ref: "Matthew 7:7", commentary: "God invites you to ask, seek, and knock. He is ready to respond to your persistent faith.", prayer: "Lord, I ask, I seek, I knock. Thank You for hearing me. Amen." },
+            { verse: "I have fought the good fight, I have finished the race, I have kept the faith.", ref: "2 Timothy 4:7", commentary: "Your journey of faith is a race worth running. Finish strong by keeping your eyes on Jesus.", prayer: "Lord, give me strength to finish my race with joy. Amen." }
         ];
         
         function getDailyVerse(dayOfYear) {
@@ -736,7 +1041,8 @@
             document.getElementById('dailyPrayer').innerHTML = dailyVerse.prayer;
         }
 
-        // ==================== NOTIFICATION TOKEN SAVING (FIXED) ====================
+        // ==================== NOTIFICATION FUNCTIONS WITH LOCK SCREEN SUPPORT ====================
+        
         async function saveTokenToFirestore(token) {
             if (!currentUser) return false;
             
@@ -758,120 +1064,185 @@
             }
         }
 
-        // Request notification permission and save token - IMPROVED VERSION
-async function requestNotificationPermission() {
-    if (!currentUser) {
-        console.log("User not logged in, cannot request notifications");
-        return false;
-    }
+        async function requestNotificationPermission() {
+            if (!currentUser) {
+                console.log("User not logged in, cannot request notifications");
+                return false;
+            }
 
-    // Check if browser supports notifications
-    if (!window.Notification) {
-        console.log("This browser does not support desktop notifications");
-        showToast("Your browser doesn't support push notifications. Try Chrome or Edge.", "info");
-        return false;
-    }
+            if (!window.Notification) {
+                console.log("This browser does not support desktop notifications");
+                showToast("Your browser doesn't support push notifications. Try Chrome or Edge.", "info");
+                return false;
+            }
 
-    // Check if service workers are supported (required for push)
-    if (!('serviceWorker' in navigator)) {
-        console.log("Service workers not supported");
-        showToast("Your browser doesn't support push notifications.", "info");
-        return false;
-    }
+            if (!('serviceWorker' in navigator)) {
+                console.log("Service workers not supported");
+                showToast("Your browser doesn't support push notifications.", "info");
+                return false;
+            }
 
-    try {
-        let permission = Notification.permission;
-        
-        // If permission is not yet determined, ask for it
-        if (permission === 'default') {
-            permission = await Notification.requestPermission();
-        }
-        
-        if (permission === 'granted') {
-            console.log("Notification permission granted");
-            
             try {
-                const token = await getToken(messaging, { vapidKey: VAPID_KEY });
+                let permission = Notification.permission;
                 
-                if (token) {
-                    await saveTokenToFirestore(token);
-                    const banner = document.getElementById('notifPermissionBanner');
-                    if (banner) banner.style.display = 'none';
+                if (permission === 'default') {
+                    permission = await Notification.requestPermission();
+                }
+                
+                if (permission === 'granted') {
+                    console.log("Notification permission granted");
                     
-                    const hasShown = localStorage.getItem('notif_permission_shown');
-                    if (!hasShown) {
-                        showToast("✅ Notifications enabled! You'll receive daily Bible verses.", "success");
-                        localStorage.setItem('notif_permission_shown', 'true');
+                    try {
+                        const token = await getToken(messaging, { vapidKey: VAPID_KEY });
                         
-                        // START HOURLY NOTIFICATIONS
-            scheduleHourlyVerseNotifications()
+                        if (token) {
+                            await saveTokenToFirestore(token);
+                            const banner = document.getElementById('notifPermissionBanner');
+                            if (banner) banner.style.display = 'none';
+                            
+                            const hasShown = localStorage.getItem('notif_permission_shown');
+                            if (!hasShown) {
+                                showToast("✅ Notifications enabled! You'll receive daily Bible verses.", "success");
+                                localStorage.setItem('notif_permission_shown', 'true');
+                                
+                                scheduleHourlyVerseNotifications();
+                            }
+                            return true;
+                        } else {
+                            console.log("No registration token available");
+                            showToast("Unable to get notification token. Please check your connection.", "info");
+                            return false;
+                        }
+                    } catch (tokenError) {
+                        console.error("Error getting token:", tokenError);
+                        if (tokenError.code === 'messaging/unsupported-browser') {
+                            showToast("Push notifications not supported in this browser. Try Chrome or Firefox.", "info");
+                        } else if (tokenError.code === 'messaging/permission-blocked') {
+                            showToast("Notification permission blocked. Please check browser settings.", "info");
+                        } else {
+                            showToast("Failed to register notifications. Please try again.", "info");
+                        }
+                        return false;
                     }
-                    return true;
-                } else {
-                    console.log("No registration token available");
-                    showToast("Unable to get notification token. Please check your connection.", "info");
+                } else if (permission === 'denied') {
+                    const hasShownDenied = localStorage.getItem('notif_denied_shown');
+                    if (!hasShownDenied) {
+                        showToast("🔔 Notifications are blocked. Enable them in browser settings to receive daily verses.", "info");
+                        localStorage.setItem('notif_denied_shown', 'true');
+                    }
                     return false;
                 }
-            } catch (tokenError) {
-                console.error("Error getting token:", tokenError);
-                // Check for specific FCM errors
-                if (tokenError.code === 'messaging/unsupported-browser') {
-                    showToast("Push notifications not supported in this browser. Try Chrome or Firefox.", "info");
-                } else if (tokenError.code === 'messaging/permission-blocked') {
-                    showToast("Notification permission blocked. Please check browser settings.", "info");
+                return false;
+            } catch (error) {
+                console.error("Error requesting permission:", error);
+                if (error.message && error.message.includes('insecure')) {
+                    showToast("🔒 Notifications require HTTPS. Please use a secure connection (HTTPS).", "info");
                 } else {
-                    showToast("Failed to register notifications. Please try again.", "info");
+                    showToast("Could not enable notifications. Please try again later.", "info");
                 }
                 return false;
             }
-        } else if (permission === 'denied') {
-            const hasShownDenied = localStorage.getItem('notif_denied_shown');
-            if (!hasShownDenied) {
-                showToast("🔔 Notifications are blocked. Enable them in browser settings to receive daily verses.", "info");
-                localStorage.setItem('notif_denied_shown', 'true');
-            }
-            return false;
         }
-        return false;
-    } catch (error) {
-        console.error("Error requesting permission:", error);
-        if (error.message && error.message.includes('insecure')) {
-            showToast("🔒 Notifications require HTTPS. Please use a secure connection (HTTPS).", "info");
-        } else {
-            showToast("Could not enable notifications. Please try again later.", "info");
-        }
-        return false;
-    }
-}
 
-        // Handle foreground messages
-        function handleForegroundMessages() {
-            onMessage(messaging, (payload) => {
-                console.log("Message received in foreground:", payload);
+        // Send hourly verse notification that stays on lock screen
+        async function sendHourlyVerseNotification() {
+            if (!currentUser || Notification.permission !== 'granted') {
+                console.log("Cannot send notification - user not logged in or permission denied");
+                return;
+            }
+            
+            const now = new Date();
+            const hour = now.getHours();
+            const hourNames = ['🕛', '🕐', '🕑', '🕒', '🕓', '🕔', '🕕', '🕖', '🕗', '🕘', '🕙', '🕚'];
+            const hourEmoji = hourNames[hour % 12] || '🕛';
+            
+            const dayOfYear = moment().dayOfYear();
+            const verseIndex = (dayOfYear - 1) % yearlyVerses.length;
+            const verse = yearlyVerses[verseIndex];
+            
+            const notificationTag = `prayer-dome-verse-${now.toDateString()}-${hour}`;
+            
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                const registration = await navigator.serviceWorker.ready;
                 
-                if (payload.notification) {
-                    showInAppNotification(payload.notification.title, payload.notification.body);
-                    
-                    const newNotif = {
-                        id: Date.now().toString(),
-                        title: payload.notification.title,
-                        message: payload.notification.body,
-                        time: moment().format('MMM D, YYYY h:mm A'),
-                        read: false
-                    };
-                    
-                    const savedNotifs = localStorage.getItem('prayer_dome_notifications');
-                    let existingNotifs = savedNotifs ? JSON.parse(savedNotifs) : [];
-                    existingNotifs.unshift(newNotif);
-                    if (existingNotifs.length > 20) existingNotifs.pop();
-                    localStorage.setItem('prayer_dome_notifications', JSON.stringify(existingNotifs));
-                    
-                    notifications = existingNotifs;
-                    unreadCount = notifications.filter(n => !n.read).length;
-                    updateNotificationBadge();
-                    renderNotifications();
-                }
-            });
+                registration.showNotification(`${hourEmoji} Hour ${hour}:00 - Prayer Dome Verse`, {
+                    body: `"${verse.verse.substring(0, 150)}" — ${verse.ref}`,
+                    icon: 'https://i.ibb.co/TB5Fx4tb/logo-0.png',
+                    badge: 'https://i.ibb.co/TB5Fx4tb/logo-0.png',
+                    tag: notificationTag,
+                    renotify: true,
+                    requireInteraction: true,  // CRITICAL: Keeps notification on lock screen
+                    silent: false,
+                    vibrate: [200, 100, 200],
+                    data: {
+                        url: '/bible',
+                        verse: verse.verse,
+                        reference: verse.ref,
+                        hour: hour,
+                        timestamp: Date.now()
+                    },
+                    actions: [
+                        { action: 'read', title: '📖 Read Full Verse' },
+                        { action: 'pray', title: '🙏 Pray Now' },
+                        { action: 'snooze', title: '⏰ Remind in 30 min' }
+                    ]
+                });
+                
+                console.log(`✅ Hourly verse notification sent at ${hour}:00 (stays on lock screen)`);
+            } else {
+                showInAppNotification(`${hourEmoji} Hour ${hour}:00`, `"${verse.verse.substring(0, 100)}" — ${verse.ref}`);
+            }
+            
+            // Add to notification panel
+            const newNotif = {
+                id: Date.now().toString(),
+                title: `${hourEmoji} Hour ${hour}:00 - Daily Verse`,
+                message: `"${verse.verse.substring(0, 150)}" — ${verse.ref}`,
+                time: moment().format('MMM D, YYYY h:mm A'),
+                read: false
+            };
+            
+            const savedNotifs = localStorage.getItem('prayer_dome_notifications');
+            let existingNotifs = savedNotifs ? JSON.parse(savedNotifs) : [];
+            existingNotifs.unshift(newNotif);
+            if (existingNotifs.length > 50) existingNotifs.pop();
+            localStorage.setItem('prayer_dome_notifications', JSON.stringify(existingNotifs));
+            
+            notifications = existingNotifs;
+            unreadCount = notifications.filter(n => !n.read).length;
+            updateNotificationBadge();
+            renderNotifications();
+        }
+
+        function scheduleHourlyVerseNotifications() {
+            if (hourlyNotificationInterval) {
+                clearInterval(hourlyNotificationInterval);
+            }
+            
+            if (Notification.permission !== 'granted') {
+                console.log("Notifications not granted, cannot schedule hourly verses");
+                return;
+            }
+            
+            // Send first notification after 5 seconds
+            setTimeout(() => {
+                sendHourlyVerseNotification();
+            }, 5000);
+            
+            // Calculate milliseconds until next exact hour
+            const now = new Date();
+            const nextHour = new Date(now);
+            nextHour.setHours(now.getHours() + 1, 0, 0, 0);
+            const delay = nextHour - now;
+            
+            console.log(`First scheduled hourly verse notification in ${Math.round(delay / 60000)} minutes at ${nextHour.toLocaleTimeString()}`);
+            
+            setTimeout(() => {
+                sendHourlyVerseNotification();
+                hourlyNotificationInterval = setInterval(() => {
+                    sendHourlyVerseNotification();
+                }, 60 * 60 * 1000);
+            }, delay);
         }
 
         function showInAppNotification(title, body) {
@@ -912,6 +1283,35 @@ async function requestNotificationPermission() {
             setTimeout(() => notifElement.remove(), 8000);
         }
 
+        function handleForegroundMessages() {
+            onMessage(messaging, (payload) => {
+                console.log("Message received in foreground:", payload);
+                
+                if (payload.notification) {
+                    showInAppNotification(payload.notification.title, payload.notification.body);
+                    
+                    const newNotif = {
+                        id: Date.now().toString(),
+                        title: payload.notification.title,
+                        message: payload.notification.body,
+                        time: moment().format('MMM D, YYYY h:mm A'),
+                        read: false
+                    };
+                    
+                    const savedNotifs = localStorage.getItem('prayer_dome_notifications');
+                    let existingNotifs = savedNotifs ? JSON.parse(savedNotifs) : [];
+                    existingNotifs.unshift(newNotif);
+                    if (existingNotifs.length > 20) existingNotifs.pop();
+                    localStorage.setItem('prayer_dome_notifications', JSON.stringify(existingNotifs));
+                    
+                    notifications = existingNotifs;
+                    unreadCount = notifications.filter(n => !n.read).length;
+                    updateNotificationBadge();
+                    renderNotifications();
+                }
+            });
+        }
+
         function checkNotificationStatus() {
             if (typeof Notification !== 'undefined' && Notification.permission === 'default' && currentUser) {
                 const hasSeenBanner = localStorage.getItem('notif_banner_shown');
@@ -929,7 +1329,7 @@ async function requestNotificationPermission() {
             document.getElementById('notifPermissionBanner').style.display = 'none';
             await requestNotificationPermission();
         };
-
+        
         // --- NOTIFICATION PANEL FUNCTIONS ---
         window.toggleNotificationPanel = function() {
             const panel = document.getElementById('notificationPanel');
@@ -992,250 +1392,89 @@ async function requestNotificationPermission() {
             updateNotificationBadge();
             renderNotifications();
         }
-        
-        // ==================== HOURLY BIBLE VERSE NOTIFICATIONS ====================
-// This creates a local timer that sends a notification every hour
 
-let hourlyNotificationInterval = null;
-
-function scheduleHourlyVerseNotifications() {
-    // Clear existing interval if any
-    if (hourlyNotificationInterval) {
-        clearInterval(hourlyNotificationInterval);
-    }
-    
-    // Check if notifications are enabled
-    if (Notification.permission !== 'granted') {
-        console.log("Notifications not granted, cannot schedule hourly verses");
-        return;
-    }
-    
-    // Calculate milliseconds until next hour
-    const now = new Date();
-    const nextHour = new Date(now);
-    nextHour.setHours(now.getHours() + 1, 0, 0, 0);
-    const delay = nextHour - now;
-    
-    console.log(`First hourly verse notification in ${Math.round(delay / 60000)} minutes`);
-    
-    // Schedule first notification at next hour
-    setTimeout(() => {
-        sendHourlyVerseNotification();
-        
-        // Then schedule every hour
-        hourlyNotificationInterval = setInterval(() => {
-            sendHourlyVerseNotification();
-        }, 60 * 60 * 1000); // 1 hour
-    }, delay);
-}
-
-async function sendHourlyVerseNotification() {
-    // Check if user is still logged in and notifications are enabled
-    if (!currentUser || Notification.permission !== 'granted') {
-        return;
-    }
-    
-    const hour = new Date().getHours();
-    const hourNames = ['🕛', '🕐', '🕑', '🕒', '🕓', '🕔', '🕕', '🕖', '🕗', '🕘', '🕙', '🕚'];
-    const hourEmoji = hourNames[hour % 12] || '🕛';
-    
-    // Get daily verse based on day of year
-    const dayOfYear = moment().dayOfYear();
-    const verseIndex = (dayOfYear - 1) % yearlyVerses.length;
-    const verse = yearlyVerses[verseIndex];
-    
-    // Also add to notification panel
-    const newNotif = {
-        id: Date.now().toString(),
-        title: `${hourEmoji} Hour ${hour}:00 - Daily Verse`,
-        message: `"${verse.verse.substring(0, 150)}" — ${verse.ref}`,
-        time: moment().format('MMM D, YYYY h:mm A'),
-        read: false
-    };
-    
-    const savedNotifs = localStorage.getItem('prayer_dome_notifications');
-    let existingNotifs = savedNotifs ? JSON.parse(savedNotifs) : [];
-    existingNotifs.unshift(newNotif);
-    if (existingNotifs.length > 50) existingNotifs.pop();
-    localStorage.setItem('prayer_dome_notifications', JSON.stringify(existingNotifs));
-    
-    notifications = existingNotifs;
-    unreadCount = notifications.filter(n => !n.read).length;
-    updateNotificationBadge();
-    renderNotifications();
-    
-    // Also show in-app notification
-    showInAppNotification(`${hourEmoji} Hour ${hour}:00`, `"${verse.verse.substring(0, 100)}" — ${verse.ref}`);
-    
-    console.log(`Hourly verse notification sent at ${hour}:00`);
-}
-
-// Call this after notifications are enabled
-// Add this inside the requestNotificationPermission function after successful grant:
-// scheduleHourlyVerseNotifications();
-
-// Add this to your main app initialization
-async function initHourlyVerses() {
-    console.log("🕊️ Initializing hourly verse notifications...");
-    
-    // Check if browser supports notifications
-    if (!("Notification" in window)) {
-        console.log("Browser doesn't support notifications");
-        return;
-    }
-    
-    // Check if service workers are supported
-    if (!("serviceWorker" in navigator)) {
-        console.log("Service workers not supported");
-        return;
-    }
-    
-    // Register service worker
-    try {
-        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-        console.log("✅ Service Worker registered:", registration);
-        
-        // Check current permission status
-        if (Notification.permission === "granted") {
-            console.log("✅ Notifications already granted");
-            showNotificationStatus(true);
+        // Initialize hourly verses
+        async function initHourlyVerses() {
+            console.log("🕊️ Initializing hourly verse notifications...");
             
-            // Send a test welcome notification
-            registration.showNotification("🙏 Prayer Dome", {
-                body: "You will receive Bible verses every hour. Stay blessed!",
-                icon: "https://i.ibb.co/TB5Fx4tb/logo-0.png",
-                tag: "welcome",
-                requireInteraction: false
-            });
+            if (!("Notification" in window)) {
+                console.log("Browser doesn't support notifications");
+                return;
+            }
             
-        } else if (Notification.permission !== "denied") {
-            // Ask for permission with a nice UI
-            showNotificationPrompt();
-        } else {
-            console.log("Notifications are blocked");
-            showNotificationStatus(false);
-        }
-        
-    } catch (error) {
-        console.error("Service Worker registration failed:", error);
-    }
-}
-
-// Show a nice prompt to ask for notification permission
-function showNotificationPrompt() {
-    // Create a custom prompt
-    const promptDiv = document.createElement('div');
-    promptDiv.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        right: 20px;
-        max-width: 400px;
-        background: var(--bg-card);
-        border-radius: 20px;
-        padding: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        z-index: 10000;
-        border-left: 4px solid var(--accent-green);
-        animation: slideUp 0.3s ease;
-    `;
-    promptDiv.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-            <i class="fas fa-bell" style="font-size: 24px; color: var(--accent-gold);"></i>
-            <strong style="font-size: 1rem;">Receive Hourly Bible Verses</strong>
-        </div>
-        <p style="font-size: 0.85rem; margin-bottom: 15px; color: var(--text-sub);">
-            Get inspired every hour with a new Bible verse and prayer reminder.
-        </p>
-        <div style="display: flex; gap: 10px;">
-            <button id="enableNotifBtn" style="flex: 1; padding: 10px; border-radius: 12px; border: none; background: var(--accent-green); color: white; font-weight: 600; cursor: pointer;">
-                <i class="fas fa-check"></i> Enable
-            </button>
-            <button id="dismissNotifBtn" style="flex: 1; padding: 10px; border-radius: 12px; border: 1px solid var(--border); background: transparent; color: var(--text-main); cursor: pointer;">
-                Not Now
-            </button>
-        </div>
-    `;
-    
-    document.body.appendChild(promptDiv);
-    
-    document.getElementById('enableNotifBtn').onclick = async () => {
-        const permission = await Notification.requestPermission();
-        if (permission === "granted") {
-            promptDiv.remove();
-            showNotificationStatus(true);
+            if (!("serviceWorker" in navigator)) {
+                console.log("Service workers not supported");
+                return;
+            }
             
-            // Register service worker again
-            const registration = await navigator.serviceWorker.ready;
-            registration.showNotification("✅ Notifications Enabled", {
-                body: "You will now receive hourly Bible verses. God bless you!",
-                icon: "https://i.ibb.co/TB5Fx4tb/logo-0.png"
-            });
-        } else {
-            promptDiv.remove();
-            showNotificationStatus(false);
+            try {
+                const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+                console.log("✅ Service Worker registered:", registration);
+                
+                if (Notification.permission === "granted") {
+                    console.log("✅ Notifications already granted");
+                    scheduleHourlyVerseNotifications();
+                } else if (Notification.permission !== "denied") {
+                    showNotificationPrompt();
+                } else {
+                    console.log("Notifications are blocked");
+                }
+                
+            } catch (error) {
+                console.error("Service Worker registration failed:", error);
+            }
         }
-    };
-    
-    document.getElementById('dismissNotifBtn').onclick = () => {
-        promptDiv.remove();
-    };
-}
 
-// Show notification status indicator
-function showNotificationStatus(enabled) {
-    const statusDiv = document.createElement('div');
-    statusDiv.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: ${enabled ? 'rgba(34,197,94,0.9)' : 'rgba(100,116,139,0.9)'};
-        color: white;
-        padding: 8px 16px;
-        border-radius: 30px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        z-index: 9999;
-        cursor: pointer;
-        backdrop-filter: blur(8px);
-        transition: opacity 0.3s;
-    `;
-    statusDiv.innerHTML = enabled ? '🔔 Hourly Verses ON' : '🔕 Notifications OFF';
-    statusDiv.onclick = () => {
-        if (!enabled) {
-            Notification.requestPermission();
+        function showNotificationPrompt() {
+            const promptDiv = document.createElement('div');
+            promptDiv.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                right: 20px;
+                max-width: 400px;
+                background: var(--bg-card);
+                border-radius: 20px;
+                padding: 20px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                z-index: 10000;
+                border-left: 4px solid var(--accent-green);
+                animation: slideUp 0.3s ease;
+            `;
+            promptDiv.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                    <i class="fas fa-bell" style="font-size: 24px; color: var(--accent-gold);"></i>
+                    <strong style="font-size: 1rem;">Receive Hourly Bible Verses</strong>
+                </div>
+                <p style="font-size: 0.85rem; margin-bottom: 15px; color: var(--text-sub);">
+                    Get inspired every hour with a new Bible verse and prayer reminder.
+                </p>
+                <div style="display: flex; gap: 10px;">
+                    <button id="enableNotifBtn" style="flex: 1; padding: 10px; border-radius: 12px; border: none; background: var(--accent-green); color: white; font-weight: 600; cursor: pointer;">
+                        <i class="fas fa-check"></i> Enable
+                    </button>
+                    <button id="dismissNotifBtn" style="flex: 1; padding: 10px; border-radius: 12px; border: 1px solid var(--border); background: transparent; color: var(--text-main); cursor: pointer;">
+                        Not Now
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(promptDiv);
+            
+            document.getElementById('enableNotifBtn').onclick = async () => {
+                const permission = await Notification.requestPermission();
+                if (permission === "granted") {
+                    promptDiv.remove();
+                    scheduleHourlyVerseNotifications();
+                } else {
+                    promptDiv.remove();
+                }
+            };
+            
+            document.getElementById('dismissNotifBtn').onclick = () => {
+                promptDiv.remove();
+            };
         }
-        statusDiv.remove();
-    };
-    document.body.appendChild(statusDiv);
-    setTimeout(() => {
-        statusDiv.style.opacity = '0';
-        setTimeout(() => statusDiv.remove(), 300);
-    }, 5000);
-}
-
-// Add CSS animation
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideUp {
-        from {
-            transform: translateY(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
-`;
-document.head.appendChild(style);
-
-// Initialize when page loads
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initHourlyVerses);
-} else {
-    initHourlyVerses();
-}
 
         // --- LOCATION TRACKING ---
         const branches = {
@@ -1371,7 +1610,6 @@ if (document.readyState === 'loading') {
                     if (btnFinance && isFinance) btnFinance.style.display = 'inline-flex';
                     await checkAndShowAdminTab(user);
                     
-                    // CRITICAL: Request notification permission and save token AFTER login
                     setTimeout(async () => {
                         await requestNotificationPermission();
                     }, 2000);
@@ -1406,12 +1644,64 @@ if (document.readyState === 'loading') {
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3500);
         }
+        
+        // ==================== PLAY STORE BANNER FUNCTIONS ====================
+        const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=co.median.android.bnlqmnb';
+
+        function showPlayStoreBanner() {
+            const banner = document.getElementById('playstoreBanner');
+            if (banner && !isAppEnvironment && !localStorage.getItem('playstore_banner_closed')) {
+                banner.style.display = 'block';
+                banner.style.animation = 'slideDown 0.5s ease';
+                console.log("Play Store banner shown");
+            }
+        }
+
+        function hidePlayStoreBanner() {
+            const banner = document.getElementById('playstoreBanner');
+            if (banner) banner.style.display = 'none';
+        }
+
+        window.closePlayStoreBanner = function() {
+            const banner = document.getElementById('playstoreBanner');
+            if (banner) {
+                banner.style.display = 'none';
+                localStorage.setItem('playstore_banner_closed', 'true');
+                showToast('You can re-enable in browser settings', 'info');
+            }
+        };
+
+        window.downloadApp = function() {
+            window.open(PLAY_STORE_URL, '_blank');
+            showToast('Opening Google Play Store...', 'success');
+            localStorage.setItem('app_downloaded', 'true');
+            
+            setTimeout(() => {
+                const banner = document.getElementById('playstoreBanner');
+                if (banner) banner.style.display = 'none';
+            }, 3000);
+        };
 
         // Initialize all
         loadDailyDevotional();
         loadUpcomingEvents();
         loadRecentTestimonies();
         loadNotifications();
+        initHourlyVerses();
+        
+        // Initialize Play Store banner
+        setTimeout(() => {
+            console.log("Checking banner visibility...");
+            console.log("isAppEnvironment:", isAppEnvironment);
+            console.log("banner closed:", localStorage.getItem('playstore_banner_closed'));
+            console.log("app downloaded:", localStorage.getItem('app_downloaded'));
+            
+            if (!isAppEnvironment && !localStorage.getItem('playstore_banner_closed') && !localStorage.getItem('app_downloaded')) {
+                showPlayStoreBanner();
+            } else {
+                console.log("Banner conditions not met");
+            }
+        }, 3000);
         
         // Add click outside to close notification panel
         document.addEventListener('click', function(event) {
@@ -1427,6 +1717,8 @@ if (document.readyState === 'loading') {
         window.showNotificationDetail = showNotificationDetail;
         window.toggleNotificationPanel = toggleNotificationPanel;
         window.enableNotifications = enableNotifications;
+        window.closePlayStoreBanner = closePlayStoreBanner;
+        window.downloadApp = downloadApp;
     </script>
 </body>
 </html>
